@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useEffect } from 'react';
 import api from '../../shared/lib/api';
 
 const AuthContext = createContext(null);
-
+//test
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
