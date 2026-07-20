@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { HiMenuAlt3, HiX } from 'react-icons/hi';
 import { motion, AnimatePresence } from 'framer-motion';
+import ThemeToggle from '../ThemeToggle/ThemeToggle';
 import './Navbar.css';
 
 const navLinks = [
@@ -59,19 +60,25 @@ const Navbar = () => {
           ))}
         </ul>
 
-        {/* CTA Button */}
-        <Link to="/contact" className="navbar__cta">
-          Let's Talk
-        </Link>
+        {/* Desktop Right Actions */}
+        <div className="navbar__actions">
+          <ThemeToggle />
+          <Link to="/contact" className="navbar__cta">
+            Let's Talk
+          </Link>
+        </div>
 
         {/* Mobile Toggle */}
-        <button
-          className="navbar__toggle"
-          onClick={() => setIsOpen(!isOpen)}
-          aria-label="Toggle navigation menu"
-        >
-          {isOpen ? <HiX size={26} /> : <HiMenuAlt3 size={26} />}
-        </button>
+        <div className="navbar__mobile-actions">
+          <ThemeToggle />
+          <button
+            className="navbar__toggle"
+            onClick={() => setIsOpen(!isOpen)}
+            aria-label="Toggle navigation menu"
+          >
+            {isOpen ? <HiX size={26} /> : <HiMenuAlt3 size={26} />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Menu */}

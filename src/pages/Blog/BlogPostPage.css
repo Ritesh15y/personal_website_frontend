@@ -30,9 +30,9 @@
   inset: 0;
   background: linear-gradient(
     135deg,
-    rgba(13, 13, 13, 0.95) 0%,
-    rgba(13, 13, 13, 0.75) 50%,
-    rgba(13, 13, 13, 0.9) 100%
+    rgba(var(--color-bg-primary-rgb), 0.95) 0%,
+    rgba(var(--color-bg-primary-rgb), 0.75) 50%,
+    rgba(var(--color-bg-primary-rgb), 0.9) 100%
   );
 }
 

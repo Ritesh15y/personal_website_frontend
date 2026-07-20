@@ -11,6 +11,9 @@
   --color-bg-glass: rgba(255, 255, 255, 0.03);
   --color-bg-overlay: rgba(0, 0, 0, 0.65);
 
+  /* RGB token for dynamic overlay usage in gradients */
+  --color-bg-primary-rgb: 13, 13, 13;
+
   --color-accent: #C8A96E;
   --color-accent-hover: #D4BA82;
   --color-accent-dim: rgba(200, 169, 110, 0.15);
@@ -68,6 +71,7 @@
   --space-5: 1.25rem;    /* 20px */
   --space-6: 1.5rem;     /* 24px */
   --space-8: 2rem;       /* 32px */
+  --space-9: 2.25rem;    /* 36px */
   --space-10: 2.5rem;    /* 40px */
   --space-12: 3rem;      /* 48px */
   --space-16: 4rem;      /* 64px */
@@ -114,4 +118,85 @@
   /* Tablet:  768px  */
   /* Desktop: 1024px */
   /* Wide:    1280px */
+}
+
+/* ============================
+   LIGHT THEME OVERRIDES
+   ============================ */
+
+[data-theme="light"] {
+  /* ---- Backgrounds ---- */
+  --color-bg-primary: #FAF8F5;
+  --color-bg-secondary: #F0EDE8;
+  --color-bg-tertiary: #E8E4DD;
+  --color-bg-card: rgba(255, 255, 255, 0.8);
+  --color-bg-glass: rgba(0, 0, 0, 0.02);
+  --color-bg-overlay: rgba(0, 0, 0, 0.45);
+
+  --color-bg-primary-rgb: 250, 248, 245;
+
+  /* ---- Accent (deeper gold for light bg contrast) ---- */
+  --color-accent: #B8923E;
+  --color-accent-hover: #A07D2F;
+  --color-accent-dim: rgba(184, 146, 62, 0.12);
+  --color-accent-glow: rgba(184, 146, 62, 0.2);
+
+  /* ---- Text ---- */
+  --color-text-primary: #1A1A1A;
+  --color-text-secondary: #5A5A5A;
+  --color-text-muted: #8A8A8A;
+
+  /* ---- Borders ---- */
+  --color-border: #E0DCD5;
+  --color-border-light: #D0CCC5;
+  --color-border-accent: rgba(184, 146, 62, 0.3);
+
+  /* ---- Shadows (lighter, warmer) ---- */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+/* ---- Light Mode: Hero Overlays ---- */
+[data-theme="light"] .hero__overlay,
+[data-theme="light"] .page-hero__overlay,
+[data-theme="light"] .post-hero__overlay,
+[data-theme="light"] .login-page__overlay {
+  background: linear-gradient(
+    135deg,
+    rgba(var(--color-bg-primary-rgb), 0.82) 0%,
+    rgba(var(--color-bg-primary-rgb), 0.6) 50%,
+    rgba(var(--color-bg-primary-rgb), 0.75) 100%
+  );
+}
+
+/* Light Mode: Card overlays */
+[data-theme="light"] .project-card__overlay,
+[data-theme="light"] .portfolio-card__overlay {
+  background: linear-gradient(
+    to top,
+    rgba(var(--color-bg-primary-rgb), 0.85) 0%,
+    rgba(var(--color-bg-primary-rgb), 0.3) 40%,
+    transparent 100%
+  );
+}
+
+/* ---- Light Mode: Hero Text Visibility ---- */
+[data-theme="light"] .hero__title,
+[data-theme="light"] .page-hero__content h1,
+[data-theme="light"] .post-title {
+  color: #111111;
+  text-shadow: 0 1px 8px rgba(255, 255, 255, 0.6);
+}
+
+[data-theme="light"] .hero__subtitle,
+[data-theme="light"] .page-hero__subtitle,
+[data-theme="light"] .hero__label,
+[data-theme="light"] .section-header__label {
+  color: #333333;
+  text-shadow: 0 1px 4px rgba(255, 255, 255, 0.5);
+}
+
+[data-theme="light"] .hero__scroll {
+  color: #555555;
 }

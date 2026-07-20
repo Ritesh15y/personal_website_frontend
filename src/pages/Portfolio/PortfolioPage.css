@@ -66,8 +66,8 @@
   inset: 0;
   background: linear-gradient(
     to top,
-    rgba(13, 13, 13, 0.95) 0%,
-    rgba(13, 13, 13, 0.4) 40%,
+    rgba(var(--color-bg-primary-rgb), 0.95) 0%,
+    rgba(var(--color-bg-primary-rgb), 0.4) 40%,
     transparent 100%
   );
   display: flex;
@@ -156,7 +156,7 @@
     opacity: 1;
     background: linear-gradient(
       to top,
-      rgba(13, 13, 13, 0.85) 0%,
+      rgba(var(--color-bg-primary-rgb), 0.85) 0%,
       transparent 60%
     );
   }

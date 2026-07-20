@@ -29,9 +29,9 @@
   inset: 0;
   background: linear-gradient(
     135deg,
-    rgba(13, 13, 13, 0.92) 0%,
-    rgba(13, 13, 13, 0.7) 50%,
-    rgba(13, 13, 13, 0.85) 100%
+    rgba(var(--color-bg-primary-rgb), 0.92) 0%,
+    rgba(var(--color-bg-primary-rgb), 0.7) 50%,
+    rgba(var(--color-bg-primary-rgb), 0.85) 100%
   );
 }
 
@@ -233,8 +233,8 @@
   inset: 0;
   background: linear-gradient(
     to top,
-    rgba(13, 13, 13, 0.9) 0%,
-    rgba(13, 13, 13, 0.3) 40%,
+    rgba(var(--color-bg-primary-rgb), 0.9) 0%,
+    rgba(var(--color-bg-primary-rgb), 0.3) 40%,
     transparent 100%
   );
   display: flex;
