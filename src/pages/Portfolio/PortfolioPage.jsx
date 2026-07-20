@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaArrowRight } from 'react-icons/fa';
+import api from '../../shared/lib/api';
 import SectionHeader from '../../shared/components/SectionHeader/SectionHeader';
 import './PortfolioPage.css';
 
@@ -82,12 +83,45 @@ const projectsData = [
 ];
 
 const PortfolioPage = () => {
+  const [projects, setProjects] = useState([]);
+  const [filteredProjects, setFilteredProjects] = useState([]);
   const [activeFilter, setActiveFilter] = useState('all');
+  const [loading, setLoading] = useState(true);
 
-  const filteredProjects =
-    activeFilter === 'all'
-      ? projectsData
-      : projectsData.filter((p) => p.category === activeFilter);
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const res = await api.get('/projects?status=published');
+        if (res.data.success && res.data.data && res.data.data.length > 0) {
+          setProjects(res.data.data);
+        } else {
+          setProjects(projectsData);
+        }
+      } catch (error) {
+        console.error('Error fetching projects:', error);
+        setProjects(projectsData);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProjects();
+  }, []);
+
+  useEffect(() => {
+    let result = projects;
+    if (activeFilter !== 'all') {
+      result = projects.filter((p) => p.category === activeFilter);
+    }
+    setFilteredProjects(result);
+  }, [activeFilter, projects]);
+
+  if (loading) {
+    return (
+      <div className="portfolio-page" style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-text-secondary)' }}>
+        <p>Loading projects...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="portfolio-page">
@@ -138,42 +172,45 @@ const PortfolioPage = () => {
           {/* Project Grid */}
           <motion.div className="portfolio-grid" layout>
             <AnimatePresence mode="popLayout">
-              {filteredProjects.map((project) => (
-                <motion.div
-                  key={project.slug}
-                  className="portfolio-card"
-                  layout
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <Link to={`/portfolio/${project.slug}`} className="portfolio-card__link">
-                    <div className="portfolio-card__image-wrapper">
-                      <img
-                        src={project.image}
-                        alt={project.title}
-                        className="portfolio-card__image"
-                        loading="lazy"
-                      />
-                      <div className="portfolio-card__overlay">
-                        <span className="portfolio-card__category">
-                          {project.category.replace('-', ' ')}
-                        </span>
-                        <h3 className="portfolio-card__title">{project.title}</h3>
-                        <div className="portfolio-card__tags">
-                          {project.software.map((sw, i) => (
-                            <span key={i} className="portfolio-card__tag">{sw}</span>
-                          ))}
+              {filteredProjects.map((project) => {
+                const imageUrl = project.thumbnail?.url || project.images?.[0]?.url || project.image;
+                return (
+                  <motion.div
+                    key={project._id || project.slug}
+                    className="portfolio-card"
+                    layout
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <Link to={`/portfolio/${project.slug}`} className="portfolio-card__link">
+                      <div className="portfolio-card__image-wrapper">
+                        <img
+                          src={imageUrl}
+                          alt={project.title}
+                          className="portfolio-card__image"
+                          loading="lazy"
+                        />
+                        <div className="portfolio-card__overlay">
+                          <span className="portfolio-card__category">
+                            {project.category.replace('-', ' ')}
+                          </span>
+                          <h3 className="portfolio-card__title">{project.title}</h3>
+                          <div className="portfolio-card__tags">
+                            {project.software && project.software.map((sw, i) => (
+                              <span key={i} className="portfolio-card__tag">{sw}</span>
+                            ))}
+                          </div>
+                          <span className="portfolio-card__view">
+                            View Project <FaArrowRight />
+                          </span>
                         </div>
-                        <span className="portfolio-card__view">
-                          View Project <FaArrowRight />
-                        </span>
                       </div>
-                    </div>
-                  </Link>
-                </motion.div>
-              ))}
+                    </Link>
+                  </motion.div>
+                );
+              })}
             </AnimatePresence>
           </motion.div>
         </div>

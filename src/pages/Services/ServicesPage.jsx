@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
   FaDraftingCompass,
@@ -12,6 +13,7 @@ import {
 import { Link } from 'react-router-dom';
 import SectionHeader from '../../shared/components/SectionHeader/SectionHeader';
 import Button from '../../shared/components/Button/Button';
+import api from '../../shared/lib/api';
 import './ServicesPage.css';
 
 const iconMap = {
@@ -73,6 +75,49 @@ const itemVariants = {
 };
 
 const ServicesPage = () => {
+  const [services, setServices] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const res = await api.get('/services');
+        if (res.data.success && res.data.data && res.data.data.length > 0) {
+          const activeServices = res.data.data
+            .filter((s) => s.isActive !== false)
+            .sort((a, b) => (a.order || 0) - (b.order || 0));
+          setServices(activeServices);
+        } else {
+          // Normalize static data
+          const fallbackData = servicesData.map((s) => ({
+            ...s,
+            description: s.desc || s.description,
+          }));
+          setServices(fallbackData);
+        }
+      } catch (error) {
+        console.error('Error fetching services:', error);
+        // Normalize static data on error
+        const fallbackData = servicesData.map((s) => ({
+          ...s,
+          description: s.desc || s.description,
+        }));
+        setServices(fallbackData);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchServices();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="services-page" style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-text-secondary)' }}>
+        <p>Loading services...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="services-page">
       {/* Page Header */}
@@ -111,15 +156,15 @@ const ServicesPage = () => {
             whileInView="visible"
             viewport={{ once: true, margin: '-50px' }}
           >
-            {servicesData.map((service, index) => (
+            {services.map((service, index) => (
               <motion.div
-                key={index}
+                key={service._id || index}
                 className={`service-detail glass-card ${index % 2 !== 0 ? 'service-detail--reverse' : ''}`}
                 variants={itemVariants}
               >
                 <div className="service-detail__icon-col">
                   <div className="service-detail__icon">
-                    {iconMap[service.icon]}
+                    {iconMap[service.icon] || <FaCubes />}
                   </div>
                   <span className="service-detail__number">
                     {String(index + 1).padStart(2, '0')}
@@ -128,9 +173,9 @@ const ServicesPage = () => {
 
                 <div className="service-detail__content">
                   <h3 className="service-detail__title">{service.title}</h3>
-                  <p className="service-detail__desc">{service.desc}</p>
+                  <p className="service-detail__desc">{service.description}</p>
                   <ul className="service-detail__features">
-                    {service.features.map((feature, i) => (
+                    {service.features && service.features.map((feature, i) => (
                       <li key={i}>
                         <FaCheckCircle className="text-accent" />
                         {feature}
