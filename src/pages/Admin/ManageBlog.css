@@ -1,0 +1,91 @@
+/* ============================
+   Manage Blog CSS
+   ============================ */
+
+.manage-blog__header {
+  margin-bottom: var(--space-8);
+}
+
+.manage-blog__header h3 {
+  font-size: var(--fs-xl);
+  margin-bottom: var(--space-2);
+}
+
+.manage-blog__header p {
+  font-size: var(--fs-sm);
+  color: var(--color-text-muted);
+}
+
+/* Form Styles is the new*/
+.blog-form {
+  padding: var(--space-8);
+}
+
+.blog-form h4 {
+  font-size: var(--fs-md);
+  margin-bottom: var(--space-6);
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: var(--space-3);
+}
+
+.blog-form__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+.blog-form__group {
+  margin-bottom: var(--space-5);
+  width: 100%;
+}
+
+.blog-form__group label {
+  display: block;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: var(--ls-wide);
+  margin-bottom: var(--space-2);
+}
+
+.blog-form__group input[type='text'],
+.blog-form__group select,
+.blog-form__group textarea {
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  font-size: var(--fs-base);
+  transition: border-color var(--transition-fast);
+}
+
+.blog-form__group input:focus,
+.blog-form__group select:focus,
+.blog-form__group textarea:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-dim);
+}
+
+.blog-form__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-4);
+  margin-top: var(--space-6);
+  border-top: 1px solid var(--color-border);
+  padding-top: var(--space-6);
+}
+
+/* Table styles */
+.blog-admin-table {
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .blog-form__row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}

@@ -1,0 +1,210 @@
+/* ============================
+   Admin Layout Styles
+   ============================ */
+
+.admin-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  min-height: 100vh;
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+}
+
+/* Sidebar */
+.admin-sidebar {
+  background-color: var(--color-bg-secondary);
+  border-right: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+}
+
+.admin-sidebar__header {
+  padding: var(--space-6) var(--space-5);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.admin-sidebar__logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-heading);
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-bold);
+  color: var(--color-text-primary);
+  text-decoration: none;
+}
+
+.admin-sidebar__logo span {
+  color: var(--color-accent);
+}
+
+.admin-sidebar__user {
+  display: block;
+  font-size: var(--fs-xs);
+  color: var(--color-text-muted);
+  margin-top: var(--space-2);
+}
+
+.admin-sidebar__nav {
+  flex: 1;
+  padding: var(--space-6) var(--space-3);
+}
+
+.admin-sidebar__links {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.admin-sidebar__link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+  text-decoration: none;
+}
+
+.admin-sidebar__link:hover {
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-tertiary);
+}
+
+.admin-sidebar__link--active {
+  color: var(--color-bg-primary);
+  background-color: var(--color-accent);
+}
+
+.admin-sidebar__link--active:hover {
+  color: var(--color-bg-primary);
+  background-color: var(--color-accent-hover);
+}
+
+.admin-sidebar__footer {
+  padding: var(--space-4) var(--space-3);
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.admin-sidebar__footer-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  border-radius: var(--radius-md);
+  text-transform: uppercase;
+  letter-spacing: var(--ls-wide);
+  transition: all var(--transition-fast);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-light);
+  width: 100%;
+}
+
+.admin-sidebar__footer-btn:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.admin-sidebar__footer-btn--logout {
+  background-color: rgba(229, 115, 115, 0.1);
+  border-color: rgba(229, 115, 115, 0.2);
+  color: var(--color-error);
+}
+
+.admin-sidebar__footer-btn--logout:hover {
+  background-color: var(--color-error);
+  color: var(--color-bg-primary);
+  border-color: var(--color-error);
+}
+
+/* Main Content Area */
+.admin-content {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.admin-header {
+  background-color: var(--color-bg-secondary);
+  border-bottom: 1px solid var(--color-border);
+  padding: var(--space-4) var(--space-8);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+}
+
+.admin-header h2 {
+  font-family: var(--font-body);
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-semibold);
+}
+
+.admin-header__right {
+  font-size: var(--fs-sm);
+  color: var(--color-text-secondary);
+}
+
+.admin-body {
+  padding: var(--space-8);
+  flex: 1;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 1024px) {
+  .admin-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-sidebar {
+    height: auto;
+    position: static;
+  }
+
+  .admin-sidebar__nav {
+    padding: var(--space-3);
+  }
+
+  .admin-sidebar__links {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .admin-sidebar__footer {
+    flex-direction: row;
+  }
+
+  .admin-content {
+    height: auto;
+    overflow-y: visible;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-sidebar__links {
+    flex-direction: column;
+  }
+
+  .admin-sidebar__footer {
+    flex-direction: column;
+  }
+
+  .admin-body {
+    padding: var(--space-4);
+  }
+}
