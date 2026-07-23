@@ -46,6 +46,13 @@
   color: var(--color-accent);
 }
 
+.footer__logo-img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
 .footer__tagline {
   font-size: var(--fs-sm);
   color: var(--color-text-muted);

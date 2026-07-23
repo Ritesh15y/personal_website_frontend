@@ -36,7 +36,7 @@ const AdminLayout = () => {
       <aside className="admin-sidebar">
         <div className="admin-sidebar__header">
           <Link to="/admin" className="admin-sidebar__logo">
-            <span>◆</span> StudioAdmin
+            <img src="/favicon.png" alt="Prema Design Studio" style={{ width: '22px', height: '22px', objectFit: 'contain', borderRadius: '3px' }} /> PremaDesignStudio
           </Link>
           <span className="admin-sidebar__user">Logged: {user?.name}</span>
         </div>

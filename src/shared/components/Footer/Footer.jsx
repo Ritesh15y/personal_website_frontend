@@ -22,8 +22,8 @@ const Footer = () => {
           {/* Brand Column */}
           <div className="footer__brand">
             <Link to="/" className="footer__logo">
-              <span className="footer__logo-icon">◆</span>
-              Design<span className="text-accent">Studio</span>
+              <img src="/favicon.png" alt="Prema Design Studio" className="footer__logo-img" />
+              Prema Design<span className="text-accent">Studio</span>
             </Link>
             <p className="footer__tagline">
               Transforming architectural visions into reality through precision
@@ -72,7 +72,7 @@ const Footer = () => {
             <ul className="footer__contact-list">
               <li>
                 <FaEnvelope className="footer__contact-icon" />
-                <span>hello@designstudio.com</span>
+                <span>hello@premadesignstudio.in</span>
               </li>
               <li>
                 <FaPhoneAlt className="footer__contact-icon" />
@@ -88,7 +88,7 @@ const Footer = () => {
 
         {/* Bottom Bar */}
         <div className="footer__bottom">
-          <p>&copy; {currentYear} DesignStudio. All rights reserved.</p>
+          <p>&copy; {currentYear} Prema Design Studio. All rights reserved.</p>
           <p className="footer__credit">
             Crafted with precision & passion
           </p>

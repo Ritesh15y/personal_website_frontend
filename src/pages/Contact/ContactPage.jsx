@@ -108,7 +108,7 @@ const ContactPage = () => {
                   </div>
                   <div>
                     <h5>Email</h5>
-                    <p>hello@designstudio.com</p>
+                    <p>hello@premadesignstudio.in</p>
                   </div>
                 </div>
 

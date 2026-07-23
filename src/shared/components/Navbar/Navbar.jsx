@@ -38,9 +38,9 @@ const Navbar = () => {
       <div className="navbar__container container">
         {/* Logo */}
         <Link to="/" className="navbar__logo">
-          <span className="navbar__logo-icon">◆</span>
+          <img src="/favicon.png" alt="Prema Design Studio" className="navbar__logo-img" />
           <span className="navbar__logo-text">
-            Design<span className="text-accent">Studio</span>
+            Prema Design<span className="text-accent">Studio</span>
           </span>
         </Link>
 

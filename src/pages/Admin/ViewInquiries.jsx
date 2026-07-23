@@ -187,7 +187,7 @@ const ViewInquiries = () => {
               <div className="inquiry-reader__footer">
                 <a
                   href={`mailto:${selectedInquiry.email}?subject=RE: ${encodeURIComponent(
-                    selectedInquiry.subject || 'Your Enquiry to DesignStudio'
+                    selectedInquiry.subject || 'Your Enquiry to Prema Design Studio'
                   )}`}
                   className="btn btn--primary"
                 >

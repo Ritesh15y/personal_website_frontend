@@ -48,8 +48,8 @@ const LoginPage = () => {
       <div className="login-page__container container">
         <form className="login-card glass-card animate-scale-in" onSubmit={handleSubmit}>
           <div className="login-card__header">
-            <span className="login-card__logo-icon">◆</span>
-            <h2>Studio Admin Login</h2>
+            <img src="/favicon.png" alt="Prema Design Studio" className="login-card__logo-img" />
+            <h2>Prema Design Studio Admin</h2>
             <p>Access the control panel to manage portfolio, services, and enquiries.</p>
           </div>
 
@@ -64,7 +64,7 @@ const LoginPage = () => {
             <input
               id="email"
               type="email"
-              placeholder="admin@designstudio.com"
+              placeholder="admin@premadesignstudio.in"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
