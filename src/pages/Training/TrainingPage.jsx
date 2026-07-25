@@ -166,16 +166,23 @@ const TrainingPage = () => {
         prev.map((r) => (r._id === id ? { ...r, downloadCount: (r.downloadCount || 0) + 1 } : r))
       );
 
-      // Trigger standard file download in browser
+      // Fetch file as blob to force download (download attribute doesn't work cross-origin)
       const serverBaseUrl = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
       const fullUrl = fileUrl.startsWith('http') ? fileUrl : `${serverBaseUrl}${fileUrl}`;
       
+      const response = await fetch(fullUrl);
+      const blob = await response.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+      
       const link = document.createElement('a');
-      link.href = fullUrl;
+      link.href = blobUrl;
       link.setAttribute('download', fileName);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      
+      // Clean up blob URL
+      window.URL.revokeObjectURL(blobUrl);
     } catch (error) {
       console.error('Download trigger failed', error);
     }
