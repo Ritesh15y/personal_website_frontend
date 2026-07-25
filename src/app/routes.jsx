@@ -18,11 +18,13 @@ import ManageServices from '../pages/Admin/ManageServices';
 import ManageResources from '../pages/Admin/ManageResources';
 import ManageBlog from '../pages/Admin/ManageBlog';
 import AdminProtectedRoute from './providers/AdminProtectedRoute';
+import ErrorPage from '../pages/Error/ErrorPage';
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <MainLayout />,
+    errorElement: <ErrorPage />,
     children: [
       {
         index: true,

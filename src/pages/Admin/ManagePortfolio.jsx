@@ -95,8 +95,14 @@ const ManagePortfolio = () => {
       });
       if (res.data.success) {
         // Build absolute/relative URL pointing to the node server port
-        const serverBaseUrl = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
-        setImageUrl(serverBaseUrl + res.data.data.url);
+        const returnedUrl = res.data.data.url;
+        // If the URL is already absolute (Cloudinary/Supabase), use it directly
+        if (returnedUrl.startsWith('http')) {
+          setImageUrl(returnedUrl);
+        } else {
+          const serverBaseUrl = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
+          setImageUrl(serverBaseUrl + returnedUrl);
+        }
       }
     } catch (error) {
       console.error('File upload failed', error);

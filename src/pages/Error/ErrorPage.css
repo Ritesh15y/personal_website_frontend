@@ -1,0 +1,350 @@
+/* ==========================================
+   ERROR PAGE — Isometric Architectural Theme
+   Using site design tokens from variables.css
+   ========================================== */
+
+.error-page {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 80px;
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  padding: 40px var(--container-padding);
+  overflow: hidden;
+  font-family: var(--font-body);
+}
+
+/* ——— Perspective grid floor ——— */
+.error-grid {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 55%;
+  background-image:
+    linear-gradient(var(--color-border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-border) 1px, transparent 1px);
+  background-size: 60px 60px;
+  transform: perspective(500px) rotateX(55deg);
+  transform-origin: bottom center;
+  opacity: 0.25;
+  pointer-events: none;
+  z-index: 1;
+  mask-image: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 90%);
+  -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 90%);
+}
+
+/* ——— Floating gold dust particles ——— */
+.error-particles {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.particle {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  background: var(--color-accent);
+  opacity: 0;
+  animation: particleFloat var(--duration) var(--delay) infinite ease-in-out;
+}
+
+@keyframes particleFloat {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0.5);
+  }
+  20% {
+    opacity: 0.7;
+  }
+  80% {
+    opacity: 0.4;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-120px) scale(1);
+  }
+}
+
+/* ——— Isometric Building Scene ——— */
+.error-scene {
+  position: relative;
+  z-index: 3;
+  flex-shrink: 0;
+}
+
+.building {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  transform: rotateX(0deg); /* keep flat, isometric done per-floor */
+}
+
+/* ——— Individual floor ——— */
+.building__floor {
+  position: relative;
+  width: 140px;
+  height: 70px;
+  transform-style: preserve-3d;
+  transform: rotateX(-25deg) rotateY(35deg);
+  margin-bottom: -8px;
+}
+
+.building__floor--3 {
+  animation: floorSlideIn 0.8s 0.6s both ease-out;
+}
+.building__floor--1 {
+  animation: floorSlideIn 0.8s 0.2s both ease-out;
+}
+
+@keyframes floorSlideIn {
+  from {
+    opacity: 0;
+    transform: rotateX(-25deg) rotateY(35deg) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: rotateX(-25deg) rotateY(35deg) translateY(0);
+  }
+}
+
+/* ——— Floor faces (3D box) ——— */
+.floor-face {
+  position: absolute;
+}
+
+.floor-face--front {
+  width: 140px;
+  height: 70px;
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  transform: translateZ(35px);
+}
+
+.floor-face--side {
+  width: 70px;
+  height: 70px;
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotateY(90deg) translateZ(105px);
+  transform-origin: left center;
+}
+
+.floor-face--top {
+  width: 140px;
+  height: 70px;
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border-accent);
+  border-bottom: none;
+  transform: rotateX(90deg) translateZ(0px);
+  transform-origin: top center;
+  background: linear-gradient(135deg, var(--color-accent-dim), transparent);
+}
+
+/* Windows */
+.window {
+  width: 24px;
+  height: 30px;
+  border: 1.5px solid var(--color-accent);
+  border-radius: var(--radius-sm);
+  background: rgba(200, 169, 110, 0.06);
+  box-shadow: inset 0 0 8px var(--color-accent-dim);
+}
+
+/* ——— Missing/Ghost floor ——— */
+.building__floor--missing {
+  animation: none;
+}
+
+.floor-face--ghost {
+  background: transparent !important;
+  border: 2px dashed var(--color-accent) !important;
+  box-shadow: 0 0 16px var(--color-accent-glow);
+}
+
+.missing-label {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  font-weight: var(--fw-bold);
+  color: var(--color-accent);
+  text-shadow: 0 0 12px var(--color-accent-glow);
+}
+
+/* ——— Building base ——— */
+.building__base {
+  width: 180px;
+  height: 10px;
+  background: var(--color-accent-dim);
+  border: 1px solid var(--color-border-accent);
+  border-radius: var(--radius-sm);
+  transform: rotateX(-25deg) rotateY(35deg);
+  margin-top: -4px;
+  box-shadow: 0 4px 20px var(--color-accent-glow);
+}
+
+/* ——— Content section ——— */
+.error-content {
+  position: relative;
+  z-index: 4;
+  max-width: 440px;
+  text-align: left;
+}
+
+.error-content__label {
+  font-family: var(--font-body);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--ls-widest);
+  color: var(--color-accent);
+  text-transform: uppercase;
+  margin-bottom: var(--space-4);
+  display: inline-block;
+  padding: 6px 14px;
+  border: 1px solid var(--color-border-accent);
+  border-radius: var(--radius-sm);
+  background: var(--color-accent-dim);
+}
+
+.error-content__code {
+  font-family: var(--font-heading);
+  font-size: 7rem;
+  font-weight: var(--fw-bold);
+  line-height: 1;
+  letter-spacing: -3px;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-2);
+  background: linear-gradient(
+    135deg,
+    var(--color-text-primary) 0%,
+    var(--color-accent) 60%,
+    var(--color-accent-hover) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 4px 20px var(--color-accent-glow));
+}
+
+.error-content__title {
+  font-family: var(--font-heading);
+  font-size: var(--fs-2xl);
+  font-weight: var(--fw-semibold);
+  color: var(--color-text-primary);
+  line-height: var(--lh-tight);
+  margin-bottom: var(--space-4);
+}
+
+.error-content__description {
+  font-size: var(--fs-base);
+  color: var(--color-text-secondary);
+  line-height: var(--lh-base);
+  margin-bottom: var(--space-10);
+}
+
+/* ——— Actions ——— */
+.error-content__actions {
+  display: flex;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.error-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px !important;
+}
+
+/* ==========================================
+   RESPONSIVE
+   ========================================== */
+
+@media (max-width: 900px) {
+  .error-page {
+    flex-direction: column;
+    gap: 40px;
+    text-align: center;
+    padding-top: 80px;
+  }
+
+  .error-content {
+    text-align: center;
+    max-width: 500px;
+  }
+
+  .error-content__actions {
+    justify-content: center;
+  }
+
+  .error-content__code {
+    font-size: 5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .error-content__code {
+    font-size: 4rem;
+  }
+
+  .error-content__title {
+    font-size: var(--fs-xl);
+  }
+
+  .building__floor {
+    width: 110px;
+    height: 55px;
+  }
+
+  .floor-face--front {
+    width: 110px;
+    height: 55px;
+  }
+
+  .floor-face--side {
+    width: 55px;
+    height: 55px;
+    transform: rotateY(90deg) translateZ(82px);
+  }
+
+  .floor-face--top {
+    width: 110px;
+    height: 55px;
+  }
+
+  .window {
+    width: 18px;
+    height: 24px;
+  }
+
+  .building__base {
+    width: 140px;
+  }
+
+  .error-content__actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .error-content__actions a {
+    width: 100%;
+  }
+
+  .error-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

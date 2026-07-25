@@ -76,8 +76,14 @@ const ManageBlog = () => {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       if (res.data.success) {
-        const serverBaseUrl = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
-        setCoverImage(serverBaseUrl + res.data.data.url);
+        const returnedUrl = res.data.data.url;
+        // If the URL is already absolute (Cloudinary/Supabase), use it directly
+        if (returnedUrl.startsWith('http')) {
+          setCoverImage(returnedUrl);
+        } else {
+          const serverBaseUrl = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
+          setCoverImage(serverBaseUrl + returnedUrl);
+        }
       }
     } catch (error) {
       console.error('File upload failed', error);
