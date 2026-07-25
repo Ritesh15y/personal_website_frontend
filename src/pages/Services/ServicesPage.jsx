@@ -202,7 +202,7 @@ const ServicesPage = () => {
               Let's discuss how we can help bring your vision to life with
               our design and BIM expertise.
             </p>
-            <Link to="/contact">
+            <Link to="/contact?type=project&subject=Services%20Inquiry">
               <Button variant="primary" size="lg">
                 Get in Touch <FaArrowRight />
               </Button>

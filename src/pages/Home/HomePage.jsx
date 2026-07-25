@@ -281,7 +281,7 @@ const HomePage = () => {
                 <li><FaCheckCircle className="text-accent" /> Professional Training Programs</li>
                 <li><FaCheckCircle className="text-accent" /> On-Time, Quality-First Approach</li>
               </ul>
-              <Link to="/contact">
+              <Link to="/contact?type=project">
                 <Button variant="primary" size="lg">
                   Start a Project <FaArrowRight />
                 </Button>
@@ -341,7 +341,7 @@ const HomePage = () => {
                     Explore Training <FaArrowRight />
                   </Button>
                 </Link>
-                <Link to="/contact">
+                <Link to="/contact?type=training">
                   <Button variant="outline" size="lg">
                     Enquire Now
                   </Button>

@@ -169,7 +169,7 @@ const BlogPostPage = () => {
                 <p>
                   We deliver top-quality 2D drafting, BIM coordination, and 3D rendering for firms worldwide.
                 </p>
-                <Link to="/contact">
+                <Link to="/contact?type=project&subject=Collaboration%20Inquiry">
                   <Button variant="outline" className="cta-btn">
                     Let's Collaborate
                   </Button>

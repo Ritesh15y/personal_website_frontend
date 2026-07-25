@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useSearchParams } from 'react-router-dom';
 import {
   FaEnvelope,
   FaPhoneAlt,
@@ -13,6 +14,7 @@ import Button from '../../shared/components/Button/Button';
 import './ContactPage.css';
 
 const ContactPage = () => {
+  const [searchParams] = useSearchParams();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -23,6 +25,27 @@ const ContactPage = () => {
   });
   const [status, setStatus] = useState({ type: '', message: '' });
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const typeParam = searchParams.get('type');
+    const subjectParam = searchParams.get('subject');
+    const validTypes = ['general', 'project', 'training'];
+    const updatedFields = {};
+
+    if (typeParam && validTypes.includes(typeParam)) {
+      updatedFields.type = typeParam;
+    }
+    if (subjectParam) {
+      updatedFields.subject = subjectParam;
+    }
+
+    if (Object.keys(updatedFields).length > 0) {
+      setFormData((prev) => ({
+        ...prev,
+        ...updatedFields,
+      }));
+    }
+  }, [searchParams]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
