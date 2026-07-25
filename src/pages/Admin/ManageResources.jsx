@@ -99,7 +99,7 @@ const ManageResources = () => {
       }
     } catch (error) {
       console.error('File upload failed', error);
-      alert('Upload failed. Check file formats (allowed: .dwg, .rvt, .rfa, .skp, .max, .pdf, .zip).');
+      alert('Upload failed. Check file formats (allowed: .dwg, .dxf, .rvt, .rfa, .rte, .skp, .max, .3ds, .3dm, .ifc, .fbx, .pdf, .zip, .rar).');
     } finally {
       setUploading(false);
     }
@@ -200,7 +200,7 @@ const ManageResources = () => {
                     ? 'Uploading file to server...'
                     : fileName
                     ? `Selected: ${fileName} (${formatBytes(fileSize)})`
-                    : 'Click to select drawing file (.dwg, .rvt, .skp, .pdf, .zip)'}
+                    : 'Click to select file (.dwg, .rvt, .rfa, .skp, .max, .ifc, .pdf, .zip & more)'}
                 </span>
                 <input
                   type="file"
