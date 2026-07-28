@@ -17,19 +17,19 @@ const itemVariants = {
 };
 
 const categoriesList = [
-  { id: '', label: 'All Topics' },
-  { id: 'revit', label: 'BIM & Revit' },
-  { id: 'autocad', label: 'AutoCAD' },
-  { id: 'v-ray', label: '3D Renders' },
-  { id: 'training', label: 'Training' },
-  { id: 'architecture', label: 'Industry Trends' },
+  { id: '', label: 'All Topics', keywords: [] },
+  { id: 'bim', label: 'BIM & Revit', keywords: ['revit', 'bim', 'navisworks', 'family', 'clash'] },
+  { id: 'autocad', label: 'AutoCAD', keywords: ['autocad', 'cad', 'drafting', 'drawing', 'layer'] },
+  { id: 'renders', label: '3D Renders', keywords: ['v-ray', 'vray', '3ds max', 'render', 'visualization', 'walkthrough', 'sketchup'] },
+  { id: 'training', label: 'Training', keywords: ['training', 'career', 'engineer', 'skill'] },
+  { id: 'trends', label: 'Industry Trends', keywords: ['architecture', 'interior', 'ai', 'outsourcing', 'b2b', 'trend', 'real estate'] },
 ];
 
 const BlogPage = () => {
   const [blogs, setBlogs] = useState([]);
   const [filteredBlogs, setFilteredBlogs] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedTag, setSelectedTag] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -53,14 +53,22 @@ const BlogPage = () => {
   useEffect(() => {
     let result = blogs;
 
-    if (selectedTag) {
-      const term = selectedTag.toLowerCase();
-      result = result.filter(
-        (post) =>
-          post.tags?.some((t) => t.toLowerCase().includes(term)) ||
-          post.title.toLowerCase().includes(term) ||
-          post.excerpt?.toLowerCase().includes(term)
-      );
+    if (selectedCategory) {
+      const activeCat = categoriesList.find((c) => c.id === selectedCategory);
+      if (activeCat && activeCat.keywords.length > 0) {
+        result = result.filter((post) => {
+          const title = post.title.toLowerCase();
+          const excerpt = (post.excerpt || '').toLowerCase();
+          const tags = (post.tags || []).map((t) => t.toLowerCase());
+
+          return activeCat.keywords.some(
+            (kw) =>
+              tags.some((t) => t.includes(kw)) ||
+              title.includes(kw) ||
+              excerpt.includes(kw)
+          );
+        });
+      }
     }
 
     if (searchTerm) {
@@ -68,13 +76,13 @@ const BlogPage = () => {
       result = result.filter(
         (post) =>
           post.title.toLowerCase().includes(sTerm) ||
-          post.excerpt?.toLowerCase().includes(sTerm) ||
+          (post.excerpt || '').toLowerCase().includes(sTerm) ||
           post.tags?.some((t) => t.toLowerCase().includes(sTerm))
       );
     }
 
     setFilteredBlogs(result);
-  }, [searchTerm, selectedTag, blogs]);
+  }, [searchTerm, selectedCategory, blogs]);
 
   return (
     <div className="blog-page">
@@ -114,8 +122,8 @@ const BlogPage = () => {
               {categoriesList.map((cat) => (
                 <button
                   key={cat.id}
-                  className={`tag-pill ${selectedTag === cat.id ? 'tag-pill--active' : ''}`}
-                  onClick={() => setSelectedTag(cat.id)}
+                  className={`tag-pill ${selectedCategory === cat.id ? 'tag-pill--active' : ''}`}
+                  onClick={() => setSelectedCategory(cat.id)}
                 >
                   {cat.label}
                 </button>
