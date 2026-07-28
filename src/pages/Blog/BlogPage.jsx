@@ -16,15 +16,21 @@ const itemVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
 };
 
+const categoriesList = [
+  { id: '', label: 'All Topics' },
+  { id: 'revit', label: 'BIM & Revit' },
+  { id: 'autocad', label: 'AutoCAD' },
+  { id: 'v-ray', label: '3D Renders' },
+  { id: 'training', label: 'Training' },
+  { id: 'architecture', label: 'Industry Trends' },
+];
+
 const BlogPage = () => {
   const [blogs, setBlogs] = useState([]);
   const [filteredBlogs, setFilteredBlogs] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTag, setSelectedTag] = useState('');
   const [loading, setLoading] = useState(true);
-
-  // Extract all unique tags
-  const [allTags, setAllTags] = useState([]);
 
   useEffect(() => {
     const fetchBlogs = async () => {
@@ -33,12 +39,6 @@ const BlogPage = () => {
         if (res.data.success && res.data.data) {
           setBlogs(res.data.data);
           setFilteredBlogs(res.data.data);
-
-          const tagsSet = new Set();
-          res.data.data.forEach((post) => {
-            if (post.tags) post.tags.forEach((t) => tagsSet.add(t));
-          });
-          setAllTags(Array.from(tagsSet));
         }
       } catch (error) {
         console.error('Error fetching blogs:', error);
@@ -54,16 +54,22 @@ const BlogPage = () => {
     let result = blogs;
 
     if (selectedTag) {
-      result = result.filter((post) =>
-        post.tags.some((t) => t.toLowerCase() === selectedTag.toLowerCase())
+      const term = selectedTag.toLowerCase();
+      result = result.filter(
+        (post) =>
+          post.tags?.some((t) => t.toLowerCase().includes(term)) ||
+          post.title.toLowerCase().includes(term) ||
+          post.excerpt?.toLowerCase().includes(term)
       );
     }
 
     if (searchTerm) {
+      const sTerm = searchTerm.toLowerCase();
       result = result.filter(
         (post) =>
-          post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          post.excerpt.toLowerCase().includes(searchTerm.toLowerCase())
+          post.title.toLowerCase().includes(sTerm) ||
+          post.excerpt?.toLowerCase().includes(sTerm) ||
+          post.tags?.some((t) => t.toLowerCase().includes(sTerm))
       );
     }
 
@@ -105,19 +111,13 @@ const BlogPage = () => {
           <div className="blog-filter-bar flex-between">
             {/* Tag pills */}
             <div className="blog-tags">
-              <button
-                className={`tag-pill ${!selectedTag ? 'tag-pill--active' : ''}`}
-                onClick={() => setSelectedTag('')}
-              >
-                All Topics
-              </button>
-              {allTags.map((tag, i) => (
+              {categoriesList.map((cat) => (
                 <button
-                  key={i}
-                  className={`tag-pill ${selectedTag === tag ? 'tag-pill--active' : ''}`}
-                  onClick={() => setSelectedTag(tag)}
+                  key={cat.id}
+                  className={`tag-pill ${selectedTag === cat.id ? 'tag-pill--active' : ''}`}
+                  onClick={() => setSelectedTag(cat.id)}
                 >
-                  {tag}
+                  {cat.label}
                 </button>
               ))}
             </div>

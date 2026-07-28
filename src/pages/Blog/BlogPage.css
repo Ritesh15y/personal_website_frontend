@@ -5,24 +5,33 @@
 .blog-filter-bar {
   margin-bottom: var(--space-8);
   gap: var(--space-4);
-  flex-wrap: wrap;
+  align-items: center;
 }
 
 .blog-tags {
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
+  flex-wrap: nowrap;
+  gap: var(--space-3);
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding-bottom: var(--space-1);
+}
+
+.blog-tags::-webkit-scrollbar {
+  display: none;
 }
 
 .tag-pill {
-  padding: var(--space-2) var(--space-4);
+  padding: var(--space-2) var(--space-5);
   font-size: var(--fs-xs);
   font-weight: var(--fw-semibold);
-  color: var(--color-text-muted);
-  background-color: transparent;
+  color: var(--color-text-secondary);
+  background-color: rgba(255, 255, 255, 0.03);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
+  border-radius: 9999px;
   cursor: pointer;
+  white-space: nowrap;
   transition: all var(--transition-fast);
   text-transform: uppercase;
   letter-spacing: var(--ls-wide);
@@ -30,13 +39,15 @@
 
 .tag-pill:hover {
   color: var(--color-text-primary);
-  border-color: var(--color-border-light);
+  border-color: var(--color-accent);
+  background-color: rgba(229, 169, 60, 0.08);
 }
 
 .tag-pill--active {
   background-color: var(--color-accent);
   color: var(--color-bg-primary);
   border-color: var(--color-accent);
+  box-shadow: 0 0 12px rgba(229, 169, 60, 0.3);
 }
 
 .tag-pill--active:hover {
