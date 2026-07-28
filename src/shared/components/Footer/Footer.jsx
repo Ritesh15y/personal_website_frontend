@@ -76,11 +76,11 @@ const Footer = () => {
               </li>
               <li>
                 <FaPhoneAlt className="footer__contact-icon" />
-                <span>+91 98765 43210</span>
+                <span>+91 7355705074</span>
               </li>
               <li>
                 <FaMapMarkerAlt className="footer__contact-icon" />
-                <span>Pune, Maharashtra, India</span>
+                <span>Near Tau Devilal Stadium, Sector 38, Gurugram, Haryana, India</span>
               </li>
             </ul>
           </div>
