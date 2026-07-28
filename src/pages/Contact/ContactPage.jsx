@@ -141,7 +141,7 @@ const ContactPage = () => {
                   </div>
                   <div>
                     <h5>Phone</h5>
-                    <p>+91 98765 43210</p>
+                    <p><a href="tel:+917355705074" style={{ color: 'inherit', textDecoration: 'none' }}>+91 7355705074</a></p>
                   </div>
                 </div>
 
@@ -151,7 +151,7 @@ const ContactPage = () => {
                   </div>
                   <div>
                     <h5>Location</h5>
-                    <p>Pune, Maharashtra, India</p>
+                    <p>Near Tau Devilal Stadium, Sector 38, Gurugram, Haryana, India</p>
                   </div>
                 </div>
               </div>
@@ -208,7 +208,7 @@ const ContactPage = () => {
                     id="phone"
                     name="phone"
                     type="tel"
-                    placeholder="+91 98765 43210"
+                    placeholder="+91 7355705074"
                     value={formData.phone}
                     onChange={handleChange}
                   />

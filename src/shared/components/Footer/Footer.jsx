@@ -72,11 +72,11 @@ const Footer = () => {
             <ul className="footer__contact-list">
               <li>
                 <FaEnvelope className="footer__contact-icon" />
-                <span>hello@premadesignstudio.in</span>
+                <a href="mailto:hello@premadesignstudio.in" style={{ color: 'inherit', textDecoration: 'none' }}>hello@premadesignstudio.in</a>
               </li>
               <li>
                 <FaPhoneAlt className="footer__contact-icon" />
-                <span>+91 7355705074</span>
+                <a href="tel:+917355705074" style={{ color: 'inherit', textDecoration: 'none' }}>+91 7355705074</a>
               </li>
               <li>
                 <FaMapMarkerAlt className="footer__contact-icon" />
