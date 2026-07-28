@@ -40,16 +40,61 @@ const BlogPostPage = () => {
   }, [slug]);
 
   // Convert markdown-like syntax to simple HTML blocks for high-fidelity rendering
+  const parseInlineMarkdown = (text) => {
+    if (!text) return '';
+    // Regex for markdown links [label](url)
+    const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+    const parts = [];
+    let lastIndex = 0;
+    let match;
+
+    while ((match = linkRegex.exec(text)) !== null) {
+      if (match.index > lastIndex) {
+        parts.push(text.substring(lastIndex, match.index));
+      }
+      const label = match[1];
+      const url = match[2];
+      if (url.startsWith('/')) {
+        parts.push(
+          <Link key={match.index} to={url} style={{ color: 'var(--color-accent, #e5a93c)', fontWeight: 600, textDecoration: 'underline' }}>
+            {label}
+          </Link>
+        );
+      } else {
+        parts.push(
+          <a key={match.index} href={url} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-accent, #e5a93c)', fontWeight: 600, textDecoration: 'underline' }}>
+            {label}
+          </a>
+        );
+      }
+      lastIndex = linkRegex.lastIndex;
+    }
+
+    if (lastIndex < text.length) {
+      parts.push(text.substring(lastIndex));
+    }
+
+    return parts.map((part, pIdx) => {
+      if (typeof part === 'string') {
+        const boldParts = part.split('**');
+        return boldParts.map((bStr, bIdx) =>
+          bIdx % 2 !== 0 ? <strong key={`${pIdx}-${bIdx}`}>{bStr}</strong> : bStr
+        );
+      }
+      return part;
+    });
+  };
+
   const renderContent = (content) => {
     if (!content) return '';
     return content.split('\n\n').map((block, index) => {
       // Heading 3
       if (block.startsWith('### ')) {
-        return <h3 key={index}>{block.replace('### ', '')}</h3>;
+        return <h3 key={index}>{parseInlineMarkdown(block.replace('### ', ''))}</h3>;
       }
       // Heading 2
       if (block.startsWith('## ')) {
-        return <h2 key={index}>{block.replace('## ', '')}</h2>;
+        return <h2 key={index}>{parseInlineMarkdown(block.replace('## ', ''))}</h2>;
       }
       // Bullet list items
       if (block.startsWith('- ') || block.startsWith('* ')) {
@@ -59,7 +104,7 @@ const BlogPostPage = () => {
         return (
           <ul key={index} className="post-bullets">
             {items.map((it, i) => (
-              <li key={i}>{it}</li>
+              <li key={i}>{parseInlineMarkdown(it)}</li>
             ))}
           </ul>
         );
@@ -68,11 +113,7 @@ const BlogPostPage = () => {
       if (block === '---') {
         return <hr key={index} className="post-divider" />;
       }
-      // Paragraph with support for bold formatting `**text**`
-      const formattedText = block.split('**').map((part, i) => {
-        return i % 2 !== 0 ? <strong key={i}>{part}</strong> : part;
-      });
-      return <p key={index}>{formattedText}</p>;
+      return <p key={index}>{parseInlineMarkdown(block)}</p>;
     });
   };
 
