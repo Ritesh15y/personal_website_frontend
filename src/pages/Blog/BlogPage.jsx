@@ -6,6 +6,8 @@ import api from '../../shared/lib/api';
 import SectionHeader from '../../shared/components/SectionHeader/SectionHeader';
 import './BlogPage.css';
 
+import { initialBlogsData } from '../../config/blogsData';
+
 const containerVariants = {
   hidden: {},
   visible: { transition: { staggerChildren: 0.1 } },
@@ -30,19 +32,33 @@ const BlogPage = () => {
     const fetchBlogs = async () => {
       try {
         const res = await api.get('/blogs');
-        if (res.data.success) {
+        if (res.data.success && res.data.data && res.data.data.length > 0) {
           setBlogs(res.data.data);
           setFilteredBlogs(res.data.data);
 
-          // Get tags
           const tagsSet = new Set();
           res.data.data.forEach((post) => {
             if (post.tags) post.tags.forEach((t) => tagsSet.add(t));
           });
           setAllTags(Array.from(tagsSet));
+        } else {
+          setBlogs(initialBlogsData);
+          setFilteredBlogs(initialBlogsData);
+          const tagsSet = new Set();
+          initialBlogsData.forEach((post) => {
+            if (post.tags) post.tags.forEach((t) => tagsSet.add(t));
+          });
+          setAllTags(Array.from(tagsSet));
         }
       } catch (error) {
-        console.error('Error fetching blogs', error);
+        console.error('Error fetching blogs, using static fallback:', error);
+        setBlogs(initialBlogsData);
+        setFilteredBlogs(initialBlogsData);
+        const tagsSet = new Set();
+        initialBlogsData.forEach((post) => {
+          if (post.tags) post.tags.forEach((t) => tagsSet.add(t));
+        });
+        setAllTags(Array.from(tagsSet));
       } finally {
         setLoading(false);
       }

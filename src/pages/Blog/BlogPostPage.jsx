@@ -6,6 +6,8 @@ import api from '../../shared/lib/api';
 import Button from '../../shared/components/Button/Button';
 import './BlogPostPage.css';
 
+import { initialBlogsData } from '../../config/blogsData';
+
 const BlogPostPage = () => {
   const { slug } = useParams();
   const [post, setPost] = useState(null);
@@ -17,21 +19,42 @@ const BlogPostPage = () => {
       setLoading(true);
       try {
         const res = await api.get(`/blogs/${slug}`);
-        if (res.data.success) {
+        if (res.data.success && res.data.data) {
           const blogData = res.data.data;
           setPost(blogData);
 
-          // Fetch related posts (exclude current)
           const allRes = await api.get('/blogs');
-          if (allRes.data.success) {
+          if (allRes.data.success && allRes.data.data) {
             const filtered = allRes.data.data
-              .filter((p) => p._id !== blogData._id)
+              .filter((p) => p.slug !== blogData.slug)
+              .slice(0, 2);
+            setRelatedPosts(filtered);
+          } else {
+            const filtered = initialBlogsData
+              .filter((p) => p.slug !== blogData.slug)
+              .slice(0, 2);
+            setRelatedPosts(filtered);
+          }
+        } else {
+          const staticPost = initialBlogsData.find((p) => p.slug === slug);
+          setPost(staticPost || null);
+          if (staticPost) {
+            const filtered = initialBlogsData
+              .filter((p) => p.slug !== staticPost.slug)
               .slice(0, 2);
             setRelatedPosts(filtered);
           }
         }
       } catch (error) {
-        console.error('Error fetching blog details', error);
+        console.error('Error fetching blog details, using static fallback:', error);
+        const staticPost = initialBlogsData.find((p) => p.slug === slug);
+        setPost(staticPost || null);
+        if (staticPost) {
+          const filtered = initialBlogsData
+            .filter((p) => p.slug !== staticPost.slug)
+            .slice(0, 2);
+          setRelatedPosts(filtered);
+        }
       } finally {
         setLoading(false);
       }
