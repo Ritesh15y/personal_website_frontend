@@ -6,8 +6,6 @@ import api from '../../shared/lib/api';
 import Button from '../../shared/components/Button/Button';
 import './BlogPostPage.css';
 
-import { initialBlogsData } from '../../config/blogsData';
-
 const BlogPostPage = () => {
   const { slug } = useParams();
   const [post, setPost] = useState(null);
@@ -29,32 +27,10 @@ const BlogPostPage = () => {
               .filter((p) => p.slug !== blogData.slug)
               .slice(0, 2);
             setRelatedPosts(filtered);
-          } else {
-            const filtered = initialBlogsData
-              .filter((p) => p.slug !== blogData.slug)
-              .slice(0, 2);
-            setRelatedPosts(filtered);
-          }
-        } else {
-          const staticPost = initialBlogsData.find((p) => p.slug === slug);
-          setPost(staticPost || null);
-          if (staticPost) {
-            const filtered = initialBlogsData
-              .filter((p) => p.slug !== staticPost.slug)
-              .slice(0, 2);
-            setRelatedPosts(filtered);
           }
         }
       } catch (error) {
-        console.error('Error fetching blog details, using static fallback:', error);
-        const staticPost = initialBlogsData.find((p) => p.slug === slug);
-        setPost(staticPost || null);
-        if (staticPost) {
-          const filtered = initialBlogsData
-            .filter((p) => p.slug !== staticPost.slug)
-            .slice(0, 2);
-          setRelatedPosts(filtered);
-        }
+        console.error('Error fetching blog details:', error);
       } finally {
         setLoading(false);
       }
