@@ -179,23 +179,28 @@ const PortfolioPage = () => {
                     key={project._id || project.slug}
                     className="portfolio-card"
                     layout
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    transition={{ duration: 0.3 }}
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 8 }}
+                    transition={{ duration: 0.28, ease: 'easeOut' }}
+                    style={{ willChange: 'opacity, transform' }}
                   >
                     <Link to={`/portfolio/${project.slug}`} className="portfolio-card__link">
                       <div className="portfolio-card__image-wrapper">
+                        {/* Always-visible category badge */}
+                        <span className="portfolio-card__category-badge">
+                          {project.category.replace('-', ' ')}
+                        </span>
                         <img
                           src={imageUrl}
                           alt={project.title}
                           className="portfolio-card__image"
                           loading="lazy"
+                          decoding="async"
+                          width="600"
+                          height="450"
                         />
                         <div className="portfolio-card__overlay">
-                          <span className="portfolio-card__category">
-                            {project.category.replace('-', ' ')}
-                          </span>
                           <h3 className="portfolio-card__title">{project.title}</h3>
                           <div className="portfolio-card__tags">
                             {project.software && project.software.map((sw, i) => (

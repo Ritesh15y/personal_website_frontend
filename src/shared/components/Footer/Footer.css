@@ -3,7 +3,10 @@
    ============================ */
 
 .footer {
-  background: var(--color-bg-secondary);
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--glass-border);
   padding: var(--space-16) 0 var(--space-8);
   position: relative;
 }
@@ -42,6 +45,22 @@
   margin-bottom: var(--space-4);
 }
 
+/* Gold gradient on the 'Studio' span */
+.footer__logo .footer__logo-gradient {
+  background: linear-gradient(135deg, var(--color-accent) 0%, #F0CF87 50%, var(--color-accent) 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradientShift 4s ease infinite;
+}
+
+@keyframes gradientShift {
+  0%   { background-position: 0% center; }
+  50%  { background-position: 100% center; }
+  100% { background-position: 0% center; }
+}
+
 .footer__logo-icon {
   color: var(--color-accent);
 }
@@ -73,7 +92,10 @@
   width: 40px;
   height: 40px;
   border-radius: var(--radius-full);
-  border: 1px solid var(--color-border-light);
+  background: var(--glass-bg-subtle);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--glass-border);
   color: var(--color-text-secondary);
   transition: all var(--transition-fast);
   font-size: var(--fs-base);
@@ -81,8 +103,10 @@
 
 .footer__social-link:hover {
   color: var(--color-accent);
-  border-color: var(--color-accent);
-  transform: translateY(-2px);
+  border-color: var(--glass-border-hover);
+  background: var(--color-accent-dim);
+  transform: translateY(-3px);
+  box-shadow: 0 4px 16px rgba(200, 169, 110, 0.2);
 }
 
 /* Columns */

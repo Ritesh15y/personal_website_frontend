@@ -1,5 +1,6 @@
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
 import {
   FaDraftingCompass,
   FaBuilding,
@@ -9,6 +10,7 @@ import {
   FaImage,
   FaArrowRight,
   FaCheckCircle,
+  FaMedal,
 } from 'react-icons/fa';
 import SectionHeader from '../../shared/components/SectionHeader/SectionHeader';
 import Button from '../../shared/components/Button/Button';
@@ -60,33 +62,75 @@ const featuredProjects = [
 ];
 
 const stats = [
-  { number: '50+', label: 'Projects Completed' },
-  { number: '6+', label: 'Software Expertise' },
-  { number: '200+', label: 'Students Trained' },
-  { number: '5+', label: 'Years Experience' },
+  { number: 50, suffix: '+', label: 'Projects Completed' },
+  { number: 6, suffix: '+', label: 'Software Expertise' },
+  { number: 200, suffix: '+', label: 'Students Trained' },
+  { number: 5, suffix: '+', label: 'Years Experience' },
 ];
 
 const containerVariants = {
   hidden: {},
   visible: {
-    transition: { staggerChildren: 0.1 },
+    transition: { staggerChildren: 0.05 },
   },
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 30 },
+  hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5 },
+    transition: { duration: 0.35, ease: 'easeOut' },
   },
+};
+
+// Animated number counter hook
+function useCounter(target, duration = 1800, shouldStart = false) {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    if (!shouldStart) return;
+    let start = 0;
+    const step = target / (duration / 16);
+    const timer = setInterval(() => {
+      start += step;
+      if (start >= target) {
+        setCount(target);
+        clearInterval(timer);
+      } else {
+        setCount(Math.floor(start));
+      }
+    }, 16);
+    return () => clearInterval(timer);
+  }, [target, duration, shouldStart]);
+  return count;
+}
+
+// Single stat item with counter
+const StatItem = ({ stat, index }) => {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: '-80px' });
+  const count = useCounter(stat.number, 1600, inView);
+
+  return (
+    <motion.div
+      ref={ref}
+      className="stat-item"
+      variants={itemVariants}
+      style={{ '--stat-index': index }}
+    >
+      <span className="stat-item__number">
+        {count}{stat.suffix}
+      </span>
+      <span className="stat-item__label">{stat.label}</span>
+    </motion.div>
+  );
 };
 
 const HomePage = () => {
   return (
     <div className="home">
       {/* ===== HERO SECTION ===== */}
-      <section className="hero">
+      <section className="hero grain-overlay">
         <div className="hero__bg">
           <img
             src="https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=1600&q=80"
@@ -114,6 +158,7 @@ const HomePage = () => {
               modeling, and photorealistic visualization for architects, builders,
               and design firms.
             </p>
+
             <div className="hero__actions">
               <Link to="/portfolio">
                 <Button variant="primary" size="lg">
@@ -164,6 +209,10 @@ const HomePage = () => {
                 variants={itemVariants}
                 whileHover={{ y: -8, transition: { duration: 0.2 } }}
               >
+                {/* Background number */}
+                <span className="service-card__bg-number">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
                 <div className="service-card__icon">
                   {iconMap[service.icon]}
                 </div>
@@ -204,14 +253,18 @@ const HomePage = () => {
                 key={index}
                 className="project-card"
                 variants={itemVariants}
+                style={{ willChange: 'opacity, transform' }}
               >
                 <Link to={`/portfolio/${project.slug}`} className="project-card__link">
-                  <div className="project-card__image-wrapper">
+                  <div className="project-card__image-wrapper" style={{ backgroundColor: '#f0f0f0' }}>
                     <img
                       src={project.image}
                       alt={project.title}
                       className="project-card__image"
                       loading="lazy"
+                      decoding="async"
+                      width="800"
+                      height="500"
                     />
                     <div className="project-card__overlay">
                       <span className="project-card__category">{project.category}</span>
@@ -255,6 +308,14 @@ const HomePage = () => {
                   loading="lazy"
                 />
                 <div className="home-about__image-accent" />
+                {/* Floating glass badge */}
+                <div className="home-about__badge glass-card">
+                  <FaMedal className="home-about__badge-icon" />
+                  <div>
+                    <span className="home-about__badge-title">5 Years</span>
+                    <span className="home-about__badge-sub">of Excellence</span>
+                  </div>
+                </div>
               </div>
             </motion.div>
 
@@ -266,8 +327,8 @@ const HomePage = () => {
               transition={{ duration: 0.7 }}
             >
               <span className="section-header__label">Why Choose Us</span>
-              <h2>Design Meets <span className="text-accent">Precision</span></h2>
-              <div className="section-header__divider" />
+              <h2 style={{ marginTop: 'var(--space-3)' }}>Design Meets <span className="text-accent">Precision</span></h2>
+              <div className="section-header__divider" style={{ marginTop: 'var(--space-4)' }} />
               <p className="home-about__text">
                 We combine creative architectural vision with technical BIM expertise
                 to deliver projects that stand out. Whether you're an architect
@@ -302,14 +363,7 @@ const HomePage = () => {
             viewport={{ once: true }}
           >
             {stats.map((stat, index) => (
-              <motion.div
-                key={index}
-                className="stat-item"
-                variants={itemVariants}
-              >
-                <span className="stat-item__number">{stat.number}</span>
-                <span className="stat-item__label">{stat.label}</span>
-              </motion.div>
+              <StatItem key={index} stat={stat} index={index} />
             ))}
           </motion.div>
         </div>
@@ -325,9 +379,11 @@ const HomePage = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
+            {/* Ambient glow orb behind card */}
+            <div className="home-cta__glow" />
             <div className="home-cta__content">
               <span className="section-header__label">Training Programs</span>
-              <h2>
+              <h2 style={{ marginTop: 'var(--space-3)' }}>
                 Learn From <span className="text-accent">Industry Experts</span>
               </h2>
               <p>

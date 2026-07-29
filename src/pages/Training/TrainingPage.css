@@ -16,11 +16,19 @@
 .training-why__card {
   padding: var(--space-8);
   text-align: center;
-  transition: border-color var(--transition-base);
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--glass-shadow);
+  transition: all var(--transition-base);
 }
 
 .training-why__card:hover {
-  border-color: var(--color-border-accent);
+  border-color: var(--glass-border-hover);
+  box-shadow: var(--glass-shadow-hover);
+  transform: translateY(-4px);
 }
 
 .training-why__icon {
@@ -76,11 +84,39 @@
   padding: var(--space-8);
   display: flex;
   flex-direction: column;
-  transition: border-color var(--transition-base);
+  position: relative;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--glass-shadow);
+  transition: all var(--transition-base);
+  overflow: hidden;
+}
+
+/* Gold left accent line */
+.course-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 15%;
+  height: 70%;
+  width: 3px;
+  background: linear-gradient(to bottom, transparent, var(--color-accent), transparent);
+  border-radius: 0 2px 2px 0;
+  opacity: 0;
+  transition: opacity var(--transition-base);
 }
 
 .course-card:hover {
-  border-color: var(--color-border-accent);
+  border-color: var(--glass-border-hover);
+  box-shadow: var(--glass-shadow-hover);
+  transform: translateY(-4px);
+}
+
+.course-card:hover::before {
+  opacity: 1;
 }
 
 .course-card__header {
@@ -269,11 +305,19 @@
   padding: var(--space-6);
   display: flex;
   flex-direction: column;
-  transition: border-color var(--transition-base);
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--glass-shadow);
+  transition: all var(--transition-base);
 }
 
 .res-card:hover {
-  border-color: var(--color-border-accent);
+  border-color: var(--glass-border-hover);
+  box-shadow: var(--glass-shadow-hover);
+  transform: translateY(-3px);
 }
 
 .res-card__header {

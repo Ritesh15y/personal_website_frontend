@@ -81,11 +81,19 @@
   grid-template-columns: auto 1fr;
   gap: var(--space-8);
   padding: var(--space-10);
-  transition: border-color var(--transition-base);
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--glass-shadow);
+  transition: all var(--transition-base);
 }
 
 .service-detail:hover {
-  border-color: var(--color-border-accent);
+  border-color: var(--glass-border-hover);
+  box-shadow: var(--glass-shadow-hover);
+  transform: translateY(-2px);
 }
 
 .service-detail__icon-col {
@@ -167,5 +175,8 @@
 
 /* ---- CTA Section ---- */
 .services-cta {
-  background: var(--color-bg-secondary);
+  background: var(--glass-bg-subtle);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid var(--glass-border);
 }

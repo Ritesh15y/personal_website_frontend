@@ -23,7 +23,7 @@ const Footer = () => {
           <div className="footer__brand">
             <Link to="/" className="footer__logo">
               <img src="/favicon.png" alt="Prema Design Studio" className="footer__logo-img" />
-              Prema Design<span className="text-accent">Studio</span>
+              Prema Design<span className="footer__logo-gradient">Studio</span>
             </Link>
             <p className="footer__tagline">
               Transforming architectural visions into reality through precision

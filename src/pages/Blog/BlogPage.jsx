@@ -8,12 +8,12 @@ import './BlogPage.css';
 
 const containerVariants = {
   hidden: {},
-  visible: { transition: { staggerChildren: 0.1 } },
+  visible: { transition: { staggerChildren: 0.05 } },
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: 'easeOut' } },
 };
 
 const categoriesList = [
@@ -143,8 +143,18 @@ const BlogPage = () => {
           </div>
 
           {loading ? (
-            <div className="flex-center" style={{ minHeight: '30vh' }}>
-              <div className="loader" />
+            <div className="blog-grid">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="blog-card blog-card--skeleton">
+                  <div className="skeleton skeleton--image" />
+                  <div className="blog-card__content">
+                    <div className="skeleton skeleton--line skeleton--short" />
+                    <div className="skeleton skeleton--line" />
+                    <div className="skeleton skeleton--line skeleton--medium" />
+                    <div className="skeleton skeleton--line skeleton--short" style={{ marginTop: 'auto' }} />
+                  </div>
+                </div>
+              ))}
             </div>
           ) : filteredBlogs.length === 0 ? (
             <div className="blog-empty-state glass-card text-center">
@@ -163,10 +173,13 @@ const BlogPage = () => {
                   <Link to={`/blog/${post.slug}`} className="blog-card__link">
                     <div className="blog-card__image-wrapper">
                       <img
-                        src={post.coverImage || 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800'}
+                        src={post.coverImage || 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=600&q=75'}
                         alt={post.title}
                         className="blog-card__image"
                         loading="lazy"
+                        decoding="async"
+                        width="600"
+                        height="340"
                       />
                     </div>
                     <div className="blog-card__content">

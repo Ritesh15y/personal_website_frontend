@@ -94,3 +94,38 @@ p {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-accent);
 }
+
+/* ============================
+   Performance Guard
+   Disable backdrop-filter on reduced-motion / low-end preference
+   ============================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .glass-card,
+  .glass-card--strong,
+  .glass-card--subtle,
+  .glass-input,
+  .navbar--scrolled,
+  .navbar__mobile,
+  .service-card,
+  .blog-card,
+  .blog-search input,
+  .tag-pill,
+  .service-detail,
+  .contact-form,
+  .training-why__card,
+  .course-card,
+  .res-card,
+  .portfolio-card__image-wrapper,
+  .footer {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
