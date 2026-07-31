@@ -11,48 +11,19 @@
   padding: var(--space-4) 0;
   transition: background var(--transition-base), backdrop-filter var(--transition-base),
     border-color var(--transition-base), box-shadow var(--transition-base), padding var(--transition-base);
-  background: transparent;
-}
-
-/*
-  Always-on protective dark gradient behind the navbar.
-  This ensures text stays readable even when bright content
-  (like white blog card images) scrolls behind the navbar.
-*/
-.navbar::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0.45) 0%,
-    rgba(0, 0, 0, 0.15) 70%,
-    transparent 100%
-  );
-  pointer-events: none;
-  z-index: -1;
-  opacity: 1;
-  transition: opacity var(--transition-base);
-}
-
-/* When scrolled — full glass background takes over, hide the veil gradient */
-.navbar--scrolled::before {
-  opacity: 0;
-}
-
-/* On hover when NOT scrolled — stronger glass panel so text is crystal clear */
-.navbar:not(.navbar--scrolled):hover {
-  background: rgba(0, 0, 0, 0.55);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  /* Always-visible glass — prevents text readability issues on any background */
+  background: rgba(10, 10, 10, 0.72);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
 }
 
 .navbar--scrolled {
-  background: var(--glass-bg-strong);
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
-  border-bottom: 1px solid var(--glass-border);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+  background: rgba(10, 10, 10, 0.88);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-bottom: 1px solid rgba(200, 169, 110, 0.15);
+  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.5), inset 0 -1px 0 rgba(255, 255, 255, 0.05);
   padding: var(--space-3) 0;
 }
 
@@ -99,19 +70,17 @@
   position: relative;
   font-size: var(--fs-sm);
   font-weight: var(--fw-semibold);
-  color: var(--color-text-primary);
+  color: var(--color-text-secondary);
   text-transform: uppercase;
   letter-spacing: var(--ls-wide);
   transition: color var(--transition-fast);
   padding: var(--space-1) 0;
-  /* Text shadow ensures legibility against any bright background */
-  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 0, 0, 0.4);
+  text-shadow: none;
 }
 
-/* When navbar is scrolled (solid glass), remove text shadow — not needed */
+/* Active/scrolled state — same style */
 .navbar--scrolled .navbar__link {
   color: var(--color-text-secondary);
-  text-shadow: none;
 }
 
 .navbar__link::after {
@@ -175,12 +144,6 @@
   border: none;
   cursor: pointer;
   padding: var(--space-1);
-  /* Same text-shadow treatment for icon legibility */
-  filter: drop-shadow(0 1px 4px rgba(0,0,0,0.5));
-}
-
-.navbar--scrolled .navbar__toggle {
-  filter: none;
 }
 
 /* Mobile Actions (Theme Toggle + Hamburger) */
@@ -247,27 +210,15 @@
 }
 
 /* ---- Light Mode overrides ---- */
-/* In light mode, content behind is already light — use a subtle white veil instead */
-[data-theme='light'] .navbar::before {
-  background: linear-gradient(
-    to bottom,
-    rgba(250, 248, 245, 0.6) 0%,
-    rgba(250, 248, 245, 0.2) 70%,
-    transparent 100%
-  );
+[data-theme='light'] .navbar {
+  background: rgba(250, 248, 245, 0.82);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
 }
 
-[data-theme='light'] .navbar:not(.navbar--scrolled):hover {
-  background: rgba(250, 248, 245, 0.78);
-}
-
-[data-theme='light'] .navbar__link {
-  color: var(--color-text-primary);
-  text-shadow: 0 1px 4px rgba(255, 255, 255, 0.8), 0 0 12px rgba(255, 255, 255, 0.5);
-}
-
-[data-theme='light'] .navbar__toggle {
-  filter: drop-shadow(0 1px 2px rgba(255, 255, 255, 0.6));
+[data-theme='light'] .navbar--scrolled {
+  background: rgba(250, 248, 245, 0.95);
+  border-bottom: 1px solid rgba(184, 146, 62, 0.18);
+  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.1);
 }
 
 /* ---- Responsive ---- */
