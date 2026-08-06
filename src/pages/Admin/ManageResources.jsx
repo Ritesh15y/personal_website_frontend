@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { FaPlus, FaEdit, FaTrash, FaCheck, FaTimes, FaUpload, FaFileAlt } from 'react-icons/fa';
+import { FaPlus, FaEdit, FaTrash, FaCheck, FaTimes, FaUpload, FaFileAlt, FaEye } from 'react-icons/fa';
 import api from '../../shared/lib/api';
 import Button from '../../shared/components/Button/Button';
 import './ManageResources.css';
@@ -124,6 +124,13 @@ const ManageResources = () => {
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+  };
+
+  const handleView = (fileUrl) => {
+    if (!fileUrl) return;
+    const serverBaseUrl = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
+    const fullUrl = fileUrl.startsWith('http') ? fileUrl : `${serverBaseUrl}${fileUrl}`;
+    window.open(fullUrl, '_blank');
   };
 
   const handleSubmit = async (e) => {
@@ -310,6 +317,9 @@ const ManageResources = () => {
                 </div>
                 <span className="res-row__downloads">{res.downloadCount || 0}</span>
                 <div className="action-buttons">
+                  <button className="action-btn action-btn--view" onClick={() => handleView(res.fileUrl)}>
+                    <FaEye /> View
+                  </button>
                   <button className="action-btn action-btn--edit" onClick={() => handleEditClick(res)}>
                     <FaEdit /> Edit
                   </button>
