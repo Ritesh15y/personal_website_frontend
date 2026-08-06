@@ -125,6 +125,7 @@
 .post-body__rich-text p {
   margin-bottom: var(--space-6);
   font-family: var(--font-body);
+  white-space: pre-line;
 }
 
 .post-divider {
