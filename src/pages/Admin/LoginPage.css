@@ -129,3 +129,32 @@
     padding: var(--space-6) var(--space-4);
   }
 }
+
+.login-card__password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.login-card__password-wrapper input {
+  padding-right: var(--space-12) !important;
+}
+
+.login-card__password-toggle {
+  position: absolute;
+  right: var(--space-4);
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-1);
+  font-size: var(--fs-md);
+  transition: color var(--transition-fast);
+}
+
+.login-card__password-toggle:hover {
+  color: var(--color-accent);
+}

@@ -229,14 +229,15 @@ const ContactPage = () => {
               </div>
 
               <div className="contact-form__group">
-                <label htmlFor="subject">Subject</label>
+                <label htmlFor="subject">Subject *</label>
                 <input
                   id="subject"
                   name="subject"
                   type="text"
-                  placeholder="Brief subject..."
+                  placeholder="e.g. Revit modeling query or training batch enquiry..."
                   value={formData.subject}
                   onChange={handleChange}
+                  required
                 />
               </div>
 

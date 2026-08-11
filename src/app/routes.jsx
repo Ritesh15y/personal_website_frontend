@@ -3,6 +3,7 @@ import MainLayout from '../shared/layouts/MainLayout';
 import HomePage from '../pages/Home/HomePage';
 import ServicesPage from '../pages/Services/ServicesPage';
 import PortfolioPage from '../pages/Portfolio/PortfolioPage';
+import ProjectDetailPage from '../pages/Portfolio/ProjectDetailPage';
 import TrainingPage from '../pages/Training/TrainingPage';
 import ContactPage from '../pages/Contact/ContactPage';
 import BlogPage from '../pages/Blog/BlogPage';
@@ -37,6 +38,10 @@ const router = createBrowserRouter([
       {
         path: 'portfolio',
         element: <PortfolioPage />,
+      },
+      {
+        path: 'portfolio/:slug',
+        element: <ProjectDetailPage />,
       },
       {
         path: 'training',

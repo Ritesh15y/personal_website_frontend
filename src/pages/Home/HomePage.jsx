@@ -14,6 +14,7 @@ import {
 } from 'react-icons/fa';
 import SectionHeader from '../../shared/components/SectionHeader/SectionHeader';
 import Button from '../../shared/components/Button/Button';
+import api from '../../shared/lib/api';
 import './HomePage.css';
 
 const iconMap = {
@@ -25,7 +26,7 @@ const iconMap = {
   FaImage: <FaImage />,
 };
 
-const services = [
+const servicesStatic = [
   { icon: 'FaDraftingCompass', title: 'AutoCAD Drafting', desc: 'Precision 2D drafting and documentation for architectural and structural projects.' },
   { icon: 'FaBuilding', title: 'Revit Architecture', desc: 'Full BIM modeling for architectural design, documentation, and coordination.' },
   { icon: 'FaCubes', title: 'Revit Structure', desc: 'Structural BIM modeling with precise detailing and analysis-ready output.' },
@@ -34,7 +35,7 @@ const services = [
   { icon: 'FaImage', title: '3D Visualization', desc: 'Photorealistic 3D renders and walkthroughs using 3ds Max & V-Ray.' },
 ];
 
-const featuredProjects = [
+const featuredProjectsStatic = [
   {
     title: 'Modern Residential Villa',
     category: 'Residential',
@@ -127,6 +128,118 @@ const StatItem = ({ stat, index }) => {
 };
 
 const HomePage = () => {
+  const [services, setServices] = useState([]);
+  const [featuredProjects, setFeaturedProjects] = useState([]);
+  const inquiryFormRef = useRef(null);
+
+  // Quick Inquiry Form State
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [type, setType] = useState('project');
+  const [subject, setSubject] = useState('');
+  const [message, setMessage] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null);
+
+  const scrollToInquiry = () => {
+    inquiryFormRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  useEffect(() => {
+    const fetchHomeData = async () => {
+      try {
+        const servicesRes = await api.get('/services');
+        if (servicesRes.data.success && servicesRes.data.data && servicesRes.data.data.length > 0) {
+          const activeServices = servicesRes.data.data
+            .filter((s) => s.isActive !== false)
+            .sort((a, b) => (a.order || 0) - (b.order || 0))
+            .slice(0, 6);
+          const normalized = activeServices.map((s) => ({
+            ...s,
+            desc: s.shortDescription || s.description,
+          }));
+          setServices(normalized);
+        } else {
+          setServices(servicesStatic);
+        }
+      } catch (error) {
+        console.error('Error fetching home services:', error);
+        setServices(servicesStatic);
+      }
+
+      try {
+        const projectsRes = await api.get('/projects?status=published');
+        if (projectsRes.data.success && projectsRes.data.data && projectsRes.data.data.length > 0) {
+          const featured = projectsRes.data.data
+            .filter((p) => p.featured === true)
+            .slice(0, 4);
+          const normalized = featured.map((p) => ({
+            ...p,
+            image: p.thumbnail?.url || p.images?.[0]?.url || p.image,
+            category: p.category.charAt(0).toUpperCase() + p.category.slice(1),
+          }));
+          if (normalized.length > 0) {
+            setFeaturedProjects(normalized);
+          } else {
+            const firstFour = projectsRes.data.data.slice(0, 4).map((p) => ({
+              ...p,
+              image: p.thumbnail?.url || p.images?.[0]?.url || p.image,
+              category: p.category.charAt(0).toUpperCase() + p.category.slice(1),
+            }));
+            setFeaturedProjects(firstFour);
+          }
+        } else {
+          setFeaturedProjects(featuredProjectsStatic);
+        }
+      } catch (error) {
+        console.error('Error fetching home projects:', error);
+        setFeaturedProjects(featuredProjectsStatic);
+      }
+    };
+    fetchHomeData();
+  }, []);
+
+  const handleInquirySubmit = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    setSubmitStatus(null);
+    try {
+      const res = await api.post('/inquiries', {
+        name,
+        email,
+        phone,
+        type,
+        subject: subject || `Quick Project Request (${type})`,
+        message,
+      });
+      if (res.data.success) {
+        setSubmitStatus({
+          success: true,
+          message: 'Thank you! Your project inquiry has been received. We will get back to you shortly.',
+        });
+        setName('');
+        setEmail('');
+        setPhone('');
+        setSubject('');
+        setMessage('');
+      } else {
+        setSubmitStatus({
+          success: false,
+          message: res.data.message || 'Something went wrong. Please try again.',
+        });
+      }
+    } catch (error) {
+      console.error('Inquiry submission error:', error);
+      setSubmitStatus({
+        success: false,
+        message: error.response?.data?.message || 'Failed to connect to server. Please try again.',
+      });
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
     <div className="home">
       {/* ===== HERO SECTION ===== */}
@@ -160,14 +273,12 @@ const HomePage = () => {
             </p>
 
             <div className="hero__actions">
+              <Button variant="primary" size="lg" onClick={scrollToInquiry}>
+                Start a Project <FaArrowRight />
+              </Button>
               <Link to="/portfolio">
-                <Button variant="primary" size="lg">
-                  View Our Work <FaArrowRight />
-                </Button>
-              </Link>
-              <Link to="/services">
                 <Button variant="outline" size="lg">
-                  Our Services
+                  View Our Work
                 </Button>
               </Link>
             </div>
@@ -342,11 +453,9 @@ const HomePage = () => {
                 <li><FaCheckCircle className="text-accent" /> Professional Training Programs</li>
                 <li><FaCheckCircle className="text-accent" /> On-Time, Quality-First Approach</li>
               </ul>
-              <Link to="/contact?type=project">
-                <Button variant="primary" size="lg">
-                  Start a Project <FaArrowRight />
-                </Button>
-              </Link>
+              <Button variant="primary" size="lg" onClick={scrollToInquiry}>
+                Start a Project <FaArrowRight />
+              </Button>
             </motion.div>
           </div>
         </div>
@@ -366,6 +475,143 @@ const HomePage = () => {
               <StatItem key={index} stat={stat} index={index} />
             ))}
           </motion.div>
+        </div>
+      </section>
+
+      {/* ===== QUICK INQUIRY FORM ===== */}
+      <section ref={inquiryFormRef} className="section home-inquiry">
+        <div className="container">
+          <div className="home-inquiry__grid">
+            <motion.div
+              className="home-inquiry__info-col"
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              <span className="section-header__label">Get In Touch</span>
+              <h3 style={{ marginTop: 'var(--space-3)' }}>
+                Let's Build Something <span className="text-accent">Great</span> Together
+              </h3>
+              <p>
+                Have an upcoming architectural project, need drafting support, BIM coordination, or custom Revit families? Or interested in joining one of our training batches?
+                <br /><br />
+                Fill out the quick form here, and our design team will analyze your requirements and get back to you with a free consultation and project quote within 24 hours.
+              </p>
+              
+              <ul className="home-about__features" style={{ margin: 0 }}>
+                <li><FaCheckCircle className="text-accent" /> 24-Hour Project Review</li>
+                <li><FaCheckCircle className="text-accent" /> Free Design Consultation</li>
+                <li><FaCheckCircle className="text-accent" /> Direct Communication with BIM Lead</li>
+              </ul>
+            </motion.div>
+
+            <motion.div
+              className="home-inquiry__form-card"
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              <form onSubmit={handleInquirySubmit} className="home-inquiry__form">
+                {submitStatus && (
+                  <div className={`home-inquiry__status-msg ${submitStatus.success ? 'home-inquiry__status-msg--success' : 'home-inquiry__status-msg--error'}`}>
+                    {submitStatus.message}
+                  </div>
+                )}
+                
+                <div className="home-inquiry__form-row">
+                  <div className="home-inquiry__form-group">
+                    <label htmlFor="client-name">Full Name *</label>
+                    <input
+                      type="text"
+                      id="client-name"
+                      className="home-inquiry__input"
+                      placeholder="Your Name"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="home-inquiry__form-group">
+                    <label htmlFor="client-email">Email Address *</label>
+                    <input
+                      type="email"
+                      id="client-email"
+                      className="home-inquiry__input"
+                      placeholder="name@example.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="home-inquiry__form-row">
+                  <div className="home-inquiry__form-group">
+                    <label htmlFor="client-phone">Phone Number</label>
+                    <input
+                      type="tel"
+                      id="client-phone"
+                      className="home-inquiry__input"
+                      placeholder="+91 XXXXX XXXXX"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                    />
+                  </div>
+                  <div className="home-inquiry__form-group">
+                    <label htmlFor="project-type">I'm interested in *</label>
+                    <select
+                      id="project-type"
+                      className="home-inquiry__select"
+                      value={type}
+                      onChange={(e) => setType(e.target.value)}
+                      required
+                    >
+                      <option value="project">Design / BIM Services</option>
+                      <option value="training">Software Training batches</option>
+                      <option value="general">Other inquiry</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="home-inquiry__form-group">
+                  <label htmlFor="project-subject">Subject</label>
+                  <input
+                    type="text"
+                    id="project-subject"
+                    className="home-inquiry__input"
+                    placeholder="e.g. Revit structural model request"
+                    value={subject}
+                    onChange={(e) => setSubject(e.target.value)}
+                  />
+                </div>
+
+                <div className="home-inquiry__form-group">
+                  <label htmlFor="project-message">Project Description / Message *</label>
+                  <textarea
+                    id="project-message"
+                    rows="4"
+                    className="home-inquiry__textarea"
+                    placeholder="Describe your design needs, floor plans scale, software choice, or course preferences..."
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    required
+                  ></textarea>
+                </div>
+
+                <Button
+                  type="submit"
+                  variant="primary"
+                  size="lg"
+                  disabled={submitting}
+                  style={{ width: '100%', justifyContent: 'center' }}
+                >
+                  {submitting ? 'Sending Request...' : 'Send Inquiry Request'}
+                </Button>
+              </form>
+            </motion.div>
+          </div>
         </div>
       </section>
 

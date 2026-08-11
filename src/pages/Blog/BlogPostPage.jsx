@@ -87,6 +87,10 @@ const BlogPostPage = () => {
   const renderContent = (content) => {
     if (!content) return '';
     return content.split('\n\n').map((block, index) => {
+      // Heading 4
+      if (block.startsWith('#### ')) {
+        return <h4 key={index}>{parseInlineMarkdown(block.replace('#### ', ''))}</h4>;
+      }
       // Heading 3
       if (block.startsWith('### ')) {
         return <h3 key={index}>{parseInlineMarkdown(block.replace('### ', ''))}</h3>;

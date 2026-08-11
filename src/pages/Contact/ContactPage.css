@@ -153,6 +153,15 @@
   padding-right: var(--space-8);
 }
 
+.contact-form__group select option {
+  background-color: #161616;
+  color: var(--color-text-primary);
+}
+
+.contact-form__group select option:disabled {
+  color: var(--color-text-muted);
+}
+
 .contact-form__group textarea {
   resize: vertical;
   min-height: 120px;

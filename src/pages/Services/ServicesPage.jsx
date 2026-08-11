@@ -59,8 +59,8 @@ const servicesData = [
   {
     icon: 'FaImage',
     title: '3D Visualization',
-    desc: 'Stunning photorealistic visuals using 3ds Max and V-Ray. From still renders to animated walkthroughs, our visualizations help clients experience spaces before they are built.',
-    features: ['Photorealistic Exterior Renders', 'Interior Visualization', 'Animated Walkthroughs', 'Material & Lighting Studies', 'VR Ready Output'],
+    desc: 'Stunning photorealistic visuals and architectural modeling using SketchUp, 3ds Max, and V-Ray. From high-quality 3D modeling to animated walkthroughs, our visualizations help clients experience spaces before they are built.',
+    features: ['SketchUp & 3ds Max 3D Modeling', 'Photorealistic Exterior & Interior Renders', 'Animated Walkthroughs & Flyovers', 'Material, Texture & Lighting Studies', 'VR Ready Presentation Outputs'],
   },
 ];
 
