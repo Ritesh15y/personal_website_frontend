@@ -331,15 +331,14 @@ const TrainingPage = () => {
                 className={`course-card glass-card ${course.popularBadge ? 'course-card--popular' : ''}`}
                 variants={itemVariants}
               >
-                {course.popularBadge && (
-                  <div className="course-card__popular-badge">
-                    <FaTag className="badge-icon" /> {course.popularBadge}
-                  </div>
-                )}
-
                 <div className="course-card__header">
                   <h3 className="course-card__title">{course.title}</h3>
                   <div className="course-card__meta">
+                    {course.popularBadge && (
+                      <span className="course-card__popular-badge">
+                        <FaTag className="badge-icon" /> {course.popularBadge}
+                      </span>
+                    )}
                     <span className="course-card__badge">{course.level}</span>
                   </div>
                 </div>
