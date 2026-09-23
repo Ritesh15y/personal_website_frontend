@@ -138,11 +138,17 @@
   white-space: pre-line;
 }
 
+.project-detail__sidebar-col {
+  position: sticky;
+  top: 120px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
 /* Sidebar Metadata Card */
 .project-detail__info-card {
   padding: var(--space-8);
-  position: sticky;
-  top: 160px;
 }
 
 .project-detail__info-list {
@@ -335,7 +341,7 @@
     gap: var(--space-8);
   }
 
-  .project-detail__info-card {
+  .project-detail__sidebar-col {
     position: static;
   }
 }

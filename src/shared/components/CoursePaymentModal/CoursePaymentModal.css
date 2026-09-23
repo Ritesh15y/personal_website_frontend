@@ -1,0 +1,375 @@
+/* ==========================================================================
+   CoursePaymentModal.css
+   Interactive Course Pricing & Payment Enrollment Modal
+   ========================================================================== */
+
+.course-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: var(--color-bg-overlay);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: var(--z-modal-backdrop);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+
+.course-modal {
+  position: relative;
+  width: 100%;
+  max-width: 620px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: var(--space-8);
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid var(--glass-border-hover);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--glass-shadow-hover);
+  z-index: var(--z-modal);
+}
+
+.course-modal__close-btn {
+  position: absolute;
+  top: var(--space-5);
+  right: var(--space-5);
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--color-text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.course-modal__close-btn:hover {
+  background: var(--color-accent);
+  color: var(--color-bg-primary);
+  transform: rotate(90deg);
+}
+
+.course-modal__tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--ls-wide);
+  color: var(--color-accent);
+  margin-bottom: var(--space-2);
+}
+
+.course-modal__header h2 {
+  font-size: var(--fs-2xl);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-2);
+}
+
+.course-modal__price-strip {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+
+.course-modal__price-strip .current-price {
+  font-family: var(--font-heading);
+  font-size: var(--fs-2xl);
+  font-weight: var(--fw-bold);
+  color: var(--color-accent);
+}
+
+.course-modal__price-strip .original-price {
+  font-size: var(--fs-md);
+  color: var(--color-text-muted);
+  text-decoration: line-through;
+}
+
+.course-modal__price-strip .discount-tag {
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: var(--fw-bold);
+  background: rgba(76, 175, 80, 0.15);
+  color: var(--color-success);
+  border: 1px solid rgba(76, 175, 80, 0.3);
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+}
+
+.form-section {
+  margin-bottom: var(--space-5);
+}
+
+.section-label {
+  display: block;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--ls-wide);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-3);
+}
+
+.course-modal__select,
+.course-modal__input {
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  background: rgba(var(--color-bg-primary-rgb), 0.6);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  font-size: var(--fs-sm);
+  transition: border-color var(--transition-fast);
+}
+
+.course-modal__select:focus,
+.course-modal__input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+
+/* Payment Option Buttons */
+.payment-options-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.payment-option-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: var(--space-3) var(--space-4);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  text-align: left;
+  transition: all var(--transition-fast);
+}
+
+.payment-option-btn .option-icon {
+  font-size: var(--fs-lg);
+  color: var(--color-accent);
+  margin-bottom: var(--space-1);
+}
+
+.payment-option-btn span {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+}
+
+.payment-option-btn small {
+  font-size: 10px;
+  color: var(--color-text-muted);
+}
+
+.payment-option-btn.active,
+.payment-option-btn:hover {
+  border-color: var(--color-accent);
+  background: var(--color-accent-dim);
+  box-shadow: 0 0 15px var(--color-accent-dim);
+}
+
+.payment-detail-box {
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  margin-top: var(--space-3);
+  background: rgba(var(--color-bg-primary-rgb), 0.4);
+}
+
+.upi-qr-preview {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.qr-box {
+  width: 72px;
+  height: 72px;
+  background: var(--color-bg-primary);
+  border: 1px dashed var(--color-accent);
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+}
+
+.upi-text strong {
+  display: block;
+  font-size: var(--fs-sm);
+  color: var(--color-text-primary);
+}
+
+.upi-text p {
+  font-size: var(--fs-xs);
+  color: var(--color-text-muted);
+  margin: 2px 0 6px;
+}
+
+.upi-id-badge {
+  font-size: 11px;
+  font-weight: var(--fw-semibold);
+  color: var(--color-accent);
+  background: var(--color-accent-dim);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+}
+
+/* Order Summary Box */
+.course-modal__summary {
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  margin-top: var(--space-4);
+  background: rgba(var(--color-bg-primary-rgb), 0.5);
+  border: 1px solid var(--glass-border);
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--fs-xs);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-2);
+}
+
+.summary-row.discount {
+  color: var(--color-success);
+}
+
+.summary-row.total {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--color-text-primary);
+  border-top: 1px solid var(--color-border);
+  padding-top: var(--space-2);
+  margin-top: var(--space-2);
+  margin-bottom: 0;
+}
+
+.total-val {
+  color: var(--color-accent);
+}
+
+.security-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  font-size: 11px;
+  color: var(--color-text-muted);
+  margin-top: var(--space-4);
+  text-align: center;
+}
+
+/* Receipt Screen */
+.course-modal__success {
+  padding: var(--space-4) 0;
+}
+
+.success-icon-wrapper {
+  font-size: 3.5rem;
+  margin-bottom: var(--space-2);
+}
+
+.success-sub {
+  font-size: var(--fs-sm);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-6);
+}
+
+.receipt-card {
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  background: rgba(var(--color-bg-primary-rgb), 0.6);
+  border: 1px solid var(--glass-border);
+}
+
+.receipt-header {
+  margin-bottom: var(--space-3);
+}
+
+.receipt-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  text-transform: uppercase;
+  color: var(--color-text-primary);
+}
+
+.receipt-id {
+  font-size: var(--fs-xs);
+  font-family: monospace;
+  color: var(--color-accent);
+  background: var(--color-accent-dim);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+}
+
+.receipt-divider {
+  height: 1px;
+  background: var(--color-border);
+  margin-bottom: var(--space-4);
+}
+
+.receipt-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--fs-xs);
+  margin-bottom: var(--space-3);
+  color: var(--color-text-secondary);
+}
+
+.status-badge-paid {
+  font-size: 11px;
+  font-weight: var(--fw-bold);
+  color: var(--color-success);
+  background: rgba(76, 175, 80, 0.15);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+}
+
+.download-receipt-btn {
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-light);
+  background: transparent;
+  color: var(--color-text-primary);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.download-receipt-btn:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+@media (max-width: 600px) {
+  .form-grid,
+  .payment-options-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .course-modal {
+    padding: var(--space-5);
+  }
+}

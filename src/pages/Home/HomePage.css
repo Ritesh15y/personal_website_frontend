@@ -710,3 +710,17 @@
   }
 }
 
+/* ===== HOME COMPARISON SECTION ===== */
+.home-comparison {
+  background: var(--color-bg-primary);
+  position: relative;
+}
+
+.home-comparison__wrapper {
+  max-width: 1040px;
+  margin: var(--space-8) auto 0;
+  box-shadow: var(--shadow-glow-strong);
+  border-radius: var(--radius-xl);
+}
+
+

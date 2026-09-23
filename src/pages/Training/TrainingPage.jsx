@@ -11,19 +11,26 @@ import {
   FaDownload,
   FaFileAlt,
   FaSearch,
+  FaCreditCard,
+  FaTag,
 } from 'react-icons/fa';
 import SectionHeader from '../../shared/components/SectionHeader/SectionHeader';
 import Button from '../../shared/components/Button/Button';
+import CoursePaymentModal from '../../shared/components/CoursePaymentModal/CoursePaymentModal';
 import api from '../../shared/lib/api';
 import './TrainingPage.css';
 
 const courses = [
   {
-    title: 'AutoCAD — 2D & 3D',
+    title: 'AutoCAD — 2D & 3D Drafting',
     software: 'AutoCAD',
     duration: '4 Weeks',
     mode: 'Online & Offline',
     level: 'Beginner to Advanced',
+    price: 8999,
+    originalPrice: 12000,
+    discount: '25% OFF',
+    emiOption: 'EMI from ₹3,100/mo',
     topics: [
       'Interface & Navigation',
       '2D Drafting Tools & Commands',
@@ -34,11 +41,16 @@ const courses = [
     ],
   },
   {
-    title: 'Revit Architecture',
+    title: 'Revit Architecture (BIM)',
     software: 'Revit',
     duration: '6 Weeks',
     mode: 'Online & Offline',
     level: 'Beginner to Advanced',
+    price: 12499,
+    originalPrice: 16500,
+    discount: '24% OFF',
+    popularBadge: 'Most Popular',
+    emiOption: 'EMI from ₹4,300/mo',
     topics: [
       'Revit Interface & Project Setup',
       'Walls, Floors, Roofs & Ceilings',
@@ -49,11 +61,15 @@ const courses = [
     ],
   },
   {
-    title: 'Revit Structure',
+    title: 'Revit Structure (BIM Detailing)',
     software: 'Revit',
     duration: '5 Weeks',
     mode: 'Online & Offline',
     level: 'Intermediate',
+    price: 11999,
+    originalPrice: 15000,
+    discount: '20% OFF',
+    emiOption: 'EMI from ₹4,100/mo',
     topics: [
       'Structural Project Setup',
       'Columns, Beams & Framing',
@@ -64,11 +80,15 @@ const courses = [
     ],
   },
   {
-    title: 'SketchUp + V-Ray',
+    title: 'SketchUp + V-Ray Photorealistic',
     software: 'SketchUp',
     duration: '4 Weeks',
     mode: 'Online & Offline',
     level: 'Beginner',
+    price: 7999,
+    originalPrice: 10500,
+    discount: '24% OFF',
+    emiOption: 'EMI from ₹2,750/mo',
     topics: [
       'SketchUp Interface & Tools',
       '3D Modeling Techniques',
@@ -79,11 +99,16 @@ const courses = [
     ],
   },
   {
-    title: '3ds Max + V-Ray Visualization',
+    title: '3ds Max + V-Ray Masterclass',
     software: '3ds Max',
     duration: '8 Weeks',
     mode: 'Online & Offline',
     level: 'Intermediate to Advanced',
+    price: 16999,
+    originalPrice: 22000,
+    discount: '23% OFF',
+    popularBadge: 'Top Rated',
+    emiOption: 'EMI from ₹5,800/mo',
     topics: [
       '3ds Max Interface & Modeling',
       'Interior & Exterior Modeling',
@@ -91,6 +116,26 @@ const courses = [
       'Lighting Setup (HDRI, IES)',
       'Camera & Composition',
       'Post-Production in Photoshop',
+    ],
+  },
+  {
+    title: 'Master BIM & Visualization Bundle',
+    software: 'All Software',
+    duration: '16 Weeks',
+    mode: 'Online & Offline',
+    level: 'Complete Career Path',
+    price: 34999,
+    originalPrice: 48000,
+    discount: '27% OFF',
+    popularBadge: 'Best Value Bundle',
+    emiOption: 'EMI from ₹6,000/mo',
+    topics: [
+      'Complete AutoCAD 2D/3D Masterclass',
+      'Full Revit Architecture & Structure BIM',
+      '3ds Max + V-Ray High-End Renders',
+      'Live Portfolio Project Mentorship',
+      'Job Placement & Interview Assistance',
+      'Professional Certification Included',
     ],
   },
 ];
@@ -119,6 +164,13 @@ const TrainingPage = () => {
   const [activeFilter, setActiveFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
+  const [selectedCourse, setSelectedCourse] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenPaymentModal = (course) => {
+    setSelectedCourse(course);
+    setIsModalOpen(true);
+  };
 
   useEffect(() => {
     const fetchResources = async () => {
@@ -276,14 +328,40 @@ const TrainingPage = () => {
             {courses.map((course, index) => (
               <motion.div
                 key={index}
-                className="course-card glass-card"
+                className={`course-card glass-card ${course.popularBadge ? 'course-card--popular' : ''}`}
                 variants={itemVariants}
               >
+                {course.popularBadge && (
+                  <div className="course-card__popular-badge">
+                    <FaTag className="badge-icon" /> {course.popularBadge}
+                  </div>
+                )}
+
                 <div className="course-card__header">
                   <h3 className="course-card__title">{course.title}</h3>
                   <div className="course-card__meta">
                     <span className="course-card__badge">{course.level}</span>
                   </div>
+                </div>
+
+                {/* Price Strip */}
+                <div className="course-card__price-box">
+                  <div className="price-main flex-between">
+                    <div>
+                      <span className="price-current">₹{course.price.toLocaleString('en-IN')}</span>
+                      {course.originalPrice && (
+                        <span className="price-original">₹{course.originalPrice.toLocaleString('en-IN')}</span>
+                      )}
+                    </div>
+                    {course.discount && (
+                      <span className="price-discount-tag">{course.discount}</span>
+                    )}
+                  </div>
+                  {course.emiOption && (
+                    <div className="price-emi-text">
+                      <FaCreditCard className="emi-icon" /> {course.emiOption}
+                    </div>
+                  )}
                 </div>
 
                 <div className="course-card__details">
@@ -309,11 +387,21 @@ const TrainingPage = () => {
                   </ul>
                 </div>
 
-                <Link to={`/contact?type=training&subject=${encodeURIComponent(course.title)}`}>
-                  <Button variant="outline" className="course-card__btn">
-                    Enquire Now <FaArrowRight />
+                <div className="course-card__actions">
+                  <Button
+                    variant="primary"
+                    className="course-card__pay-btn"
+                    onClick={() => handleOpenPaymentModal(course)}
+                  >
+                    <FaCreditCard /> Pay & Enroll
                   </Button>
-                </Link>
+
+                  <Link to={`/contact?type=training&subject=${encodeURIComponent(course.title)}`}>
+                    <Button variant="outline" className="course-card__btn">
+                      Syllabus
+                    </Button>
+                  </Link>
+                </div>
               </motion.div>
             ))}
           </motion.div>
@@ -427,6 +515,13 @@ const TrainingPage = () => {
           </motion.div>
         </div>
       </section>
+
+      {/* Interactive Course Payment & Enrollment Checkout Modal */}
+      <CoursePaymentModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        course={selectedCourse}
+      />
     </div>
   );
 };

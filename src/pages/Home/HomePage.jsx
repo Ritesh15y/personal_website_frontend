@@ -14,6 +14,7 @@ import {
 } from 'react-icons/fa';
 import SectionHeader from '../../shared/components/SectionHeader/SectionHeader';
 import Button from '../../shared/components/Button/Button';
+import BeforeAfterSlider from '../../shared/components/BeforeAfterSlider/BeforeAfterSlider';
 import api from '../../shared/lib/api';
 import './HomePage.css';
 
@@ -397,6 +398,33 @@ const HomePage = () => {
               </Button>
             </Link>
           </div>
+        </div>
+      </section>
+
+      {/* ===== BLUEPRINT TO 3D TRANSFORMATION SHOWCASE ===== */}
+      <section className="section home-comparison">
+        <div className="container">
+          <SectionHeader
+            label="Interactive Showcase"
+            title="From Blueprint to Reality"
+            subtitle="Drag the interactive slider below to explore how 2D AutoCAD drafting seamlessly transforms into photorealistic 3D architectural renders."
+          />
+          <motion.div
+            className="home-comparison__wrapper"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <BeforeAfterSlider
+              beforeImage="https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=1400&q=80"
+              afterImage="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1400&q=80"
+              beforeLabel="2D Blueprint / CAD"
+              afterLabel="3D Photorealistic Render"
+              initialPosition={50}
+              altText="Modern Villa Blueprint to 3D Render comparison"
+            />
+          </motion.div>
         </div>
       </section>
 

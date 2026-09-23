@@ -10,6 +10,7 @@ import {
 } from 'react-icons/fa';
 import api from '../../shared/lib/api';
 import Button from '../../shared/components/Button/Button';
+import BeforeAfterSlider from '../../shared/components/BeforeAfterSlider/BeforeAfterSlider';
 import './ProjectDetailPage.css';
 
 // Fallback static detailed projects database in case backend collection is unseeded or offline
@@ -23,6 +24,7 @@ const fallbackProjects = {
     software: ['Revit', '3ds Max', 'V-Ray'],
     description: 'A luxurious multi-story residential villa utilizing advanced BIM workflows for architectural layout and structural detailing. The design concept focuses on blurring the line between indoor and outdoor living. The structure is built with reinforced concrete framing, featuring large spans that allow for open-plan social zones. The interior leverages custom parametric Revit families, photorealistic render details, and high-end timber paneling to deliver a cohesive design solution.',
     thumbnail: { url: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1200&q=80' },
+    beforeImage: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=1200&q=80',
     images: [
       { url: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&q=80', caption: 'Modern Facade Rendering' },
       { url: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80', caption: 'Rear Poolside Elevation' },
@@ -96,6 +98,7 @@ const fallbackProjects = {
     software: ['Revit', '3ds Max', 'Photoshop'],
     description: 'This conceptual design project showcases a modern villa designed specifically as a student hub or high-end co-living space. Featuring spacious common areas, private study zones, and sustainable landscape integration, the modeling was developed in Revit for structural precision and visualized in 3ds Max.',
     thumbnail: { url: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80' },
+    beforeImage: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=1200&q=80',
     images: [
       { url: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80', caption: 'Exterior Rendering' },
       { url: 'https://images.unsplash.com/photo-1600573472591-ee6b68d14c68?w=800&q=80', caption: 'Living Area Concept' },
@@ -277,6 +280,24 @@ const ProjectDetailPage = () => {
                   </div>
                 )}
               </div>
+
+              {/* Interactive 2D Blueprint vs 3D Render Comparison (if available) */}
+              {(project.beforeImage || project.blueprintImage) && (
+                <div className="project-detail__comparison-section" style={{ marginTop: 'var(--space-8)' }}>
+                  <h3>2D Blueprint to 3D Render Comparison</h3>
+                  <div className="divider-sm" />
+                  <p className="project-detail__text" style={{ marginBottom: 'var(--space-4)' }}>
+                    Slide left and right to visually inspect how initial CAD technical drawings were translated into the final 3D rendered visualization.
+                  </p>
+                  <BeforeAfterSlider
+                    beforeImage={project.beforeImage || project.blueprintImage}
+                    afterImage={mainImage}
+                    beforeLabel="2D Blueprint / CAD"
+                    afterLabel="Final 3D Render"
+                    altText={`${project.title} comparison`}
+                  />
+                </div>
+              )}
             </div>
 
             {/* Sidebar Column (Metadata) */}
@@ -337,7 +358,7 @@ const ProjectDetailPage = () => {
 
               {/* Training Promo Card (Only shown for Student Projects to convert students) */}
               {project.category === 'student-projects' && (
-                <div className="project-detail__promo-card glass-card animate-fade-in" style={{ marginTop: 'var(--space-6)' }}>
+                <div className="project-detail__promo-card glass-card animate-fade-in">
                   <h3>🎓 Learn to Build This</h3>
                   <div className="divider-sm" />
                   <p className="promo-text">
