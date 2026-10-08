@@ -155,7 +155,12 @@
 
 .contact-form__group select option {
   background-color: #161616;
-  color: var(--color-text-primary);
+  color: #F5F5F5;
+}
+
+[data-theme='light'] .contact-form__group select option {
+  background-color: #FFFFFF;
+  color: #1A1A1A;
 }
 
 .contact-form__group select option:disabled {

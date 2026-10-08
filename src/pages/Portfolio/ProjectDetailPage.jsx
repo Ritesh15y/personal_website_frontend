@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   FaArrowLeft,
+  FaBuilding,
   FaUser,
   FaMapMarkerAlt,
   FaRulerCombined,
@@ -11,6 +12,7 @@ import {
 import api from '../../shared/lib/api';
 import Button from '../../shared/components/Button/Button';
 import BeforeAfterSlider from '../../shared/components/BeforeAfterSlider/BeforeAfterSlider';
+import useDocumentTitle from '../../shared/hooks/useDocumentTitle';
 import './ProjectDetailPage.css';
 
 // Fallback static detailed projects database in case backend collection is unseeded or offline
@@ -18,134 +20,23 @@ const fallbackProjects = {
   'modern-residential-villa': {
     title: 'Modern Residential Villa',
     category: 'residential',
-    client: 'Private Owner',
-    location: 'Mumbai, India',
-    area: '5,500 sq ft',
-    software: ['Revit', '3ds Max', 'V-Ray'],
-    description: 'A luxurious multi-story residential villa utilizing advanced BIM workflows for architectural layout and structural detailing. The design concept focuses on blurring the line between indoor and outdoor living. The structure is built with reinforced concrete framing, featuring large spans that allow for open-plan social zones. The interior leverages custom parametric Revit families, photorealistic render details, and high-end timber paneling to deliver a cohesive design solution.',
-    thumbnail: { url: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1200&q=80' },
-    beforeImage: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=1200&q=80',
+    classification: 'Concept Project',
+    software: ['Revit', '3ds Max', 'V-Ray', 'AutoCAD'],
+    description: 'An architectural concept villa exploring advanced BIM workflows for architectural layout and structural detailing. The design concept focuses on blurring the line between indoor and outdoor living with reinforced concrete framing and custom parametric Revit families.',
+    thumbnail: { url: 'https://res.cloudinary.com/vr0slvvw/image/upload/v1785586217/portfolio/file_quirjg.png' },
     images: [
-      { url: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&q=80', caption: 'Modern Facade Rendering' },
-      { url: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80', caption: 'Rear Poolside Elevation' },
-      { url: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=800&q=80', caption: 'Master Bedroom Render' },
-      { url: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=800&q=80', caption: 'Living Room Spatial Design' }
-    ]
-  },
-  'corporate-office-tower': {
-    title: 'Corporate Office Tower',
-    category: 'commercial',
-    client: 'DesignCorp Ltd',
-    location: 'Bangalore, India',
-    area: '120,000 sq ft',
-    software: ['Revit', 'Navisworks', 'AutoCAD'],
-    description: 'A high-rise commercial office building with comprehensive structural and MEP (Mechanical, Electrical, Plumbing) clash detection. We developed standardized BIM library libraries and family parameters to guarantee structural stability and compliance. Navisworks was used to run exhaustive clash detection diagnostics, preventing costly construction re-works and field conflicts.',
-    thumbnail: { url: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&q=80' },
-    images: [
-      { url: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80', caption: 'Exterior Tower View' },
-      { url: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80', caption: 'Corporate Boardroom Design' },
-      { url: 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=800&q=80', caption: 'Open-Office Workspace' }
-    ]
-  },
-  'international-school-campus': {
-    title: 'International School Campus',
-    category: 'school',
-    client: 'Zenith Education Group',
-    location: 'Pune, India',
-    area: '85,000 sq ft',
-    software: ['Revit', 'SketchUp', 'Photoshop'],
-    description: 'A modern school campus featuring interactive learning spaces, dynamic sports facilities, and optimized circulation routes. The Revit models were built to support future facility operations and maintenance. Special attention was paid to natural daylight penetration inside classrooms and acoustic isolation for the auditorium.',
-    thumbnail: { url: 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=1200&q=80' },
-    images: [
-      { url: 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=800&q=80', caption: 'Main Academic Wing' },
-      { url: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=800&q=80', caption: 'Interactive Learning Library' }
-    ]
-  },
-  'multi-specialty-hospital': {
-    title: 'Multi-Specialty Hospital',
-    category: 'hospital',
-    client: 'CareFirst Healthcare',
-    location: 'Hyderabad, India',
-    area: '95,000 sq ft',
-    software: ['Revit', 'Navisworks'],
-    description: 'A state-of-the-art healthcare project modeled to support high-density medical equipment, complex plumbing lines, and strict hygiene air-handling systems. Using Revit Structure and MEP link files, we ran extensive multi-discipline coordination cycles to identify and resolve clashes ahead of building erection.',
-    thumbnail: { url: 'https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?w=1200&q=80' },
-    images: [
-      { url: 'https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?w=800&q=80', caption: 'Front Outpatient Entrance' },
-      { url: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=800&q=80', caption: 'Emergency Ward Corridor' }
-    ]
-  },
-  'luxury-apartment-interior': {
-    title: 'Luxury Apartment Interior',
-    category: 'interior',
-    client: 'Private Client',
-    location: 'Delhi NCR, India',
-    area: '3,200 sq ft',
-    software: ['3ds Max', 'V-Ray'],
-    description: 'High-end interior visualization showcasing custom furniture, bespoke ambient lighting panels, and rich textures. We created high-resolution, photorealistic 3D renders that allow the client to visually explore material choices, lighting setups, and spatial flow before final execution.',
-    thumbnail: { url: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=1200&q=80' },
-    images: [
-      { url: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=800&q=80', caption: 'Formal Living Space' },
-      { url: 'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=800&q=80', caption: 'Kitchen and Dining Area' }
+      { url: 'https://res.cloudinary.com/vr0slvvw/image/upload/v1785586217/portfolio/file_quirjg.png', caption: 'Modern Facade Rendering' }
     ]
   },
   'student-villa-concept': {
     title: 'Student Villa Concept',
     category: 'student-projects',
-    client: 'Academic Thesis',
-    location: 'New Delhi, India',
-    area: '4,200 sq ft',
-    software: ['Revit', '3ds Max', 'Photoshop'],
-    description: 'This conceptual design project showcases a modern villa designed specifically as a student hub or high-end co-living space. Featuring spacious common areas, private study zones, and sustainable landscape integration, the modeling was developed in Revit for structural precision and visualized in 3ds Max.',
-    thumbnail: { url: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80' },
-    beforeImage: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=1200&q=80',
+    classification: 'Student Project',
+    software: ['Revit', '3ds Max', 'V-Ray'],
+    description: 'A conceptual villa modeling project developed during student BIM training at Prema Design Studio. Features residential room planning and 3D visualization.',
+    thumbnail: { url: 'https://res.cloudinary.com/vr0slvvw/image/upload/v1785586181/portfolio/file_udkygn.png' },
     images: [
-      { url: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80', caption: 'Exterior Rendering' },
-      { url: 'https://images.unsplash.com/photo-1600573472591-ee6b68d14c68?w=800&q=80', caption: 'Living Area Concept' },
-      { url: 'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=800&q=80', caption: 'Floor Plan Layout' },
-      { url: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&q=80', caption: 'Courtyard View' }
-    ]
-  },
-  'contemporary-beach-house': {
-    title: 'Contemporary Beach House',
-    category: 'residential',
-    client: 'Coastal Developers',
-    location: 'Goa, India',
-    area: '3,800 sq ft',
-    software: ['AutoCAD', 'SketchUp', 'V-Ray'],
-    description: 'A modern coastal residential dwelling designed to withstand salty winds while maximizing sea vistas. Featuring floating cantilever terraces, natural stone walls, and high-performance glass cladding. The 2D drawings were detailed in AutoCAD and modeled in SketchUp for V-Ray rendering.',
-    thumbnail: { url: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&q=80' },
-    images: [
-      { url: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80', caption: 'Coastal Frontage Elevation' },
-      { url: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80', caption: 'Master Bed Terrace' }
-    ]
-  },
-  'retail-mall-design': {
-    title: 'Retail Mall Design',
-    category: 'commercial',
-    client: 'Apex Retail Group',
-    location: 'Noida, India',
-    area: '240,000 sq ft',
-    software: ['Revit', '3ds Max', 'AutoCAD'],
-    description: 'A large-scale commercial retail mall structure utilizing Revit BIM. Highlights include dynamic double-height glass atriums, multi-level structural grids, and coordination with HVAC / electrical services. Highly optimized sheets were produced for on-site civil execution.',
-    thumbnail: { url: 'https://images.unsplash.com/photo-1567449303078-57ad995bd329?w=1200&q=80' },
-    images: [
-      { url: 'https://images.unsplash.com/photo-1567449303078-57ad995bd329?w=800&q=80', caption: 'Central Atrium Layout' },
-      { url: 'https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=800&q=80', caption: 'Storefront Facade Detail' }
-    ]
-  },
-  'modern-kitchen-interior': {
-    title: 'Modern Kitchen Interior',
-    category: 'interior',
-    client: 'Homeowner',
-    location: 'Gurugram, India',
-    area: '450 sq ft',
-    software: ['3ds Max', 'V-Ray', 'AutoCAD'],
-    description: 'A contemporary modular kitchen design focusing on space optimization and ergonomics. Features integrated appliances, matte charcoal finish cabinetry, and marble countertops. Visualization was completed in 3ds Max for lighting and texture validation.',
-    thumbnail: { url: 'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=1200&q=80' },
-    images: [
-      { url: 'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=800&q=80', caption: 'Main Kitchen Counter' },
-      { url: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=800&q=80', caption: 'Breakfast Island Detail' }
+      { url: 'https://res.cloudinary.com/vr0slvvw/image/upload/v1785586181/portfolio/file_udkygn.png', caption: 'Student Villa Exterior Rendering' }
     ]
   }
 };
@@ -155,6 +46,11 @@ const ProjectDetailPage = () => {
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeImage, setActiveImage] = useState(null);
+
+  useDocumentTitle(
+    project ? `${project.title} | Prema Design Studio Portfolio` : 'Project Showcase | Prema Design Studio',
+    project?.description
+  );
 
   useEffect(() => {
     const fetchProjectDetails = async () => {
@@ -221,11 +117,6 @@ const ProjectDetailPage = () => {
 
   return (
     <div className="project-detail-page">
-      {/* Floating Back Button */}
-      <Link to="/portfolio" className="project-detail-back-btn" title="Back to Portfolio">
-        <FaArrowLeft />
-      </Link>
-
       {/* Hero Section */}
       <section className="project-detail-hero">
         <div className="project-detail-hero__bg">
@@ -233,6 +124,9 @@ const ProjectDetailPage = () => {
           <div className="project-detail-hero__overlay" />
         </div>
         <div className="container project-detail-hero__content">
+          <Link to="/portfolio" className="project-detail-breadcrumb">
+            <FaArrowLeft /> Back to Project Portfolio
+          </Link>
           <span className="project-detail-hero__category">{categoryLabel}</span>
           <h1 className="project-detail-hero__title">{project.title}</h1>
         </div>
@@ -281,20 +175,20 @@ const ProjectDetailPage = () => {
                 )}
               </div>
 
-              {/* Interactive 2D Blueprint vs 3D Render Comparison (if available) */}
+              {/* Interactive Demonstration: 2D Blueprint vs 3D Render Workflow */}
               {(project.beforeImage || project.blueprintImage) && (
                 <div className="project-detail__comparison-section" style={{ marginTop: 'var(--space-8)' }}>
-                  <h3>2D Blueprint to 3D Render Comparison</h3>
+                  <h3>Demonstration Workflow: 2D Blueprint to 3D Render</h3>
                   <div className="divider-sm" />
                   <p className="project-detail__text" style={{ marginBottom: 'var(--space-4)' }}>
-                    Slide left and right to visually inspect how initial CAD technical drawings were translated into the final 3D rendered visualization.
+                    Demonstration workflow illustrating how 2D CAD drafting schematics translate into high-fidelity 3D rendered visualization.
                   </p>
                   <BeforeAfterSlider
                     beforeImage={project.beforeImage || project.blueprintImage}
                     afterImage={mainImage}
-                    beforeLabel="2D Blueprint / CAD"
+                    beforeLabel="Demonstration 2D CAD"
                     afterLabel="Final 3D Render"
-                    altText={`${project.title} comparison`}
+                    altText={`${project.title} demonstration comparison`}
                   />
                 </div>
               )}
@@ -308,28 +202,32 @@ const ProjectDetailPage = () => {
                 
                 <div className="project-detail__info-list">
                   <div className="project-detail__info-item">
-                    <div className="project-detail__info-icon"><FaUser /></div>
+                    <div className="project-detail__info-icon"><FaBuilding /></div>
                     <div>
-                      <span className="info-label">Client</span>
-                      <span className="info-val">{project.client || 'Prema Studio Partner'}</span>
+                      <span className="info-label">Project Type</span>
+                      <span className="info-val">{project.classification || project.projectType || (project.category === 'student-projects' ? 'Student Project' : 'Concept / Demonstration')}</span>
                     </div>
                   </div>
 
-                  <div className="project-detail__info-item">
-                    <div className="project-detail__info-icon"><FaMapMarkerAlt /></div>
-                    <div>
-                      <span className="info-label">Location</span>
-                      <span className="info-val">{project.location || 'India'}</span>
+                  {project.location ? (
+                    <div className="project-detail__info-item">
+                      <div className="project-detail__info-icon"><FaMapMarkerAlt /></div>
+                      <div>
+                        <span className="info-label">Location</span>
+                        <span className="info-val">{project.location}</span>
+                      </div>
                     </div>
-                  </div>
+                  ) : null}
 
-                  <div className="project-detail__info-item">
-                    <div className="project-detail__info-icon"><FaRulerCombined /></div>
-                    <div>
-                      <span className="info-label">Covered Area</span>
-                      <span className="info-val">{project.area || 'Custom Scale'}</span>
+                  {project.area ? (
+                    <div className="project-detail__info-item">
+                      <div className="project-detail__info-icon"><FaRulerCombined /></div>
+                      <div>
+                        <span className="info-label">Covered Area</span>
+                        <span className="info-val">{project.area}</span>
+                      </div>
                     </div>
-                  </div>
+                  ) : null}
 
                   {project.software && project.software.length > 0 && (
                     <div className="project-detail__info-item">
@@ -366,8 +264,8 @@ const ProjectDetailPage = () => {
                   </p>
                   <ul className="promo-features">
                     <li>✓ One-on-one mentorship</li>
-                    <li>✓ Professional certification</li>
-                    <li>✓ Placement assistance</li>
+                    <li>✓ Course completion certificate</li>
+                    <li>✓ Career guidance &amp; portfolio preparation</li>
                   </ul>
                   <Link to="/training">
                     <Button variant="outline" size="md" style={{ width: '100%', justifyContent: 'center' }}>

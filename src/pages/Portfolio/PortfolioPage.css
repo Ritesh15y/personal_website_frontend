@@ -2,6 +2,45 @@
    Portfolio Page Styles
    ============================ */
 
+/* Top-Level Separation Tabs */
+.portfolio-type-tabs {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-4);
+  margin-bottom: var(--space-8);
+  flex-wrap: wrap;
+}
+
+.portfolio-type-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: var(--ls-wide);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.portfolio-type-tab-btn:hover {
+  border-color: var(--color-accent);
+  color: var(--color-text-primary);
+}
+
+.portfolio-type-tab-btn--active {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+  color: var(--color-bg-primary);
+  box-shadow: 0 0 16px rgba(200, 169, 110, 0.35);
+}
+
 /* Filter Bar */
 .portfolio-filter {
   display: flex;
@@ -174,6 +213,19 @@
     grid-template-columns: 1fr;
   }
 
+  .portfolio-type-tabs {
+    flex-direction: column;
+    width: 100%;
+    gap: var(--space-2);
+  }
+
+  .portfolio-type-tab-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 10px 16px;
+    font-size: var(--fs-xs);
+  }
+
   .portfolio-filter {
     gap: var(--space-1);
   }
@@ -188,8 +240,22 @@
     opacity: 1;
     background: linear-gradient(
       to top,
-      rgba(var(--color-bg-primary-rgb), 0.85) 0%,
-      transparent 60%
+      rgba(var(--color-bg-primary-rgb), 0.92) 0%,
+      rgba(var(--color-bg-primary-rgb), 0.45) 50%,
+      transparent 100%
+    );
+  }
+}
+
+/* Touch devices without hover support */
+@media (hover: none) {
+  .portfolio-card__overlay {
+    opacity: 1;
+    background: linear-gradient(
+      to top,
+      rgba(var(--color-bg-primary-rgb), 0.92) 0%,
+      rgba(var(--color-bg-primary-rgb), 0.45) 50%,
+      transparent 100%
     );
   }
 }

@@ -1,10 +1,12 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
 import MainLayout from '../shared/layouts/MainLayout';
 import HomePage from '../pages/Home/HomePage';
 import ServicesPage from '../pages/Services/ServicesPage';
 import PortfolioPage from '../pages/Portfolio/PortfolioPage';
 import ProjectDetailPage from '../pages/Portfolio/ProjectDetailPage';
 import TrainingPage from '../pages/Training/TrainingPage';
+import ResourcesPage from '../pages/Training/ResourcesPage';
+import AboutPage from '../pages/About/AboutPage';
 import ContactPage from '../pages/Contact/ContactPage';
 import BlogPage from '../pages/Blog/BlogPage';
 import BlogPostPage from '../pages/Blog/BlogPostPage';
@@ -18,8 +20,14 @@ import ManagePortfolio from '../pages/Admin/ManagePortfolio';
 import ManageServices from '../pages/Admin/ManageServices';
 import ManageResources from '../pages/Admin/ManageResources';
 import ManageBlog from '../pages/Admin/ManageBlog';
+import ManageTestimonials from '../pages/Admin/ManageTestimonials';
 import AdminProtectedRoute from './providers/AdminProtectedRoute';
 import ErrorPage from '../pages/Error/ErrorPage';
+
+// Feedback & Testimonials imports
+import ClientFeedbackPage from '../pages/Feedback/ClientFeedbackPage';
+import StudentFeedbackPage from '../pages/Feedback/StudentFeedbackPage';
+import TestimonialsPage from '../pages/Testimonials/TestimonialsPage';
 
 const router = createBrowserRouter([
   {
@@ -36,6 +44,10 @@ const router = createBrowserRouter([
         element: <ServicesPage />,
       },
       {
+        path: 'services/:serviceSlug',
+        element: <ServicesPage />,
+      },
+      {
         path: 'portfolio',
         element: <PortfolioPage />,
       },
@@ -48,6 +60,22 @@ const router = createBrowserRouter([
         element: <TrainingPage />,
       },
       {
+        path: 'training/:courseSlug',
+        element: <TrainingPage />,
+      },
+      {
+        path: 'training/resources',
+        element: <ResourcesPage />,
+      },
+      {
+        path: 'resources',
+        element: <Navigate to="/training/resources" replace />,
+      },
+      {
+        path: 'about',
+        element: <AboutPage />,
+      },
+      {
         path: 'blog',
         element: <BlogPage />,
       },
@@ -58,6 +86,30 @@ const router = createBrowserRouter([
       {
         path: 'contact',
         element: <ContactPage />,
+      },
+      {
+        path: 'feedback/client',
+        element: <ClientFeedbackPage />,
+      },
+      {
+        path: 'feedback/student',
+        element: <StudentFeedbackPage />,
+      },
+      {
+        path: 'reviews',
+        element: <TestimonialsPage />,
+      },
+      {
+        path: 'testimonials',
+        element: <Navigate to="/reviews" replace />,
+      },
+      {
+        path: 'feedback',
+        element: <Navigate to="/feedback/client" replace />,
+      },
+      {
+        path: '*',
+        element: <ErrorPage />,
       },
     ],
   },
@@ -96,6 +148,10 @@ const router = createBrowserRouter([
       {
         path: 'blog',
         element: <ManageBlog />,
+      },
+      {
+        path: 'testimonials',
+        element: <ManageTestimonials />,
       },
     ],
   },

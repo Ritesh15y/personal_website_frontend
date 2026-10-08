@@ -164,10 +164,10 @@
   --color-accent-dim: rgba(184, 146, 62, 0.12);
   --color-accent-glow: rgba(184, 146, 62, 0.2);
 
-  /* ---- Text ---- */
+  /* ---- Text (WCAG AA Compliant contrast against #FAF8F5) ---- */
   --color-text-primary: #1A1A1A;
-  --color-text-secondary: #5A5A5A;
-  --color-text-muted: #8A8A8A;
+  --color-text-secondary: #484848;
+  --color-text-muted: #5E5E5E;
 
   /* ---- Borders ---- */
   --color-border: #E0DCD5;

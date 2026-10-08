@@ -9,12 +9,14 @@ import {
   FaSignOutAlt,
   FaHome,
   FaBookOpen,
+  FaStar,
 } from 'react-icons/fa';
 import './AdminLayout.css';
 
 const adminLinks = [
   { path: '/admin', label: 'Dashboard', icon: <FaChartBar /> },
   { path: '/admin/inquiries', label: 'Enquiries', icon: <FaEnvelope /> },
+  { path: '/admin/testimonials', label: 'Testimonials', icon: <FaStar /> },
   { path: '/admin/portfolio', label: 'Portfolio', icon: <FaBriefcase /> },
   { path: '/admin/services', label: 'Services', icon: <FaWrench /> },
   { path: '/admin/resources', label: 'Resources', icon: <FaFileAlt /> },

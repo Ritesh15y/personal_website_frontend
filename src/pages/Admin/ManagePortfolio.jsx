@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { FaPlus, FaEdit, FaTrash, FaCheck, FaTimes, FaUpload } from 'react-icons/fa';
-import api from '../../shared/lib/api';
+import api, { SERVER_BASE_URL } from '../../shared/lib/api';
 import Button from '../../shared/components/Button/Button';
 import './ManagePortfolio.css';
 
@@ -23,6 +23,7 @@ const ManagePortfolio = () => {
   // Form Fields
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('residential');
+  const [projectType, setProjectType] = useState('Concept Project');
   const [description, setDescription] = useState('');
   const [client, setClient] = useState('');
   const [location, setLocation] = useState('');
@@ -53,6 +54,7 @@ const ManagePortfolio = () => {
     setEditingProject(project);
     setTitle(project.title);
     setCategory(project.category);
+    setProjectType(project.projectType || (project.category === 'student-projects' ? 'Student Project' : 'Concept Project'));
     setDescription(project.description || '');
     setClient(project.client || '');
     setLocation(project.location || '');
@@ -67,6 +69,7 @@ const ManagePortfolio = () => {
     setEditingProject({ _id: 'new' });
     setTitle('');
     setCategory('residential');
+    setProjectType('Concept Project');
     setDescription('');
     setClient('');
     setLocation('');
@@ -100,8 +103,7 @@ const ManagePortfolio = () => {
         if (returnedUrl.startsWith('http')) {
           setImageUrl(returnedUrl);
         } else {
-          const serverBaseUrl = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
-          setImageUrl(serverBaseUrl + returnedUrl);
+          setImageUrl(SERVER_BASE_URL + returnedUrl);
         }
       }
     } catch (error) {
@@ -136,6 +138,7 @@ const ManagePortfolio = () => {
     const payload = {
       title,
       category,
+      projectType,
       description,
       client,
       location,
@@ -222,23 +225,41 @@ const ManagePortfolio = () => {
                 ))}
               </select>
             </div>
+            <div className="project-form__group">
+              <label htmlFor="projectType">Classification *</label>
+              <select
+                id="projectType"
+                value={projectType}
+                onChange={(e) => setProjectType(e.target.value)}
+                required
+              >
+                <option value="Concept Project">Concept Project</option>
+                <option value="Demonstration Project">Demonstration Project</option>
+                <option value="Student Project">Student Project</option>
+                <option value="In-House Project">In-House Project</option>
+                <option value="Portfolio Exercise">Portfolio Exercise</option>
+                <option value="Client Project">Client Project (Genuine Verified Only)</option>
+              </select>
+            </div>
           </div>
 
           <div className="project-form__row">
             <div className="project-form__group">
-              <label htmlFor="client">Client Name</label>
+              <label htmlFor="client">Client Name (Genuine verified client only - leave blank for concept/demo)</label>
               <input
                 id="client"
                 type="text"
+                placeholder="Leave blank unless verified genuine client"
                 value={client}
                 onChange={(e) => setClient(e.target.value)}
               />
             </div>
             <div className="project-form__group">
-              <label htmlFor="location">Location (e.g. Pune, India)</label>
+              <label htmlFor="location">Location (Verified physical site only - leave blank for concept/demo)</label>
               <input
                 id="location"
                 type="text"
+                placeholder="Leave blank unless verified physical location"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
               />
@@ -247,10 +268,11 @@ const ManagePortfolio = () => {
 
           <div className="project-form__row">
             <div className="project-form__group">
-              <label htmlFor="area">Built-up Area (e.g. 3,200 sq ft)</label>
+              <label htmlFor="area">Built-up Area (Verified measurement only - leave blank for concept/demo)</label>
               <input
                 id="area"
                 type="text"
+                placeholder="Leave blank unless verified"
                 value={area}
                 onChange={(e) => setArea(e.target.value)}
               />
@@ -360,7 +382,7 @@ const ManagePortfolio = () => {
                     {project.featured && <span className="featured-tag">Featured</span>}
                   </div>
                 </div>
-                <span className="table-row__cat">{project.category}</span>
+                <span className="table-row__cat">{project.projectType || project.category}</span>
                 <span className={`status-badge ${project.status === 'published' ? 'status-badge--active' : 'status-badge--inactive'}`}>
                   {project.status}
                 </span>

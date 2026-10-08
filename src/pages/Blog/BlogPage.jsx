@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { FaSearch, FaCalendarAlt, FaClock, FaArrowRight } from 'react-icons/fa';
+import { FaSearch, FaCalendarAlt, FaClock, FaArrowRight, FaBookOpen } from 'react-icons/fa';
+import Button from '../../shared/components/Button/Button';
 import api from '../../shared/lib/api';
-import SectionHeader from '../../shared/components/SectionHeader/SectionHeader';
+import useDocumentTitle from '../../shared/hooks/useDocumentTitle';
 import './BlogPage.css';
 
 const containerVariants = {
@@ -16,16 +17,26 @@ const itemVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: 'easeOut' } },
 };
 
+// Verified editorial categories per Requirement 13
 const categoriesList = [
-  { id: '', label: 'All Topics', keywords: [] },
-  { id: 'bim', label: 'BIM & Revit', keywords: ['revit', 'bim', 'navisworks', 'family', 'clash'] },
-  { id: 'autocad', label: 'AutoCAD', keywords: ['autocad', 'cad', 'drafting', 'drawing', 'layer'] },
-  { id: 'renders', label: '3D Renders', keywords: ['v-ray', 'vray', '3ds max', 'render', 'visualization', 'walkthrough', 'sketchup'] },
-  { id: 'training', label: 'Training', keywords: ['training', 'career', 'engineer', 'skill'] },
-  { id: 'trends', label: 'Industry Trends', keywords: ['architecture', 'interior', 'ai', 'outsourcing', 'b2b', 'trend', 'real estate'] },
+  { id: '', label: 'All Topics' },
+  { id: 'Architecture', label: 'Architecture' },
+  { id: 'BIM', label: 'BIM' },
+  { id: 'Revit', label: 'Revit' },
+  { id: 'AutoCAD', label: 'AutoCAD' },
+  { id: 'Structural BIM', label: 'Structural BIM' },
+  { id: 'MEP', label: 'MEP' },
+  { id: '3D Visualization', label: '3D Visualization' },
+  { id: 'AEC Workflows', label: 'AEC Workflows' },
+  { id: 'Training & Career', label: 'Training & Career' },
 ];
 
 const BlogPage = () => {
+  useDocumentTitle(
+    'Technical Insights & AEC Workflows | Prema Design Studio',
+    'Practical, practitioner-authored articles on Architecture, BIM, Revit, structural coordination, and hands-on AEC software workflows.'
+  );
+
   const [blogs, setBlogs] = useState([]);
   const [filteredBlogs, setFilteredBlogs] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -54,21 +65,12 @@ const BlogPage = () => {
     let result = blogs;
 
     if (selectedCategory) {
-      const activeCat = categoriesList.find((c) => c.id === selectedCategory);
-      if (activeCat && activeCat.keywords.length > 0) {
-        result = result.filter((post) => {
-          const title = post.title.toLowerCase();
-          const excerpt = (post.excerpt || '').toLowerCase();
-          const tags = (post.tags || []).map((t) => t.toLowerCase());
-
-          return activeCat.keywords.some(
-            (kw) =>
-              tags.some((t) => t.includes(kw)) ||
-              title.includes(kw) ||
-              excerpt.includes(kw)
-          );
-        });
-      }
+      result = result.filter((post) => {
+        const cat = (post.category || '').toLowerCase();
+        const tags = (post.tags || []).map((t) => t.toLowerCase());
+        const matchTerm = selectedCategory.toLowerCase();
+        return cat === matchTerm || tags.includes(matchTerm);
+      });
     }
 
     if (searchTerm) {
@@ -89,11 +91,7 @@ const BlogPage = () => {
       {/* Hero Header */}
       <section className="page-hero">
         <div className="page-hero__bg">
-          <img
-            src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=1600&q=80"
-            alt="Blogs cover"
-            className="page-hero__image"
-          />
+          <div className="blog-hero__mesh-bg" />
           <div className="page-hero__overlay" />
         </div>
         <div className="page-hero__content container">
@@ -102,12 +100,12 @@ const BlogPage = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <span className="hero__label">News & Articles</span>
+            <span className="hero__label">AEC Knowledge &amp; Practice</span>
             <h1>
               Design <span className="text-accent">Insights</span>
             </h1>
             <p className="page-hero__subtitle">
-              Read architectural updates, design trends, software tutorials, and learning guides.
+              Practitioner-authored workflows, technical documentation guides, and BIM coordination insights.
             </p>
           </motion.div>
         </div>
@@ -116,35 +114,37 @@ const BlogPage = () => {
       {/* Main feed catalog */}
       <section className="section">
         <div className="container">
-          <div className="blog-filter-bar flex-between">
-            {/* Tag pills */}
-            <div className="blog-tags">
-              {categoriesList.map((cat) => (
-                <button
-                  key={cat.id}
-                  className={`tag-pill ${selectedCategory === cat.id ? 'tag-pill--active' : ''}`}
-                  onClick={() => setSelectedCategory(cat.id)}
-                >
-                  {cat.label}
-                </button>
-              ))}
-            </div>
+          {blogs.length > 0 && (
+            <div className="blog-filter-bar flex-between">
+              {/* Category pills */}
+              <div className="blog-tags">
+                {categoriesList.map((cat) => (
+                  <button
+                    key={cat.id}
+                    className={`tag-pill ${selectedCategory === cat.id ? 'tag-pill--active' : ''}`}
+                    onClick={() => setSelectedCategory(cat.id)}
+                  >
+                    {cat.label}
+                  </button>
+                ))}
+              </div>
 
-            {/* Search Input */}
-            <div className="blog-search flex">
-              <FaSearch className="search-icon" />
-              <input
-                type="text"
-                placeholder="Search articles..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+              {/* Search Input */}
+              <div className="blog-search flex">
+                <FaSearch className="search-icon" />
+                <input
+                  type="text"
+                  placeholder="Search articles..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
             </div>
-          </div>
+          )}
 
           {loading ? (
             <div className="blog-grid">
-              {Array.from({ length: 6 }).map((_, i) => (
+              {Array.from({ length: 3 }).map((_, i) => (
                 <div key={i} className="blog-card blog-card--skeleton">
                   <div className="skeleton skeleton--image" />
                   <div className="blog-card__content">
@@ -156,9 +156,37 @@ const BlogPage = () => {
                 </div>
               ))}
             </div>
+          ) : blogs.length === 0 ? (
+            /* Requirement 12: Premium editorial empty state */
+            <motion.div
+              className="blog-empty-editorial text-center"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <div className="blog-empty-editorial__badge">
+                <FaBookOpen /> Editorial &amp; Technical Insights
+              </div>
+              <h2 className="blog-empty-editorial__title">Practical Insights Coming Soon</h2>
+              <p className="blog-empty-editorial__desc">
+                Prema Design Studio is preparing a collection of practical articles on Architecture, BIM, Revit, and AEC workflows. Each article is written from real project experience and hands-on software instruction.
+              </p>
+              <div className="blog-empty-editorial__actions">
+                <Link to="/services">
+                  <Button variant="primary" size="lg">
+                    Explore Our Services <FaArrowRight />
+                  </Button>
+                </Link>
+                <Link to="/training">
+                  <Button variant="outline" size="lg">
+                    Explore Training
+                  </Button>
+                </Link>
+              </div>
+            </motion.div>
           ) : filteredBlogs.length === 0 ? (
             <div className="blog-empty-state glass-card text-center">
-              <p className="text-muted">No articles found matching the criteria.</p>
+              <p className="text-muted">No articles found matching the selected topic.</p>
             </div>
           ) : (
             <motion.div
@@ -172,21 +200,25 @@ const BlogPage = () => {
                 <motion.div key={post._id} className="blog-card glass-card" variants={itemVariants}>
                   <Link to={`/blog/${post.slug}`} className="blog-card__link">
                     <div className="blog-card__image-wrapper">
-                      <img
-                        src={post.coverImage || 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=600&q=75'}
-                        alt={post.title}
-                        className="blog-card__image"
-                        loading="lazy"
-                        decoding="async"
-                        width="600"
-                        height="340"
-                      />
+                      {(post.featuredImage?.url || post.coverImage) ? (
+                        <img
+                          src={post.featuredImage?.url || post.coverImage}
+                          alt={post.title}
+                          className="blog-card__image"
+                          loading="lazy"
+                          decoding="async"
+                          width="600"
+                          height="340"
+                        />
+                      ) : (
+                        <div className="blog-card__fallback-img" />
+                      )}
                     </div>
                     <div className="blog-card__content">
                       <div className="blog-card__meta flex">
                         <span className="flex-center">
                           <FaCalendarAlt size={12} />{' '}
-                          {new Date(post.createdAt).toLocaleDateString()}
+                          {new Date(post.publicationDate || post.createdAt).toLocaleDateString()}
                         </span>
                         <span className="flex-center">
                           <FaClock size={12} /> {post.readTime || '5 min read'}
@@ -198,11 +230,9 @@ const BlogPage = () => {
 
                       <div className="blog-card__footer flex-between">
                         <div className="blog-card__tags">
-                          {post.tags?.map((t, index) => (
-                            <span key={index} className="blog-card__tag">
-                              #{t}
-                            </span>
-                          ))}
+                          <span className="blog-card__tag">
+                            {post.category || 'BIM'}
+                          </span>
                         </div>
                         <span className="blog-card__more flex-center">
                           Read More <FaArrowRight size={12} />

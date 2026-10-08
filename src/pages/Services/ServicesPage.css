@@ -1,10 +1,12 @@
 /* ============================
-   Shared Page Hero (reused across pages)
+   Services Page — Design & BIM Hub
+   Preserves 100% of the existing premium visual identity.
    ============================ */
 
+/* Page Hero */
 .page-hero {
   position: relative;
-  min-height: 50vh;
+  min-height: 52vh;
   display: flex;
   align-items: center;
   overflow: hidden;
@@ -26,8 +28,9 @@
   inset: 0;
   background: linear-gradient(
     135deg,
-    rgba(var(--color-bg-primary-rgb), 0.92) 0%,
-    rgba(var(--color-bg-primary-rgb), 0.75) 100%
+    rgba(var(--color-bg-primary-rgb), 0.94) 0%,
+    rgba(var(--color-bg-primary-rgb), 0.78) 50%,
+    rgba(var(--color-bg-primary-rgb), 0.92) 100%
   );
 }
 
@@ -39,7 +42,8 @@
 }
 
 .page-hero__content h1 {
-  font-size: var(--fs-4xl);
+  font-size: clamp(2.4rem, 4.5vw, 3.8rem);
+  line-height: 1.15;
   margin-top: var(--space-3);
   margin-bottom: var(--space-4);
 }
@@ -47,27 +51,60 @@
 .page-hero__subtitle {
   font-size: var(--fs-lg);
   color: var(--color-text-secondary);
-  max-width: 560px;
+  max-width: 680px;
   line-height: var(--lh-loose);
+  margin-bottom: var(--space-8);
+}
+
+.page-hero__audience-strip {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-6);
+}
+
+.page-hero__audience-label {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
+  color: var(--color-accent);
+  margin-right: var(--space-2);
+}
+
+.page-hero__audience-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8125rem;
+  color: var(--color-text-primary);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  padding: 4px 12px;
+  border-radius: var(--radius-sm);
+  backdrop-filter: blur(10px);
+}
+
+.page-hero__actions {
+  display: flex;
+  gap: var(--space-4);
+  flex-wrap: wrap;
 }
 
 @media (max-width: 768px) {
   .page-hero {
-    min-height: 40vh;
+    min-height: 44vh;
   }
 
   .page-hero__content {
     padding-top: var(--space-24);
     padding-bottom: var(--space-10);
   }
-
-  .page-hero__content h1 {
-    font-size: var(--fs-2xl);
-  }
 }
 
 /* ============================
-   Services Page
+   Services List Cards
    ============================ */
 
 .services-list {
@@ -94,6 +131,12 @@
   border-color: var(--glass-border-hover);
   box-shadow: var(--glass-shadow-hover);
   transform: translateY(-2px);
+}
+
+.service-detail--highlighted {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 24px rgba(200, 169, 110, 0.25);
+  background: rgba(200, 169, 110, 0.04);
 }
 
 .service-detail__icon-col {
@@ -173,10 +216,355 @@
   }
 }
 
-/* ---- CTA Section ---- */
-.services-cta {
-  background: var(--glass-bg-subtle);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+/* ============================
+   Interactive Showcase (Slider)
+   ============================ */
+.services-showcase {
+  background: var(--color-bg-primary);
+  position: relative;
+}
+
+.services-showcase__wrapper {
+  max-width: 1040px;
+  margin: var(--space-8) auto 0;
+  box-shadow: var(--shadow-glow-strong);
+  border-radius: var(--radius-xl);
+}
+
+/* ============================
+   Featured Projects Grid
+   ============================ */
+.services-projects {
+  background: var(--color-bg-secondary);
+}
+
+.services-projects__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-8);
+}
+
+.project-card {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  position: relative;
+  border: 1px solid var(--glass-border);
+  transition: all var(--transition-base);
+}
+
+.project-card:hover {
+  border-color: var(--glass-border-hover);
+  box-shadow: var(--glass-shadow-hover);
+  transform: translateY(-4px);
+}
+
+.project-card__image-wrapper {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  display: block;
+}
+
+.project-card__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-slow);
+}
+
+.project-card__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(var(--color-bg-primary-rgb), 0.92) 0%,
+    rgba(var(--color-bg-primary-rgb), 0.3) 45%,
+    transparent 100%
+  );
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: var(--space-6);
+  transition: opacity var(--transition-base);
+}
+
+.project-card:hover .project-card__image {
+  transform: scale(1.06);
+}
+
+.project-card__category {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--ls-wider);
+  color: var(--color-accent);
+  margin-bottom: var(--space-1);
+}
+
+.project-card__title {
+  font-size: var(--fs-xl);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-2);
+}
+
+.project-card__view {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--fs-sm);
+  color: var(--color-text-secondary);
+  transition: color var(--transition-fast);
+}
+
+.project-card:hover .project-card__view {
+  color: var(--color-accent);
+}
+
+@media (max-width: 768px) {
+  .services-projects__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================
+   Why Choose Us (AEC Focus)
+   ============================ */
+.services-why {
+  background: var(--color-bg-primary);
+}
+
+.services-why__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-16);
+  align-items: center;
+}
+
+.services-why__image-wrapper {
+  position: relative;
+}
+
+.services-why__image {
+  width: 100%;
+  border-radius: var(--radius-lg);
+  object-fit: cover;
+  aspect-ratio: 4 / 5;
+}
+
+.services-why__image-accent {
+  position: absolute;
+  bottom: -16px;
+  right: -16px;
+  width: 100%;
+  height: 100%;
+  border: 2px solid var(--color-accent);
+  border-radius: var(--radius-lg);
+  z-index: -1;
+  opacity: 0.3;
+}
+
+.services-why__badge {
+  position: absolute;
+  bottom: var(--space-6);
+  left: var(--space-6);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-md);
+  z-index: 2;
+  background: var(--glass-bg-strong);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(16px);
+}
+
+.services-why__badge-icon {
+  font-size: var(--fs-xl);
+  color: var(--color-accent);
+  flex-shrink: 0;
+}
+
+.services-why__badge-title {
+  display: block;
+  font-family: var(--font-heading);
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-bold);
+  color: var(--color-text-primary);
+  line-height: 1.1;
+}
+
+.services-why__badge-sub {
+  display: block;
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--ls-wide);
+  color: var(--color-text-muted);
+}
+
+.services-why__content h2 {
+  font-size: var(--fs-3xl);
+  margin-bottom: var(--space-4);
+}
+
+.services-why__text {
+  font-size: var(--fs-base);
+  color: var(--color-text-secondary);
+  line-height: var(--lh-loose);
+  margin-bottom: var(--space-6);
+}
+
+.services-why__features {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-bottom: var(--space-8);
+  list-style: none;
+}
+
+.services-why__features li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--fs-sm);
+  color: var(--color-text-secondary);
+}
+
+@media (max-width: 1024px) {
+  .services-why__grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-10);
+  }
+
+  .services-why__image-accent {
+    display: none;
+  }
+}
+
+/* ============================
+   B2B Project Inquiry Form
+   ============================ */
+.services-inquiry {
+  background: var(--color-bg-secondary);
   border-top: 1px solid var(--glass-border);
+}
+
+.services-inquiry__grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: var(--space-12);
+  align-items: center;
+}
+
+.services-inquiry__info-col h3 {
+  font-size: var(--fs-2xl);
+  margin-bottom: var(--space-4);
+}
+
+.services-inquiry__info-col p {
+  color: var(--color-text-secondary);
+  line-height: var(--lh-loose);
+  margin-bottom: var(--space-8);
+}
+
+.services-inquiry__form-card {
+  padding: var(--space-8);
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--glass-shadow);
+}
+
+.services-inquiry__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.services-inquiry__form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+.services-inquiry__form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.services-inquiry__form-group label {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: var(--ls-wide);
+}
+
+.services-inquiry__input,
+.services-inquiry__select,
+.services-inquiry__textarea {
+  padding: var(--space-3) var(--space-4);
+  background: rgba(var(--color-bg-primary-rgb), 0.5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  font-size: var(--fs-sm);
+  transition: border-color var(--transition-base);
+}
+
+.services-inquiry__input:focus,
+.services-inquiry__select:focus,
+.services-inquiry__textarea:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.services-inquiry__input::placeholder,
+.services-inquiry__textarea::placeholder {
+  color: var(--color-text-muted);
+}
+
+.services-inquiry__select option {
+  background-color: #161616;
+  color: #F5F5F5;
+  padding: 8px;
+}
+
+[data-theme='light'] .services-inquiry__select option {
+  background-color: #FFFFFF;
+  color: #1A1A1A;
+}
+
+.services-inquiry__status-msg {
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+}
+
+.services-inquiry__status-msg--success {
+  background: rgba(19, 115, 51, 0.1);
+  color: #137333;
+  border: 1px solid rgba(19, 115, 51, 0.2);
+}
+
+.services-inquiry__status-msg--error {
+  background: rgba(193, 27, 23, 0.1);
+  color: #c11b17;
+  border: 1px solid rgba(193, 27, 23, 0.2);
+}
+
+@media (max-width: 992px) {
+  .services-inquiry__grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
+  }
+}
+
+@media (max-width: 480px) {
+  .services-inquiry__form-row {
+    grid-template-columns: 1fr;
+  }
 }

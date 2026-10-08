@@ -1,229 +1,258 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, useInView } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
-  FaDraftingCompass,
   FaBuilding,
+  FaGraduationCap,
+  FaDraftingCompass,
   FaCubes,
   FaProjectDiagram,
-  FaPuzzlePiece,
+  FaLaptopCode,
   FaImage,
-  FaArrowRight,
   FaCheckCircle,
-  FaMedal,
+  FaArrowRight,
+  FaMapMarkerAlt,
+  FaWrench,
+  FaCreditCard,
+  FaAward,
+  FaUsers,
+  FaPhoneAlt,
+  FaStar,
 } from 'react-icons/fa';
 import SectionHeader from '../../shared/components/SectionHeader/SectionHeader';
 import Button from '../../shared/components/Button/Button';
-import BeforeAfterSlider from '../../shared/components/BeforeAfterSlider/BeforeAfterSlider';
+import useDocumentTitle from '../../shared/hooks/useDocumentTitle';
 import api from '../../shared/lib/api';
 import './HomePage.css';
 
-const iconMap = {
-  FaDraftingCompass: <FaDraftingCompass />,
-  FaBuilding: <FaBuilding />,
-  FaCubes: <FaCubes />,
-  FaProjectDiagram: <FaProjectDiagram />,
-  FaPuzzlePiece: <FaPuzzlePiece />,
-  FaImage: <FaImage />,
-};
-
-const servicesStatic = [
-  { icon: 'FaDraftingCompass', title: 'AutoCAD Drafting', desc: 'Precision 2D drafting and documentation for architectural and structural projects.' },
-  { icon: 'FaBuilding', title: 'Revit Architecture', desc: 'Full BIM modeling for architectural design, documentation, and coordination.' },
-  { icon: 'FaCubes', title: 'Revit Structure', desc: 'Structural BIM modeling with precise detailing and analysis-ready output.' },
-  { icon: 'FaProjectDiagram', title: 'BIM Coordination', desc: 'Multi-discipline BIM coordination and clash detection for seamless delivery.' },
-  { icon: 'FaPuzzlePiece', title: 'Revit Family Creation', desc: 'Custom parametric Revit families built to your specifications.' },
-  { icon: 'FaImage', title: '3D Visualization', desc: 'Photorealistic 3D renders and walkthroughs using 3ds Max & V-Ray.' },
-];
-
-const featuredProjectsStatic = [
+// Verified Concept and Student demonstration projects matching production database
+const verifiedFallbackProjects = [
   {
     title: 'Modern Residential Villa',
-    category: 'Residential',
-    image: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&q=80',
+    category: 'residential',
+    projectType: 'Concept Project',
+    scope: 'Architectural Revit BIM, Construction Documentation & 3D CGI Renders',
+    description: 'An architectural concept villa featuring open floor plans, parametric Revit BIM modeling, and photorealistic 3D visualization.',
+    software: ['Revit', '3ds Max', 'V-Ray', 'AutoCAD'],
+    thumbnail: { url: 'https://res.cloudinary.com/vr0slvvw/image/upload/v1785586217/portfolio/file_quirjg.png' },
     slug: 'modern-residential-villa',
   },
   {
-    title: 'Corporate Office Tower',
-    category: 'Commercial',
-    image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80',
-    slug: 'corporate-office-tower',
-  },
-  {
-    title: 'Luxury Apartment Interior',
-    category: 'Interior',
-    image: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=800&q=80',
-    slug: 'luxury-apartment-interior',
-  },
-  {
-    title: 'International School Campus',
-    category: 'School',
-    image: 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=800&q=80',
-    slug: 'international-school-campus',
+    title: 'Student Villa Concept',
+    category: 'student-projects',
+    projectType: 'Student Project',
+    scope: 'Passive solar layout, spatial planning, and residential BIM modeling',
+    description: 'A conceptual villa modeling project developed by students during practical BIM training at Prema Design Studio.',
+    software: ['Revit', '3ds Max', 'V-Ray'],
+    thumbnail: { url: 'https://res.cloudinary.com/vr0slvvw/image/upload/v1785586181/portfolio/file_udkygn.png' },
+    slug: 'student-villa-concept',
   },
 ];
 
-const stats = [
-  { number: 50, suffix: '+', label: 'Projects Completed' },
-  { number: 6, suffix: '+', label: 'Software Expertise' },
-  { number: 200, suffix: '+', label: 'Students Trained' },
-  { number: 5, suffix: '+', label: 'Years Experience' },
+// Client-friendly Design & BIM Services
+const b2bServices = [
+  {
+    icon: <FaDraftingCompass />,
+    title: 'Architectural Design & Documentation',
+    desc: 'From initial floor plans to complete municipal submission drawings and construction drawing packages ready for the jobsite.',
+  },
+  {
+    icon: <FaDraftingCompass />,
+    title: 'AutoCAD 2D/3D Drafting',
+    desc: 'High-precision computer-aided drafting following standardized architectural layers, sheet setups, and accurate dimensioning.',
+  },
+  {
+    icon: <FaBuilding />,
+    title: 'Revit Architecture BIM',
+    desc: 'Intelligent 3D building information models from schematic design through detailed design development and quantity takeoffs.',
+  },
+  {
+    icon: <FaCubes />,
+    title: 'Revit Structure BIM',
+    desc: 'Accurate concrete framing, foundation footings, structural steel layouts, and rebar scheduling coordinated with architecture.',
+  },
+  {
+    icon: <FaWrench />,
+    title: 'MEP BIM / Coordination',
+    desc: '3D integration of mechanical, electrical, and plumbing routes to eliminate spatial routing conflicts early.',
+  },
+  {
+    icon: <FaProjectDiagram />,
+    title: 'Navisworks Clash Detection',
+    desc: 'Comprehensive multi-discipline interference checks and issue tracking before construction crews mobilize on site.',
+  },
+  {
+    icon: <FaImage />,
+    title: '3D Visualization / CGI',
+    desc: 'Photorealistic architectural exterior renders, interior visualizations, and immersive client walkthrough animations.',
+  },
 ];
 
-const containerVariants = {
-  hidden: {},
-  visible: {
-    transition: { staggerChildren: 0.05 },
+// Training Academy Courses
+const trainingCourses = [
+  {
+    title: 'AutoCAD 2D & 3D Drafting',
+    software: 'AutoCAD',
+    duration: '4 Weeks',
+    desc: 'Master professional drawing setups, layering conventions, site plans, and municipal drawing sets with hands-on drafting exercises.',
+    badge: 'Foundation',
   },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.35, ease: 'easeOut' },
+  {
+    title: 'Revit Architecture BIM',
+    software: 'Revit',
+    duration: '6 Weeks',
+    desc: 'Build complete BIM models with parametric walls, roofs, custom components, schedules, and drawing sheet generation.',
+    badge: 'Most Popular',
   },
-};
+  {
+    title: 'Revit Structure BIM',
+    software: 'Revit',
+    duration: '5 Weeks',
+    desc: 'Model RCC and steel structures with accurate foundation layouts, rebar detailing schedules, and structural documentation.',
+    badge: 'Specialized',
+  },
+  {
+    title: 'Comprehensive BIM Workflows',
+    software: 'Revit + Navisworks',
+    duration: '8 Weeks',
+    desc: 'Multi-discipline project coordination, clash detection reports, and collaborative BIM execution standards.',
+    badge: 'Career Track',
+  },
+  {
+    title: 'SketchUp 3D Modeling',
+    software: 'SketchUp',
+    duration: '4 Weeks',
+    desc: 'Fast-paced architectural concept modeling, space planning, custom furniture modeling, and presentation graphics.',
+    badge: 'Essential',
+  },
+  {
+    title: '3ds Max + V-Ray Masterclass',
+    software: '3ds Max + V-Ray',
+    duration: '8 Weeks',
+    desc: 'Photorealistic architectural materials, HDRI environment lighting, camera composition, and post-production rendering.',
+    badge: 'Advanced',
+  },
+];
 
-// Animated number counter hook
-function useCounter(target, duration = 1800, shouldStart = false) {
-  const [count, setCount] = useState(0);
-  useEffect(() => {
-    if (!shouldStart) return;
-    let start = 0;
-    const step = target / (duration / 16);
-    const timer = setInterval(() => {
-      start += step;
-      if (start >= target) {
-        setCount(target);
-        clearInterval(timer);
-      } else {
-        setCount(Math.floor(start));
-      }
-    }, 16);
-    return () => clearInterval(timer);
-  }, [target, duration, shouldStart]);
-  return count;
-}
 
-// Single stat item with counter
-const StatItem = ({ stat, index }) => {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: '-80px' });
-  const count = useCounter(stat.number, 1600, inView);
-
-  return (
-    <motion.div
-      ref={ref}
-      className="stat-item"
-      variants={itemVariants}
-      style={{ '--stat-index': index }}
-    >
-      <span className="stat-item__number">
-        {count}{stat.suffix}
-      </span>
-      <span className="stat-item__label">{stat.label}</span>
-    </motion.div>
-  );
-};
 
 const HomePage = () => {
-  const [services, setServices] = useState([]);
-  const [featuredProjects, setFeaturedProjects] = useState([]);
-  const inquiryFormRef = useRef(null);
+  useDocumentTitle(
+    'Prema Design Studio — Architecture, BIM & Professional Training',
+    'One studio. Two paths — professional Design & BIM services and project-based software training. Serving clients globally from Gurugram, India.'
+  );
 
-  // Quick Inquiry Form State
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [type, setType] = useState('project');
-  const [subject, setSubject] = useState('');
-  const [message, setMessage] = useState('');
+  const enquiryFormRef = useRef(null);
+  const [testimonialTab, setTestimonialTab] = useState('clients');
+  const [approvedTestimonials, setApprovedTestimonials] = useState([]);
+  const [loadingTestimonials, setLoadingTestimonials] = useState(true);
+
+  // Dynamic projects state synchronized with database/portfolio
+  const [projects, setProjects] = useState([]);
+  const [loadingProjects, setLoadingProjects] = useState(true);
+
+  // Fetch verified published projects from the unified API data source
+  useEffect(() => {
+    let isMounted = true;
+    const fetchProjects = async () => {
+      try {
+        const res = await api.get('/projects?status=published');
+        if (isMounted && res.data?.success && res.data.data?.length > 0) {
+          setProjects(res.data.data);
+        } else if (isMounted) {
+          setProjects(verifiedFallbackProjects);
+        }
+      } catch (err) {
+        console.error('Failed to load projects on homepage:', err);
+        if (isMounted) setProjects(verifiedFallbackProjects);
+      } finally {
+        if (isMounted) setLoadingProjects(false);
+      }
+    };
+    fetchProjects();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // Fetch approved public testimonials
+  useEffect(() => {
+    let isMounted = true;
+    const fetchTestimonials = async () => {
+      try {
+        const res = await api.get('/testimonials?limit=8');
+        if (isMounted && res.data?.success) {
+          const items = res.data.data || [];
+          setApprovedTestimonials(items);
+          const clients = items.filter((t) => t.category === 'client');
+          const students = items.filter((t) => t.category === 'student');
+          if (clients.length === 0 && students.length > 0) {
+            setTestimonialTab('students');
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load testimonials on homepage:', err);
+      } finally {
+        if (isMounted) setLoadingTestimonials(false);
+      }
+    };
+    fetchTestimonials();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // Lead Generation Form State
+  const [formData, setFormData] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    interest: 'Architecture',
+    message: '',
+  });
   const [submitting, setSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
 
-  const scrollToInquiry = () => {
-    inquiryFormRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const scrollToEnquiry = (preselectedInterest) => {
+    if (preselectedInterest) {
+      setFormData((prev) => ({ ...prev, interest: preselectedInterest }));
+    }
+    enquiryFormRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
-  useEffect(() => {
-    const fetchHomeData = async () => {
-      try {
-        const servicesRes = await api.get('/services');
-        if (servicesRes.data.success && servicesRes.data.data && servicesRes.data.data.length > 0) {
-          const activeServices = servicesRes.data.data
-            .filter((s) => s.isActive !== false)
-            .sort((a, b) => (a.order || 0) - (b.order || 0))
-            .slice(0, 6);
-          const normalized = activeServices.map((s) => ({
-            ...s,
-            desc: s.shortDescription || s.description,
-          }));
-          setServices(normalized);
-        } else {
-          setServices(servicesStatic);
-        }
-      } catch (error) {
-        console.error('Error fetching home services:', error);
-        setServices(servicesStatic);
-      }
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
-      try {
-        const projectsRes = await api.get('/projects?status=published');
-        if (projectsRes.data.success && projectsRes.data.data && projectsRes.data.data.length > 0) {
-          const featured = projectsRes.data.data
-            .filter((p) => p.featured === true)
-            .slice(0, 4);
-          const normalized = featured.map((p) => ({
-            ...p,
-            image: p.thumbnail?.url || p.images?.[0]?.url || p.image,
-            category: p.category.charAt(0).toUpperCase() + p.category.slice(1),
-          }));
-          if (normalized.length > 0) {
-            setFeaturedProjects(normalized);
-          } else {
-            const firstFour = projectsRes.data.data.slice(0, 4).map((p) => ({
-              ...p,
-              image: p.thumbnail?.url || p.images?.[0]?.url || p.image,
-              category: p.category.charAt(0).toUpperCase() + p.category.slice(1),
-            }));
-            setFeaturedProjects(firstFour);
-          }
-        } else {
-          setFeaturedProjects(featuredProjectsStatic);
-        }
-      } catch (error) {
-        console.error('Error fetching home projects:', error);
-        setFeaturedProjects(featuredProjectsStatic);
-      }
-    };
-    fetchHomeData();
-  }, []);
-
-  const handleInquirySubmit = async (e) => {
+  const handleEnquirySubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
     setSubmitStatus(null);
+
     try {
+      const type = formData.interest === 'Training' ? 'training' : 'project';
       const res = await api.post('/inquiries', {
-        name,
-        email,
-        phone,
-        type,
-        subject: subject || `Quick Project Request (${type})`,
-        message,
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        type: type,
+        subject: `Enquiry: ${formData.interest}`,
+        message: formData.message,
       });
+
       if (res.data.success) {
         setSubmitStatus({
           success: true,
-          message: 'Thank you! Your project inquiry has been received. We will get back to you shortly.',
+          message: 'Thank you! Your enquiry has been received. Our team will contact you promptly within 24–48 business hours.',
         });
-        setName('');
-        setEmail('');
-        setPhone('');
-        setSubject('');
-        setMessage('');
+        setFormData({
+          name: '',
+          phone: '',
+          email: '',
+          interest: 'Architecture',
+          message: '',
+        });
       } else {
         setSubmitStatus({
           success: false,
@@ -231,10 +260,10 @@ const HomePage = () => {
         });
       }
     } catch (error) {
-      console.error('Inquiry submission error:', error);
+      console.error('Enquiry error:', error);
       setSubmitStatus({
         success: false,
-        message: error.response?.data?.message || 'Failed to connect to server. Please try again.',
+        message: error.response?.data?.message || 'Unable to submit enquiry. Please try again or WhatsApp us directly.',
       });
     } finally {
       setSubmitting(false);
@@ -242,390 +271,565 @@ const HomePage = () => {
   };
 
   return (
-    <div className="home">
-      {/* ===== HERO SECTION ===== */}
-      <section className="hero grain-overlay">
-        <div className="hero__bg">
-          <img
-            src="https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=1600&q=80"
-            alt="Architectural design"
-            className="hero__bg-image"
-          />
-          <div className="hero__overlay" />
-        </div>
-
-        <div className="hero__content container">
+    <div className="home-page">
+      {/* ========================================================
+          1. HERO / GATEWAY — TWO SPECIALIZED ARMS
+          ======================================================== */}
+      <section className="hero-gateway">
+        <div className="hero-gateway__ambient" />
+        <div className="container">
           <motion.div
-            className="hero__text"
-            initial={{ opacity: 0, y: 40 }}
+            className="hero-gateway__header"
+            initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
-            <span className="hero__label">Architecture · Structure · Interior</span>
-            <h1 className="hero__title">
-              We Design Spaces
-              <br />
-              That <span className="text-accent">Inspire</span>
-            </h1>
-            <p className="hero__subtitle">
-              From concept to construction — delivering precision drafting, BIM
-              modeling, and photorealistic visualization for architects, builders,
-              and design firms.
-            </p>
-
-            <div className="hero__actions">
-              <Button variant="primary" size="lg" onClick={scrollToInquiry}>
-                Start a Project <FaArrowRight />
-              </Button>
-              <Link to="/portfolio">
-                <Button variant="outline" size="lg">
-                  View Our Work
-                </Button>
-              </Link>
-            </div>
-          </motion.div>
-
-          {/* Scroll Indicator */}
-          <motion.div
-            className="hero__scroll"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.5 }}
-          >
-            <span>Scroll</span>
-            <div className="hero__scroll-line" />
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ===== SERVICES SECTION ===== */}
-      <section className="section home-services">
-        <div className="container">
-          <SectionHeader
-            label="What We Do"
-            title="Our Services"
-            subtitle="Comprehensive design and BIM solutions across the entire project lifecycle"
-          />
-
-          <motion.div
-            className="home-services__grid"
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: '-100px' }}
-          >
-            {services.map((service, index) => (
-              <motion.div
-                key={index}
-                className="service-card glass-card"
-                variants={itemVariants}
-                whileHover={{ y: -8, transition: { duration: 0.2 } }}
-              >
-                {/* Background number */}
-                <span className="service-card__bg-number">
-                  {String(index + 1).padStart(2, '0')}
-                </span>
-                <div className="service-card__icon">
-                  {iconMap[service.icon]}
-                </div>
-                <h4 className="service-card__title">{service.title}</h4>
-                <p className="service-card__desc">{service.desc}</p>
-              </motion.div>
-            ))}
-          </motion.div>
-
-          <div className="text-center" style={{ marginTop: 'var(--space-10)' }}>
-            <Link to="/services">
-              <Button variant="outline">
-                Explore All Services <FaArrowRight />
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ===== FEATURED PROJECTS ===== */}
-      <section className="section home-projects">
-        <div className="container">
-          <SectionHeader
-            label="Our Work"
-            title="Featured Projects"
-            subtitle="Showcasing our best architectural, structural, and interior design work"
-          />
-
-          <motion.div
-            className="home-projects__grid"
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: '-100px' }}
-          >
-            {featuredProjects.map((project, index) => (
-              <motion.div
-                key={index}
-                className="project-card"
-                variants={itemVariants}
-                style={{ willChange: 'opacity, transform' }}
-              >
-                <Link to={`/portfolio/${project.slug}`} className="project-card__link">
-                  <div className="project-card__image-wrapper" style={{ backgroundColor: '#f0f0f0' }}>
-                    <img
-                      src={project.image}
-                      alt={project.title}
-                      className="project-card__image"
-                      loading="lazy"
-                      decoding="async"
-                      width="800"
-                      height="500"
-                    />
-                    <div className="project-card__overlay">
-                      <span className="project-card__category">{project.category}</span>
-                      <h3 className="project-card__title">{project.title}</h3>
-                      <span className="project-card__view">
-                        View Project <FaArrowRight />
-                      </span>
-                    </div>
-                  </div>
-                </Link>
-              </motion.div>
-            ))}
-          </motion.div>
-
-          <div className="text-center" style={{ marginTop: 'var(--space-10)' }}>
-            <Link to="/portfolio">
-              <Button variant="outline">
-                View All Projects <FaArrowRight />
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ===== BLUEPRINT TO 3D TRANSFORMATION SHOWCASE ===== */}
-      <section className="section home-comparison">
-        <div className="container">
-          <SectionHeader
-            label="Interactive Showcase"
-            title="From Blueprint to Reality"
-            subtitle="Drag the interactive slider below to explore how 2D AutoCAD drafting seamlessly transforms into photorealistic 3D architectural renders."
-          />
-          <motion.div
-            className="home-comparison__wrapper"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <BeforeAfterSlider
-              beforeImage="https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=1400&q=80"
-              afterImage="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1400&q=80"
-              beforeLabel="2D Blueprint / CAD"
-              afterLabel="3D Photorealistic Render"
-              initialPosition={50}
-              altText="Modern Villa Blueprint to 3D Render comparison"
-            />
+            <div className="hero-gateway__badge">
+              <span>Prema Design Studio</span>
+            </div>
+            <h1 className="hero-gateway__title">
+              Architecture, BIM &amp; <br />
+              <span className="text-accent">Professional Training</span>
+            </h1>
+            <p className="hero-gateway__subtitle">
+              One studio. Two paths — professional Design &amp; BIM services and project-based software training.
+            </p>
           </motion.div>
-        </div>
-      </section>
 
-      {/* ===== ABOUT / WHY US ===== */}
-      <section className="section home-about">
-        <div className="container">
-          <div className="home-about__grid">
+          {/* The Two Distinct Cards */}
+          <div className="hero-gateway__cards">
+            {/* Card A: DESIGN & BIM SERVICES */}
             <motion.div
-              className="home-about__image-col"
-              initial={{ opacity: 0, x: -40 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7 }}
+              className="gateway-door-card"
+              initial={{ opacity: 0, x: -24 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.55, delay: 0.15 }}
             >
-              <div className="home-about__image-wrapper">
+              <div className="gateway-door-card__bg">
                 <img
-                  src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800&q=80"
-                  alt="Architecture planning"
-                  className="home-about__image"
-                  loading="lazy"
+                  src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1000&q=80"
+                  alt="Design and BIM Services"
+                  className="gateway-door-card__img"
                 />
-                <div className="home-about__image-accent" />
-                {/* Floating glass badge */}
-                <div className="home-about__badge glass-card">
-                  <FaMedal className="home-about__badge-icon" />
-                  <div>
-                    <span className="home-about__badge-title">5 Years</span>
-                    <span className="home-about__badge-sub">of Excellence</span>
+                <div className="gateway-door-card__overlay" />
+              </div>
+
+              <div className="gateway-door-card__content">
+                <span className="gateway-door-card__tag">
+                  <FaBuilding /> Division 01
+                </span>
+                <h2 className="gateway-door-card__title">Design &amp; BIM Services</h2>
+                <p className="gateway-door-card__desc">
+                  Full-lifecycle architectural drafting, LOD 200–400 BIM modeling, clash coordination, and photorealistic CGI visualization engineered for AEC firms.
+                </p>
+
+                <div className="gateway-door-card__audience">
+                  <span className="gateway-door-card__audience-label">Designed Specifically For:</span>
+                  <div className="gateway-door-card__chips">
+                    <span className="gateway-door-chip">Architects</span>
+                    <span className="gateway-door-chip">Contractors</span>
+                    <span className="gateway-door-chip">Developers</span>
+                    <span className="gateway-door-chip">Interior Designers</span>
+                    <span className="gateway-door-chip">Engineering Firms</span>
                   </div>
+                </div>
+
+                <div className="gateway-door-card__cta">
+                  <Link to="/services">
+                    <Button variant="primary" size="lg" className="gateway-door-card__btn">
+                      EXPLORE DESIGN &amp; BIM <FaArrowRight />
+                    </Button>
+                  </Link>
                 </div>
               </div>
             </motion.div>
 
+            {/* Card B: TRAINING ACADEMY */}
             <motion.div
-              className="home-about__content"
-              initial={{ opacity: 0, x: 40 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7 }}
+              className="gateway-door-card"
+              initial={{ opacity: 0, x: 24 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.55, delay: 0.2 }}
             >
-              <span className="section-header__label">Why Choose Us</span>
-              <h2 style={{ marginTop: 'var(--space-3)' }}>Design Meets <span className="text-accent">Precision</span></h2>
-              <div className="section-header__divider" style={{ marginTop: 'var(--space-4)' }} />
-              <p className="home-about__text">
-                We combine creative architectural vision with technical BIM expertise
-                to deliver projects that stand out. Whether you're an architect
-                needing reliable drafting support, a firm looking for BIM coordination,
-                or a student eager to master industry software — we're here for you.
-              </p>
-              <ul className="home-about__features">
-                <li><FaCheckCircle className="text-accent" /> Industry-Standard BIM Workflows</li>
-                <li><FaCheckCircle className="text-accent" /> Expert in AutoCAD, Revit, 3ds Max & V-Ray</li>
-                <li><FaCheckCircle className="text-accent" /> 50+ Projects Delivered Successfully</li>
-                <li><FaCheckCircle className="text-accent" /> Professional Training Programs</li>
-                <li><FaCheckCircle className="text-accent" /> On-Time, Quality-First Approach</li>
-              </ul>
-              <Button variant="primary" size="lg" onClick={scrollToInquiry}>
-                Start a Project <FaArrowRight />
-              </Button>
+              <div className="gateway-door-card__bg">
+                <img
+                  src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=1000&q=80"
+                  alt="Software Training Academy"
+                  className="gateway-door-card__img"
+                />
+                <div className="gateway-door-card__overlay" />
+              </div>
+
+              <div className="gateway-door-card__content">
+                <span className="gateway-door-card__tag">
+                  <FaGraduationCap /> Division 02
+                </span>
+                <h2 className="gateway-door-card__title">Training Academy</h2>
+                <p className="gateway-door-card__desc">
+                  Project-based, mentor-led courses in AutoCAD, Revit BIM, SketchUp, and 3ds Max. Learn from practicing engineers and build job-ready portfolios.
+                </p>
+
+                <div className="gateway-door-card__audience">
+                  <span className="gateway-door-card__audience-label">Programs Tailored For:</span>
+                  <div className="gateway-door-card__chips">
+                    <span className="gateway-door-chip">Architecture &amp; Civil Students</span>
+                    <span className="gateway-door-chip">Working Professionals</span>
+                    <span className="gateway-door-chip">Job Seekers</span>
+                  </div>
+                </div>
+
+                <div className="gateway-door-card__cta">
+                  <Link to="/training">
+                    <Button variant="primary" size="lg" className="gateway-door-card__btn">
+                      EXPLORE TRAINING <FaArrowRight />
+                    </Button>
+                  </Link>
+                </div>
+              </div>
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* ===== STATS ===== */}
-      <section className="home-stats">
+      {/* ========================================================
+          2. DESIGN & BIM SERVICES OVERVIEW
+          ======================================================== */}
+      <section className="home-division-services">
         <div className="container">
-          <motion.div
-            className="home-stats__grid"
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-          >
-            {stats.map((stat, index) => (
-              <StatItem key={index} stat={stat} index={index} />
+          <SectionHeader
+            label="Professional Division"
+            title="Design &amp; BIM Services"
+            subtitle="Reliable, high-precision architectural drafting and BIM modeling for construction and design firms"
+          />
+
+          <div className="division-services__audience-badge">
+            <span style={{ fontSize: 'var(--fs-xs)', textTransform: 'uppercase', letterSpacing: 'var(--ls-wider)', color: 'var(--color-accent)' }}>
+              Trusted Partner For
+            </span>
+            <div className="division-services__chips">
+              <span className="gateway-door-chip">Architects</span>
+              <span className="gateway-door-chip">General Contractors</span>
+              <span className="gateway-door-chip">Real Estate Developers</span>
+              <span className="gateway-door-chip">Interior Designers</span>
+              <span className="gateway-door-chip">Engineering Firms</span>
+            </div>
+          </div>
+
+          <div className="division-services__grid">
+            {b2bServices.map((svc, i) => (
+              <div key={i} className="division-service-item">
+                <div className="division-service-item__icon">{svc.icon}</div>
+                <h4>{svc.title}</h4>
+                <p>{svc.desc}</p>
+              </div>
             ))}
-          </motion.div>
+          </div>
+
+          <div className="division-services__action-row">
+            <Button
+              variant="primary"
+              size="lg"
+              onClick={() => scrollToEnquiry('BIM')}
+            >
+              Get a Project Quote <FaArrowRight />
+            </Button>
+            <Link to="/services">
+              <Button variant="outline" size="lg">
+                View Full Services Breakdown
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
 
-      {/* ===== QUICK INQUIRY FORM ===== */}
-      <section ref={inquiryFormRef} className="section home-inquiry">
+      {/* ========================================================
+          3. TRAINING ACADEMY OVERVIEW
+          ======================================================== */}
+      <section className="home-division-training">
         <div className="container">
-          <div className="home-inquiry__grid">
-            <motion.div
-              className="home-inquiry__info-col"
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
+          <SectionHeader
+            label="Education Division"
+            title="Professional Training Academy"
+            subtitle="Hands-on software training taught by working BIM engineers with real construction drawings"
+          />
+
+          {/* Key Training Pillars */}
+          <div className="division-training__features">
+            <div className="division-training__feature-card">
+              <FaLaptopCode className="division-training__feature-icon" />
+              <h5>Project-Based Learning</h5>
+              <p>Work directly on practical architectural drawings and real building models.</p>
+            </div>
+            <div className="division-training__feature-card">
+              <FaCreditCard className="division-training__feature-icon" />
+              <h5>Flexible EMI Options</h5>
+              <p>Transparent pricing with monthly installment learning options available.</p>
+            </div>
+            <div className="division-training__feature-card">
+              <FaAward className="division-training__feature-icon" />
+              <h5>Course Completion Certificate</h5>
+              <p>Certificate of completion awarded upon comprehensive project and portfolio review.</p>
+            </div>
+            <div className="division-training__feature-card">
+              <FaUsers className="division-training__feature-icon" />
+              <h5>Online &amp; Studio Batches</h5>
+              <p>Join interactive live online sessions or attend in-person at our Gurugram studio.</p>
+            </div>
+          </div>
+
+          {/* Courses Grid */}
+          <div className="division-courses__grid">
+            {trainingCourses.map((c, i) => (
+              <div key={i} className="division-course-card">
+                <div className="division-course-card__header">
+                  <span className="division-course-card__software">{c.software}</span>
+                  <span className="division-course-card__duration">{c.duration}</span>
+                </div>
+                <h4>{c.title}</h4>
+                <p className="division-course-card__desc">{c.desc}</p>
+                <div className="division-course-card__footer">
+                  <span className="division-course-card__badge">
+                    <FaCheckCircle /> {c.badge}
+                  </span>
+                  <Link
+                    to="/training"
+                    style={{ fontSize: 'var(--fs-xs)', color: 'var(--color-accent)', textDecoration: 'none', fontWeight: 600 }}
+                  >
+                    View Curriculum &rarr;
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="division-services__action-row">
+            <Button
+              variant="primary"
+              size="lg"
+              onClick={() => scrollToEnquiry('Training')}
             >
-              <span className="section-header__label">Get In Touch</span>
-              <h3 style={{ marginTop: 'var(--space-3)' }}>
-                Let's Build Something <span className="text-accent">Great</span> Together
+              Discuss Training <FaArrowRight />
+            </Button>
+            <Link to="/training">
+              <Button variant="outline" size="lg">
+                View All Courses &amp; Fees
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================
+          4. EXPLORE OUR DESIGN & BIM CAPABILITIES
+          ======================================================== */}
+      <section className="home-selected-projects">
+        <div className="container">
+          <SectionHeader
+            label="Technical Capabilities"
+            title="Explore Our Design &amp; BIM Capabilities"
+            subtitle="Demonstration architectural BIM models, technical documentation, and CGI visualization sample works"
+          />
+
+          <div className="selected-projects__grid">
+            {projects.map((project, idx) => {
+              const projectImg = project.thumbnail?.url || project.images?.[0]?.url || project.image;
+              const projectTypeBadge = project.projectType || (project.category === 'student-projects' ? 'Student Project' : 'Concept Project');
+              const categoryFormatted = project.category ? project.category.replace('-', ' ') : 'Design';
+              return (
+                <div key={project.slug || idx} className="selected-project-card">
+                  <Link to={`/portfolio/${project.slug}`} className="selected-project-card__image-wrap">
+                    <img
+                      src={projectImg}
+                      alt={project.title}
+                      className="selected-project-card__img"
+                      loading="lazy"
+                    />
+                    <span className="selected-project-card__category-badge">{projectTypeBadge} • {categoryFormatted}</span>
+                  </Link>
+
+                  <div className="selected-project-card__info">
+                    <div className="selected-project-card__header">
+                      <h3 className="selected-project-card__title">{project.title}</h3>
+                      {project.location ? (
+                        <span className="selected-project-card__location">
+                          <FaMapMarkerAlt /> {project.location}
+                        </span>
+                      ) : null}
+                    </div>
+
+                    <p className="selected-project-card__scope">
+                      <strong>Scope:</strong> {project.scope || project.description}
+                    </p>
+
+                    <div className="selected-project-card__meta-bar">
+                      <div className="selected-project-card__software-pills">
+                        {project.software?.map((sw, sIdx) => (
+                          <span key={sIdx} className="project-software-pill">
+                            {sw}
+                          </span>
+                        ))}
+                      </div>
+                      <Link to={`/portfolio/${project.slug}`} className="selected-project-card__view-link">
+                        Project Details &rarr;
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="text-center">
+            <Link to="/portfolio">
+              <Button variant="outline" size="lg">
+                VIEW ALL PROJECTS &rarr;
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================
+          6. TESTIMONIALS (TRUSTED BY CLIENTS & LEARNERS)
+          ======================================================== */}
+      {!loadingTestimonials && approvedTestimonials.length > 0 && (() => {
+        const clientItems = approvedTestimonials.filter((t) => t.category === 'client');
+        const studentItems = approvedTestimonials.filter((t) => t.category === 'student');
+        const displayedItems = (testimonialTab === 'clients' ? clientItems : studentItems).slice(0, 4);
+
+        if (displayedItems.length === 0 && (clientItems.length > 0 || studentItems.length > 0)) {
+          // Fallback tab if active tab has no items
+          const alternateTab = testimonialTab === 'clients' ? 'students' : 'clients';
+          const alternateItems = (alternateTab === 'clients' ? clientItems : studentItems).slice(0, 4);
+          if (alternateItems.length === 0) return null;
+        }
+
+        return (
+          <section className="home-testimonials">
+            <div className="container">
+              <SectionHeader
+                label="Verified Feedback"
+                title="Client &amp; Student Feedback"
+                subtitle="Authentic experiences from professional consultancy partners and trained modelers"
+              />
+
+              {clientItems.length > 0 && studentItems.length > 0 && (
+                <div className="testimonials-tabs">
+                  <button
+                    type="button"
+                    className={`testimonials-tab-btn ${testimonialTab === 'clients' ? 'testimonials-tab-btn--active' : ''}`}
+                    onClick={() => setTestimonialTab('clients')}
+                  >
+                    Professional Clients ({clientItems.length})
+                  </button>
+                  <button
+                    type="button"
+                    className={`testimonials-tab-btn ${testimonialTab === 'students' ? 'testimonials-tab-btn--active' : ''}`}
+                    onClick={() => setTestimonialTab('students')}
+                  >
+                    Trained Students ({studentItems.length})
+                  </button>
+                </div>
+              )}
+
+              <div className="testimonials-grid">
+                {displayedItems.map((item) => (
+                  <div key={item._id || item.id} className="testimonial-card">
+                    <div
+                      className="testimonial-card__stars"
+                      style={{
+                        display: 'flex',
+                        gap: '4px',
+                        color: 'var(--color-accent, #C8A96E)',
+                        marginBottom: 'var(--space-3)',
+                        fontSize: '0.9rem',
+                      }}
+                    >
+                      {[...Array(item.rating || 5)].map((_, i) => (
+                        <FaStar key={i} />
+                      ))}
+                    </div>
+                    <p className="testimonial-card__quote">&ldquo;{item.testimonial}&rdquo;</p>
+                    <div className="testimonial-card__author">
+                      {item.photo ? (
+                        <img
+                          src={item.photo}
+                          alt={item.name}
+                          className="testimonial-card__avatar testimonial-card__avatar-img"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                            const fallback = e.currentTarget.nextElementSibling;
+                            if (fallback) fallback.style.display = 'flex';
+                          }}
+                        />
+                      ) : null}
+                      <div
+                        className="testimonial-card__avatar"
+                        style={{ display: item.photo ? 'none' : 'flex' }}
+                      >
+                        {(item.name || 'P').charAt(0).toUpperCase()}
+                      </div>
+                      <div className="testimonial-card__meta">
+                        <h5>{item.name}</h5>
+                        <p>
+                          {item.category === 'client'
+                            ? [item.company, item.projectType || item.project].filter(Boolean).join(' • ') || 'Design & BIM Client'
+                            : [item.course, item.batchYear].filter(Boolean).join(' • ') || 'Training Student'}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div
+                style={{
+                  marginTop: 'var(--space-8)',
+                  textAlign: 'center',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  gap: 'var(--space-4)',
+                  flexWrap: 'wrap',
+                }}
+              >
+                <Link to="/testimonials">
+                  <Button variant="outline" size="md">
+                    View All Reviews &rarr;
+                  </Button>
+                </Link>
+                <Link to={testimonialTab === 'clients' ? '/feedback/client' : '/feedback/student'}>
+                  <Button variant="ghost" size="md">
+                    {testimonialTab === 'clients' ? 'Submit Client Feedback' : 'Share Student Experience'}
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </section>
+        );
+      })()}
+
+      {/* ========================================================
+          7. LEAD GENERATION / ENQUIRY SECTION
+          ======================================================== */}
+      <section ref={enquiryFormRef} className="home-enquiry-section">
+        <div className="container">
+          <div className="home-enquiry__grid">
+            <div className="home-enquiry__info">
+              <span className="section-header__label">Direct Enquiry</span>
+              <h3>
+                Let&apos;s Discuss Your <br />
+                <span className="text-accent">Project or Training Needs</span>
               </h3>
               <p>
-                Have an upcoming architectural project, need drafting support, BIM coordination, or custom Revit families? Or interested in joining one of our training batches?
-                <br /><br />
-                Fill out the quick form here, and our design team will analyze your requirements and get back to you with a free consultation and project quote within 24 hours.
+                Whether you need dedicated architectural BIM production support for an upcoming project,
+                or wish to register for an upcoming software training batch, our leads in Gurugram
+                are available for direct technical consultation.
               </p>
-              
-              <ul className="home-about__features" style={{ margin: 0 }}>
-                <li><FaCheckCircle className="text-accent" /> 24-Hour Project Review</li>
-                <li><FaCheckCircle className="text-accent" /> Free Design Consultation</li>
-                <li><FaCheckCircle className="text-accent" /> Direct Communication with BIM Lead</li>
-              </ul>
-            </motion.div>
 
-            <motion.div
-              className="home-inquiry__form-card"
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
-              <form onSubmit={handleInquirySubmit} className="home-inquiry__form">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)', marginBottom: 'var(--space-6)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', color: 'var(--color-text-secondary)', fontSize: 'var(--fs-sm)' }}>
+                  <FaCheckCircle className="text-accent" /> Prompt review within 24–48 business hours
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', color: 'var(--color-text-secondary)', fontSize: 'var(--fs-sm)' }}>
+                  <FaCheckCircle className="text-accent" /> Direct communication with practicing BIM lead
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', color: 'var(--color-text-secondary)', fontSize: 'var(--fs-sm)' }}>
+                  <FaCheckCircle className="text-accent" /> Gurugram studio offline or interactive live online
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', color: 'var(--color-accent)', fontSize: 'var(--fs-sm)' }}>
+                <FaPhoneAlt /> Call or WhatsApp: <a href="tel:+917355705074" style={{ color: 'inherit', textDecoration: 'none', fontWeight: 600 }}>+91 7355705074</a>
+              </div>
+            </div>
+
+            <div className="home-enquiry__form-card">
+              <form onSubmit={handleEnquirySubmit} className="enquiry-form">
                 {submitStatus && (
-                  <div className={`home-inquiry__status-msg ${submitStatus.success ? 'home-inquiry__status-msg--success' : 'home-inquiry__status-msg--error'}`}>
+                  <div
+                    className={`enquiry-form__status ${
+                      submitStatus.success ? 'enquiry-form__status--success' : 'enquiry-form__status--error'
+                    }`}
+                  >
                     {submitStatus.message}
                   </div>
                 )}
-                
-                <div className="home-inquiry__form-row">
-                  <div className="home-inquiry__form-group">
-                    <label htmlFor="client-name">Full Name *</label>
+
+                <div className="enquiry-form__row">
+                  <div className="enquiry-form__group">
+                    <label htmlFor="enquiry-name">Full Name *</label>
                     <input
+                      id="enquiry-name"
+                      name="name"
                       type="text"
-                      id="client-name"
-                      className="home-inquiry__input"
-                      placeholder="Your Name"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
+                      className="enquiry-form__input"
+                      placeholder="e.g. John Doe"
+                      value={formData.name}
+                      onChange={handleInputChange}
                       required
                     />
                   </div>
-                  <div className="home-inquiry__form-group">
-                    <label htmlFor="client-email">Email Address *</label>
+                  <div className="enquiry-form__group">
+                    <label htmlFor="enquiry-phone">Phone / WhatsApp *</label>
                     <input
-                      type="email"
-                      id="client-email"
-                      className="home-inquiry__input"
-                      placeholder="name@example.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      id="enquiry-phone"
+                      name="phone"
+                      type="tel"
+                      className="enquiry-form__input"
+                      placeholder="+91 XXXXX XXXXX"
+                      value={formData.phone}
+                      onChange={handleInputChange}
                       required
                     />
                   </div>
                 </div>
 
-                <div className="home-inquiry__form-row">
-                  <div className="home-inquiry__form-group">
-                    <label htmlFor="client-phone">Phone Number</label>
+                <div className="enquiry-form__row">
+                  <div className="enquiry-form__group">
+                    <label htmlFor="enquiry-email">Email Address *</label>
                     <input
-                      type="tel"
-                      id="client-phone"
-                      className="home-inquiry__input"
-                      placeholder="+91 XXXXX XXXXX"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
+                      id="enquiry-email"
+                      name="email"
+                      type="email"
+                      className="enquiry-form__input"
+                      placeholder="name@example.com"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      required
                     />
                   </div>
-                  <div className="home-inquiry__form-group">
-                    <label htmlFor="project-type">I'm interested in *</label>
+                  <div className="enquiry-form__group">
+                    <label htmlFor="enquiry-interest">I&apos;m interested in *</label>
                     <select
-                      id="project-type"
-                      className="home-inquiry__select"
-                      value={type}
-                      onChange={(e) => setType(e.target.value)}
+                      id="enquiry-interest"
+                      name="interest"
+                      className="enquiry-form__select"
+                      value={formData.interest}
+                      onChange={handleInputChange}
                       required
                     >
-                      <option value="project">Design / BIM Services</option>
-                      <option value="training">Software Training batches</option>
-                      <option value="general">Other inquiry</option>
+                      <option value="Architecture">Architecture</option>
+                      <option value="BIM">BIM</option>
+                      <option value="Structural BIM">Structural BIM</option>
+                      <option value="MEP">MEP</option>
+                      <option value="3D Visualization">3D Visualization</option>
+                      <option value="Training">Training</option>
                     </select>
                   </div>
                 </div>
 
-                <div className="home-inquiry__form-group">
-                  <label htmlFor="project-subject">Subject</label>
-                  <input
-                    type="text"
-                    id="project-subject"
-                    className="home-inquiry__input"
-                    placeholder="e.g. Revit structural model request"
-                    value={subject}
-                    onChange={(e) => setSubject(e.target.value)}
-                  />
-                </div>
-
-                <div className="home-inquiry__form-group">
-                  <label htmlFor="project-message">Project Description / Message *</label>
+                <div className="enquiry-form__group">
+                  <label htmlFor="enquiry-message">Short Project / Course Requirement *</label>
                   <textarea
-                    id="project-message"
-                    rows="4"
-                    className="home-inquiry__textarea"
-                    placeholder="Describe your design needs, floor plans scale, software choice, or course preferences..."
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
+                    id="enquiry-message"
+                    name="message"
+                    rows="3"
+                    className="enquiry-form__textarea"
+                    placeholder="Briefly describe your drawing scale, required BIM software, deadline, or training course preference..."
+                    value={formData.message}
+                    onChange={handleInputChange}
                     required
-                  ></textarea>
+                  />
                 </div>
 
                 <Button
@@ -635,50 +839,11 @@ const HomePage = () => {
                   disabled={submitting}
                   style={{ width: '100%', justifyContent: 'center' }}
                 >
-                  {submitting ? 'Sending Request...' : 'Send Inquiry Request'}
+                  {submitting ? 'Submitting Enquiry...' : 'Submit Enquiry'}
                 </Button>
               </form>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* ===== TRAINING CTA ===== */}
-      <section className="section home-cta">
-        <div className="container">
-          <motion.div
-            className="home-cta__card glass-card"
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            {/* Ambient glow orb behind card */}
-            <div className="home-cta__glow" />
-            <div className="home-cta__content">
-              <span className="section-header__label">Training Programs</span>
-              <h2 style={{ marginTop: 'var(--space-3)' }}>
-                Learn From <span className="text-accent">Industry Experts</span>
-              </h2>
-              <p>
-                Master AutoCAD, Revit, SketchUp, 3ds Max & V-Ray with our
-                hands-on training programs. Online and offline batches available
-                for beginners to advanced learners.
-              </p>
-              <div className="home-cta__actions">
-                <Link to="/training">
-                  <Button variant="primary" size="lg">
-                    Explore Training <FaArrowRight />
-                  </Button>
-                </Link>
-                <Link to="/contact?type=training">
-                  <Button variant="outline" size="lg">
-                    Enquire Now
-                  </Button>
-                </Link>
-              </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
     </div>

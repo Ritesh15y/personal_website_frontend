@@ -1,90 +1,49 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaArrowRight } from 'react-icons/fa';
+import { FaArrowRight, FaBuilding, FaGraduationCap } from 'react-icons/fa';
 import api from '../../shared/lib/api';
-import SectionHeader from '../../shared/components/SectionHeader/SectionHeader';
+import useDocumentTitle from '../../shared/hooks/useDocumentTitle';
 import './PortfolioPage.css';
 
-const categories = [
-  { key: 'all', label: 'All Projects' },
+const professionalCategories = [
+  { key: 'all', label: 'All Demonstration & Concept' },
   { key: 'residential', label: 'Residential' },
   { key: 'commercial', label: 'Commercial' },
-  { key: 'school', label: 'School' },
-  { key: 'hospital', label: 'Hospital' },
+  { key: 'school', label: 'School / Campus' },
+  { key: 'hospital', label: 'Healthcare' },
   { key: 'interior', label: 'Interior' },
-  { key: 'student-projects', label: 'Student Projects' },
 ];
 
 const projectsData = [
   {
     title: 'Modern Residential Villa',
     category: 'residential',
-    image: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=600&q=80',
+    projectType: 'Concept Project',
+    image: 'https://res.cloudinary.com/vr0slvvw/image/upload/v1785586217/portfolio/file_quirjg.png',
     slug: 'modern-residential-villa',
-    software: ['Revit', '3ds Max', 'V-Ray'],
-  },
-  {
-    title: 'Corporate Office Tower',
-    category: 'commercial',
-    image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&q=80',
-    slug: 'corporate-office-tower',
-    software: ['Revit', 'Navisworks'],
-  },
-  {
-    title: 'International School Campus',
-    category: 'school',
-    image: 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=600&q=80',
-    slug: 'international-school-campus',
-    software: ['Revit', 'SketchUp'],
-  },
-  {
-    title: 'Multi-Specialty Hospital',
-    category: 'hospital',
-    image: 'https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?w=600&q=80',
-    slug: 'multi-specialty-hospital',
-    software: ['Revit', 'Navisworks'],
-  },
-  {
-    title: 'Luxury Apartment Interior',
-    category: 'interior',
-    image: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=600&q=80',
-    slug: 'luxury-apartment-interior',
-    software: ['3ds Max', 'V-Ray'],
+    software: ['Revit', '3ds Max', 'V-Ray', 'AutoCAD'],
+    isClientProject: false,
   },
   {
     title: 'Student Villa Concept',
     category: 'student-projects',
-    image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=80',
+    projectType: 'Student Project',
+    image: 'https://res.cloudinary.com/vr0slvvw/image/upload/v1785586181/portfolio/file_udkygn.png',
     slug: 'student-villa-concept',
-    software: ['Revit', '3ds Max'],
-  },
-  {
-    title: 'Contemporary Beach House',
-    category: 'residential',
-    image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&q=80',
-    slug: 'contemporary-beach-house',
-    software: ['AutoCAD', 'SketchUp', 'V-Ray'],
-  },
-  {
-    title: 'Retail Mall Design',
-    category: 'commercial',
-    image: 'https://images.unsplash.com/photo-1567449303078-57ad995bd329?w=600&q=80',
-    slug: 'retail-mall-design',
-    software: ['Revit', '3ds Max'],
-  },
-  {
-    title: 'Modern Kitchen Interior',
-    category: 'interior',
-    image: 'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=600&q=80',
-    slug: 'modern-kitchen-interior',
-    software: ['3ds Max', 'V-Ray', 'AutoCAD'],
+    software: ['Revit', '3ds Max', 'V-Ray'],
+    isClientProject: false,
   },
 ];
 
 const PortfolioPage = () => {
+  useDocumentTitle(
+    'Capabilities & Concept Portfolio | Prema Design Studio',
+    'Explore our architectural BIM models, technical drafting samples, and CGI visualization demonstration work. All items are clearly classified as concept models, demonstration projects, or student academy work.'
+  );
+
   const [projects, setProjects] = useState([]);
-  const [filteredProjects, setFilteredProjects] = useState([]);
+  const [portfolioTab, setPortfolioTab] = useState('all'); // 'all', 'client', 'concept', 'student'
   const [activeFilter, setActiveFilter] = useState('all');
   const [loading, setLoading] = useState(true);
 
@@ -93,7 +52,12 @@ const PortfolioPage = () => {
       try {
         const res = await api.get('/projects?status=published');
         if (res.data.success && res.data.data && res.data.data.length > 0) {
-          setProjects(res.data.data);
+          const normalized = res.data.data.map((p) => ({
+            ...p,
+            isClientProject: p.isClientProject || p.projectType === 'Client Project',
+            projectType: p.projectType || (p.category === 'student-projects' ? 'Student Project' : 'Demonstration Project'),
+          }));
+          setProjects(normalized);
         } else {
           setProjects(projectsData);
         }
@@ -107,17 +71,39 @@ const PortfolioPage = () => {
     fetchProjects();
   }, []);
 
-  useEffect(() => {
-    let result = projects;
-    if (activeFilter !== 'all') {
-      result = projects.filter((p) => p.category === activeFilter);
+  const hasVerifiedClientProjects = projects.some((p) => p.isClientProject);
+
+  // Filter based on selected portfolio tab and category filter
+  const displayedProjects = projects.filter((p) => {
+    if (portfolioTab === 'all') {
+      return true;
     }
-    setFilteredProjects(result);
-  }, [activeFilter, projects]);
+    if (portfolioTab === 'client') {
+      return p.isClientProject;
+    }
+    if (portfolioTab === 'concept') {
+      if (p.category === 'student-projects' || p.isClientProject) return false;
+      if (activeFilter === 'all') return true;
+      return p.category === activeFilter;
+    }
+    if (portfolioTab === 'student') {
+      return p.category === 'student-projects';
+    }
+    return true;
+  });
 
   if (loading) {
     return (
-      <div className="portfolio-page" style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-text-secondary)' }}>
+      <div
+        className="portfolio-page"
+        style={{
+          minHeight: '60vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: 'var(--color-text-secondary)',
+        }}
+      >
         <p>Loading projects...</p>
       </div>
     );
@@ -141,76 +127,116 @@ const PortfolioPage = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <span className="hero__label">Our Work</span>
+            <span className="hero__label">Technical Capabilities</span>
             <h1>
               Project <span className="text-accent">Portfolio</span>
             </h1>
             <p className="page-hero__subtitle">
-              Explore our curated collection of architectural, structural, and
-              interior design projects.
+              Explore our architectural BIM models, technical drafting samples, and CGI visualization demonstration work.
+              All items are transparently labeled as concept models, demonstration projects, or student academy work.
             </p>
           </motion.div>
         </div>
       </section>
 
-      {/* Filter + Grid */}
+      {/* Main Portfolio Content */}
       <section className="section">
         <div className="container">
-          {/* Filter Bar */}
-          <div className="portfolio-filter">
-            {categories.map((cat) => (
+          {/* Top-Level Structure Tabs */}
+          <div className="portfolio-type-tabs">
+            <button
+              className={`portfolio-type-tab-btn ${portfolioTab === 'all' ? 'portfolio-type-tab-btn--active' : ''}`}
+              onClick={() => {
+                setPortfolioTab('all');
+                setActiveFilter('all');
+              }}
+            >
+              ALL
+            </button>
+
+            {hasVerifiedClientProjects && (
               <button
-                key={cat.key}
-                className={`portfolio-filter__btn ${activeFilter === cat.key ? 'portfolio-filter__btn--active' : ''}`}
-                onClick={() => setActiveFilter(cat.key)}
+                className={`portfolio-type-tab-btn ${portfolioTab === 'client' ? 'portfolio-type-tab-btn--active' : ''}`}
+                onClick={() => {
+                  setPortfolioTab('client');
+                  setActiveFilter('all');
+                }}
               >
-                {cat.label}
+                <FaBuilding /> PROFESSIONAL / CLIENT WORK
               </button>
-            ))}
+            )}
+
+            <button
+              className={`portfolio-type-tab-btn ${portfolioTab === 'concept' ? 'portfolio-type-tab-btn--active' : ''}`}
+              onClick={() => {
+                setPortfolioTab('concept');
+                setActiveFilter('all');
+              }}
+            >
+              <FaBuilding /> CONCEPT &amp; DEMONSTRATION
+            </button>
+
+            <button
+              className={`portfolio-type-tab-btn ${portfolioTab === 'student' ? 'portfolio-type-tab-btn--active' : ''}`}
+              onClick={() => {
+                setPortfolioTab('student');
+                setActiveFilter('all');
+              }}
+            >
+              <FaGraduationCap /> STUDENT WORK
+            </button>
           </div>
+
+          {/* Sub-Filters for Concept & Demonstration */}
+          {portfolioTab === 'concept' && (
+            <div className="portfolio-filter" style={{ marginBottom: 'var(--space-10)' }}>
+              {professionalCategories.map((cat) => (
+                <button
+                  key={cat.key}
+                  className={`portfolio-filter__btn ${activeFilter === cat.key ? 'portfolio-filter__btn--active' : ''}`}
+                  onClick={() => setActiveFilter(cat.key)}
+                >
+                  {cat.label}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {portfolioTab === 'student' && (
+            <div style={{ textAlign: 'center', marginBottom: 'var(--space-8)', color: 'var(--color-text-muted)', fontSize: 'var(--fs-sm)' }}>
+              Practical exercises modeled by students during hands-on software batches at Prema Design Studio.
+            </div>
+          )}
 
           {/* Project Grid */}
           <motion.div className="portfolio-grid" layout>
             <AnimatePresence mode="popLayout">
-              {filteredProjects.map((project) => {
+              {displayedProjects.map((project) => {
                 const imageUrl = project.thumbnail?.url || project.images?.[0]?.url || project.image;
+                const badgeLabel = project.projectType || (project.category === 'student-projects' ? 'Student Project' : 'Concept Project');
                 return (
                   <motion.div
                     key={project._id || project.slug}
                     className="portfolio-card"
                     layout
-                    initial={{ opacity: 0, y: 16 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 8 }}
-                    transition={{ duration: 0.28, ease: 'easeOut' }}
-                    style={{ willChange: 'opacity, transform' }}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.3 }}
                   >
-                    <Link to={`/portfolio/${project.slug}`} className="portfolio-card__link">
-                      <div className="portfolio-card__image-wrapper">
-                        {/* Always-visible category badge */}
-                        <span className="portfolio-card__category-badge">
-                          {project.category.replace('-', ' ')}
+                    <Link to={`/portfolio/${project.slug}`} className="portfolio-card__image-wrapper">
+                      <img
+                        src={imageUrl}
+                        alt={project.title}
+                        className="portfolio-card__image"
+                        loading="lazy"
+                      />
+                      <div className="portfolio-card__overlay">
+                        <span className="portfolio-card__category">{badgeLabel} • {project.category}</span>
+                        <h3 className="portfolio-card__title">{project.title}</h3>
+                        <span className="portfolio-card__view">
+                          View Details <FaArrowRight />
                         </span>
-                        <img
-                          src={imageUrl}
-                          alt={project.title}
-                          className="portfolio-card__image"
-                          loading="lazy"
-                          decoding="async"
-                          width="600"
-                          height="450"
-                        />
-                        <div className="portfolio-card__overlay">
-                          <h3 className="portfolio-card__title">{project.title}</h3>
-                          <div className="portfolio-card__tags">
-                            {project.software && project.software.map((sw, i) => (
-                              <span key={i} className="portfolio-card__tag">{sw}</span>
-                            ))}
-                          </div>
-                          <span className="portfolio-card__view">
-                            View Project <FaArrowRight />
-                          </span>
-                        </div>
                       </div>
                     </Link>
                   </motion.div>

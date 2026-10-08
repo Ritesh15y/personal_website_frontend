@@ -2,5 +2,7 @@ User-agent: *
 Allow: /
 Disallow: /admin
 Disallow: /admin/*
+Disallow: /feedback
+Disallow: /feedback/*
 
 Sitemap: https://www.premadesignstudio.in/sitemap.xml

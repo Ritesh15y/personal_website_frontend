@@ -8,41 +8,47 @@ import {
   FaLinkedinIn,
   FaInstagram,
   FaYoutube,
+  FaWhatsapp,
   FaPaperPlane,
 } from 'react-icons/fa';
 import Button from '../../shared/components/Button/Button';
+import useDocumentTitle from '../../shared/hooks/useDocumentTitle';
+import api from '../../shared/lib/api';
 import './ContactPage.css';
 
 const ContactPage = () => {
+  useDocumentTitle(
+    'Contact & Direct Consultation | Prema Design Studio',
+    'Submit project drawings for quote or discuss professional software training programs with our leads in Gurugram, India.'
+  );
+
   const [searchParams] = useSearchParams();
   const [formData, setFormData] = useState({
     name: '',
-    email: '',
     phone: '',
-    type: 'general',
-    subject: '',
+    email: '',
+    interest: 'BIM',
     message: '',
   });
   const [status, setStatus] = useState({ type: '', message: '' });
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const typeParam = searchParams.get('type');
-    const subjectParam = searchParams.get('subject');
-    const validTypes = ['general', 'project', 'training'];
-    const updatedFields = {};
+    const interestParam = searchParams.get('interest') || searchParams.get('type');
+    const validInterests = {
+      architecture: 'Architecture',
+      bim: 'BIM',
+      structural: 'Structural BIM',
+      mep: 'MEP',
+      visualization: '3D Visualization',
+      training: 'Training',
+      project: 'BIM',
+    };
 
-    if (typeParam && validTypes.includes(typeParam)) {
-      updatedFields.type = typeParam;
-    }
-    if (subjectParam) {
-      updatedFields.subject = subjectParam;
-    }
-
-    if (Object.keys(updatedFields).length > 0) {
+    if (interestParam && validInterests[interestParam.toLowerCase()]) {
       setFormData((prev) => ({
         ...prev,
-        ...updatedFields,
+        interest: validInterests[interestParam.toLowerCase()],
       }));
     }
   }, [searchParams]);
@@ -57,26 +63,45 @@ const ContactPage = () => {
     setStatus({ type: '', message: '' });
 
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-      const res = await fetch(`${apiUrl}/inquiries`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+      const type = formData.interest === 'Training' ? 'training' : 'project';
+      const res = await api.post('/inquiries', {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        type: type,
+        subject: `Enquiry: ${formData.interest}`,
+        message: formData.message,
       });
-      const data = await res.json();
 
-      if (data.success) {
-        setStatus({ type: 'success', message: data.message });
-        setFormData({ name: '', email: '', phone: '', type: 'general', subject: '', message: '' });
+      if (res.data?.success) {
+        setStatus({
+          type: 'success',
+          message: 'Thank you! Your enquiry has been received. Our team will contact you within 24 hours.',
+        });
+        setFormData({
+          name: '',
+          phone: '',
+          email: '',
+          interest: 'BIM',
+          message: '',
+        });
       } else {
-        setStatus({ type: 'error', message: data.message || 'Something went wrong.' });
+        setStatus({
+          type: 'error',
+          message: data.message || 'Something went wrong. Please try again.',
+        });
       }
     } catch {
-      setStatus({ type: 'error', message: 'Unable to submit. Please try again later.' });
+      setStatus({
+        type: 'error',
+        message: 'Unable to submit enquiry right now. Please try again or WhatsApp us directly.',
+      });
     } finally {
       setLoading(false);
     }
   };
+
+  const whatsappUrl = 'https://wa.me/917355705074?text=Hi%20Prema%20Design%20Studio%2C%20I%20would%20like%20to%20inquire%20about%20your%20services%20or%20training.';
 
   return (
     <div className="contact-page">
@@ -85,7 +110,7 @@ const ContactPage = () => {
         <div className="page-hero__bg">
           <img
             src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=1600&q=80"
-            alt="Contact us"
+            alt="Contact Prema Design Studio"
             className="page-hero__image"
           />
           <div className="page-hero__overlay" />
@@ -96,10 +121,10 @@ const ContactPage = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <span className="hero__label">Get in Touch</span>
-            <h1>Contact <span className="text-accent">Us</span></h1>
+            <span className="hero__label">Direct Enquiry</span>
+            <h1>Let&apos;s <span className="text-accent">Talk</span></h1>
             <p className="page-hero__subtitle">
-              Have a project in mind or want to learn? We'd love to hear from you.
+              Get in touch for a project quote or to discuss our professional software training programs.
             </p>
           </motion.div>
         </div>
@@ -117,11 +142,10 @@ const ContactPage = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <h3>Let's Start a Conversation</h3>
+              <h3>Studio Direct Communication</h3>
               <p className="contact-info__text">
-                Whether you need BIM services, architectural drafting, or want to
-                join our training programs — reach out and we'll get back to you
-                within 24 hours.
+                Speak directly with our BIM leads and course instructors. We review drawing sets,
+                technical scopes, and student inquiries with prompt review within 24–48 business hours.
               </p>
 
               <div className="contact-info__items">
@@ -131,7 +155,11 @@ const ContactPage = () => {
                   </div>
                   <div>
                     <h5>Email</h5>
-                    <p>hello@premadesignstudio.in</p>
+                    <p>
+                      <a href="mailto:hello@premadesignstudio.in" style={{ color: 'inherit', textDecoration: 'none' }}>
+                        hello@premadesignstudio.in
+                      </a>
+                    </p>
                   </div>
                 </div>
 
@@ -140,8 +168,12 @@ const ContactPage = () => {
                     <FaPhoneAlt />
                   </div>
                   <div>
-                    <h5>Phone</h5>
-                    <p><a href="tel:+917355705074" style={{ color: 'inherit', textDecoration: 'none' }}>+91 7355705074</a></p>
+                    <h5>Phone &amp; WhatsApp</h5>
+                    <p>
+                      <a href="tel:+917355705074" style={{ color: 'inherit', textDecoration: 'none' }}>
+                        +91 7355705074
+                      </a>
+                    </p>
                   </div>
                 </div>
 
@@ -150,8 +182,8 @@ const ContactPage = () => {
                     <FaMapMarkerAlt />
                   </div>
                   <div>
-                    <h5>Location</h5>
-                    <p>Near Tau Devilal Stadium, Sector 38, Gurugram, Haryana, India</p>
+                    <h5>Studio Location</h5>
+                    <p>Gurugram, Haryana, India | Serving clients globally</p>
                   </div>
                 </div>
               </div>
@@ -160,10 +192,11 @@ const ContactPage = () => {
                 <a href="#" aria-label="LinkedIn"><FaLinkedinIn /></a>
                 <a href="#" aria-label="Instagram"><FaInstagram /></a>
                 <a href="#" aria-label="YouTube"><FaYoutube /></a>
+                <a href={whatsappUrl} aria-label="WhatsApp" target="_blank" rel="noopener noreferrer"><FaWhatsapp /></a>
               </div>
             </motion.div>
 
-            {/* Contact Form */}
+            {/* Simple, Mobile-Friendly Enquiry Form */}
             <motion.form
               className="contact-form glass-card"
               onSubmit={handleSubmit}
@@ -172,7 +205,7 @@ const ContactPage = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <h3>Send Us a Message</h3>
+              <h3>Submit Your Enquiry</h3>
 
               <div className="contact-form__row">
                 <div className="contact-form__group">
@@ -181,12 +214,27 @@ const ContactPage = () => {
                     id="name"
                     name="name"
                     type="text"
-                    placeholder="John Doe"
+                    placeholder="e.g. John Doe"
                     value={formData.name}
                     onChange={handleChange}
                     required
                   />
                 </div>
+                <div className="contact-form__group">
+                  <label htmlFor="phone">Phone / WhatsApp *</label>
+                  <input
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    placeholder="+91 XXXXX XXXXX"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="contact-form__row">
                 <div className="contact-form__group">
                   <label htmlFor="email">Email Address *</label>
                   <input
@@ -199,55 +247,32 @@ const ContactPage = () => {
                     required
                   />
                 </div>
-              </div>
-
-              <div className="contact-form__row">
                 <div className="contact-form__group">
-                  <label htmlFor="phone">Phone Number</label>
-                  <input
-                    id="phone"
-                    name="phone"
-                    type="tel"
-                    placeholder="+91 7355705074"
-                    value={formData.phone}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="contact-form__group">
-                  <label htmlFor="type">Inquiry Type</label>
+                  <label htmlFor="interest">I&apos;m interested in *</label>
                   <select
-                    id="type"
-                    name="type"
-                    value={formData.type}
+                    id="interest"
+                    name="interest"
+                    value={formData.interest}
                     onChange={handleChange}
+                    required
                   >
-                    <option value="general">General Inquiry</option>
-                    <option value="project">Project Inquiry</option>
-                    <option value="training">Training Inquiry</option>
+                    <option value="Architecture">Architecture</option>
+                    <option value="BIM">BIM</option>
+                    <option value="Structural BIM">Structural BIM</option>
+                    <option value="MEP">MEP</option>
+                    <option value="3D Visualization">3D Visualization</option>
+                    <option value="Training">Training</option>
                   </select>
                 </div>
               </div>
 
               <div className="contact-form__group">
-                <label htmlFor="subject">Subject *</label>
-                <input
-                  id="subject"
-                  name="subject"
-                  type="text"
-                  placeholder="e.g. Revit modeling query or training batch enquiry..."
-                  value={formData.subject}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-
-              <div className="contact-form__group">
-                <label htmlFor="message">Message *</label>
+                <label htmlFor="message">Short Project / Course Requirement *</label>
                 <textarea
                   id="message"
                   name="message"
-                  rows="5"
-                  placeholder="Tell us about your project or inquiry..."
+                  rows="4"
+                  placeholder="Describe your design needs, floor plans scale, software choice, or course preferences..."
                   value={formData.message}
                   onChange={handleChange}
                   required
@@ -267,7 +292,7 @@ const ContactPage = () => {
                 disabled={loading}
                 className="contact-form__submit"
               >
-                {loading ? 'Sending...' : <>Send Message <FaPaperPlane /></>}
+                {loading ? 'Submitting...' : <>Submit Enquiry <FaPaperPlane /></>}
               </Button>
             </motion.form>
           </div>

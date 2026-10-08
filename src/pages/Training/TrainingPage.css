@@ -158,6 +158,12 @@
   box-shadow: 0 0 25px rgba(200, 169, 110, 0.15);
 }
 
+.course-card--highlighted {
+  border-color: var(--color-accent) !important;
+  box-shadow: 0 0 28px rgba(200, 169, 110, 0.35) !important;
+  background: rgba(200, 169, 110, 0.04) !important;
+}
+
 .course-card__popular-badge {
   display: inline-flex;
   align-items: center;
@@ -498,24 +504,128 @@
   padding: var(--space-12);
 }
 
-@media (max-width: 1024px) {
-  .resources-grid {
-    grid-template-columns: repeat(2, 1fr);
+/* ============================
+   Training Counseling & Inquiry Form
+   ============================ */
+.home-inquiry__grid {
+  display: grid;
+  grid-template-columns: 1fr 1.25fr;
+  gap: var(--space-12);
+  align-items: center;
+}
+
+.home-inquiry__info-col h3 {
+  font-size: var(--fs-2xl);
+  margin-bottom: var(--space-4);
+}
+
+.home-inquiry__info-col p {
+  color: var(--color-text-secondary);
+  line-height: var(--lh-loose);
+  margin-bottom: var(--space-8);
+}
+
+.home-inquiry__form-card {
+  padding: var(--space-8);
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--glass-shadow);
+}
+
+.home-inquiry__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.home-inquiry__form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+.home-inquiry__form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.home-inquiry__form-group label {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: var(--ls-wide);
+}
+
+.home-inquiry__input,
+.home-inquiry__select,
+.home-inquiry__textarea {
+  padding: var(--space-3) var(--space-4);
+  background: rgba(var(--color-bg-primary-rgb), 0.5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  font-size: var(--fs-sm);
+  transition: border-color var(--transition-base);
+  font-family: inherit;
+}
+
+.home-inquiry__input:focus,
+.home-inquiry__select:focus,
+.home-inquiry__textarea:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.home-inquiry__input::placeholder,
+.home-inquiry__textarea::placeholder {
+  color: var(--color-text-muted);
+}
+
+.home-inquiry__select option {
+  background-color: #161616;
+  color: #F5F5F5;
+  padding: 8px;
+}
+
+[data-theme='light'] .home-inquiry__select option {
+  background-color: #FFFFFF;
+  color: #1A1A1A;
+}
+
+.home-inquiry__status-msg {
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+}
+
+.home-inquiry__status-msg--success {
+  background: rgba(19, 115, 51, 0.1);
+  color: #137333;
+  border: 1px solid rgba(19, 115, 51, 0.2);
+}
+
+.home-inquiry__status-msg--error {
+  background: rgba(193, 27, 23, 0.1);
+  color: #c11b17;
+  border: 1px solid rgba(193, 27, 23, 0.2);
+}
+
+@media (max-width: 992px) {
+  .home-inquiry__grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
   }
 }
 
-@media (max-width: 768px) {
-  .resources-grid {
+@media (max-width: 600px) {
+  .home-inquiry__form-row {
     grid-template-columns: 1fr;
-  }
-  
-  .resources-filter-bar {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .resources-search {
-    max-width: 100%;
   }
 }
 

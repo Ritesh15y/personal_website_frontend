@@ -8,7 +8,7 @@ const ErrorPage = () => {
   const error = useRouteError();
   const navigate = useNavigate();
 
-  const status = error?.status || 500;
+  const status = error?.status || (error ? 500 : 404);
   const is404 = status === 404;
 
   return (

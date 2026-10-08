@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { FaCalendarAlt, FaClock, FaArrowLeft, FaArrowRight, FaBookOpen } from 'react-icons/fa';
 import api from '../../shared/lib/api';
 import Button from '../../shared/components/Button/Button';
+import useDocumentTitle from '../../shared/hooks/useDocumentTitle';
 import './BlogPostPage.css';
 
 const BlogPostPage = () => {
@@ -11,6 +12,11 @@ const BlogPostPage = () => {
   const [post, setPost] = useState(null);
   const [relatedPosts, setRelatedPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  useDocumentTitle(
+    post ? `${post.title} | Prema Design Studio Blog` : 'Blog Article | Prema Design Studio',
+    post?.excerpt
+  );
 
   useEffect(() => {
     const fetchPostData = async () => {
@@ -145,11 +151,15 @@ const BlogPostPage = () => {
       {/* Article Header Hero */}
       <section className="post-hero">
         <div className="post-hero__bg">
-          <img
-            src={post.coverImage || 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=1600'}
-            alt={post.title}
-            className="post-hero__image"
-          />
+          {post.coverImage ? (
+            <img
+              src={post.coverImage}
+              alt={post.title}
+              className="post-hero__image"
+            />
+          ) : (
+            <div className="post-hero__fallback-pattern" />
+          )}
           <div className="post-hero__overlay" />
         </div>
         <div className="post-hero__content container">
@@ -162,15 +172,26 @@ const BlogPostPage = () => {
               <FaArrowLeft /> <span>Back to Insights</span>
             </Link>
             <div className="post-meta flex">
-              <span className="post-meta__badge">{post.tags?.[0] || 'Design'}</span>
+              <span className="post-meta__badge">{post.category || post.tags?.[0] || 'Technical Guide'}</span>
               <span className="flex-center">
-                <FaCalendarAlt /> {new Date(post.createdAt).toLocaleDateString()}
+                <FaCalendarAlt /> {new Date(post.publicationDate || post.createdAt).toLocaleDateString()}
               </span>
               <span className="flex-center">
                 <FaClock /> {post.readTime || '5 min read'}
               </span>
             </div>
             <h1 className="post-title">{post.title}</h1>
+            {post.author?.name && (
+              <div className="post-hero__author">
+                <span>By <strong>{post.author.name}</strong></span>
+                {post.author.role && <span className="author-role-chip">{post.author.role}</span>}
+              </div>
+            )}
+            {post.featuredImage?.source && (
+              <div className="post-hero__source-badge">
+                <small>Visual Source: {post.featuredImage.source}</small>
+              </div>
+            )}
           </motion.div>
         </div>
       </section>
@@ -183,11 +204,51 @@ const BlogPostPage = () => {
             <article className="post-body glass-card">
               <div className="post-body__rich-text">{renderContent(post.content)}</div>
               
-              <div className="post-tags-list">
-                {post.tags?.map((t, i) => (
-                  <span key={i} className="post-tag-item">#{t}</span>
-                ))}
-              </div>
+              {post.tags?.length > 0 && (
+                <div className="post-tags-list">
+                  {post.tags.map((t, i) => (
+                    <span key={i} className="post-tag-item">#{t}</span>
+                  ))}
+                </div>
+              )}
+
+              {/* Verified Author Box */}
+              {post.author?.name && (
+                <div className="post-author-box">
+                  <div className="post-author-box__info">
+                    <span className="post-author-box__label">Written & Verified By</span>
+                    <h4 className="post-author-box__name">{post.author.name}</h4>
+                    {post.author.role && <p className="post-author-box__role">{post.author.role}</p>}
+                    {post.author.bio && <p className="post-author-box__bio">{post.author.bio}</p>}
+                  </div>
+                </div>
+              )}
+
+              {/* Related Services & Verified Projects */}
+              {(post.relatedServices?.length > 0 || post.relatedProjects?.length > 0) && (
+                <div className="post-related-meta">
+                  {post.relatedServices?.length > 0 && (
+                    <div className="related-meta-block">
+                      <strong>Related Capabilities:</strong>
+                      <div className="related-meta-pills">
+                        {post.relatedServices.map((svc, idx) => (
+                          <span key={idx} className="meta-pill">{svc}</span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {post.relatedProjects?.length > 0 && (
+                    <div className="related-meta-block">
+                      <strong>Referenced Projects:</strong>
+                      <div className="related-meta-pills">
+                        {post.relatedProjects.map((prj, idx) => (
+                          <span key={idx} className="meta-pill meta-pill--project">{prj}</span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
             </article>
 
             {/* Sidebar CTAs */}
@@ -233,11 +294,15 @@ const BlogPostPage = () => {
               {relatedPosts.map((rPost) => (
                 <div key={rPost._id} className="related-card glass-card">
                   <Link to={`/blog/${rPost.slug}`} className="related-card__link">
-                    <img
-                      src={rPost.coverImage || 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=600'}
-                      alt={rPost.title}
-                      className="related-card__img"
-                    />
+                    {rPost.coverImage ? (
+                      <img
+                        src={rPost.coverImage}
+                        alt={rPost.title}
+                        className="related-card__img"
+                      />
+                    ) : (
+                      <div className="related-card__img post-hero__fallback-pattern" />
+                    )}
                     <div className="related-card__content">
                       <h4>{rPost.title}</h4>
                       <span className="related-card__more flex-center">

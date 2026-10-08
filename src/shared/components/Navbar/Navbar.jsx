@@ -5,12 +5,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 import ThemeToggle from '../ThemeToggle/ThemeToggle';
 import './Navbar.css';
 
-const navLinks = [
+const navItems = [
   { path: '/', label: 'Home' },
   { path: '/services', label: 'Services' },
   { path: '/portfolio', label: 'Portfolio' },
   { path: '/training', label: 'Training' },
+  { path: '/reviews', label: 'Reviews' },
   { path: '/blog', label: 'Blog' },
+  { path: '/about', label: 'About' },
   { path: '/contact', label: 'Contact' },
 ];
 
@@ -27,7 +29,7 @@ const Navbar = () => {
   // Detect scroll for background change
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
+      setScrolled(window.scrollY > 40);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
@@ -36,7 +38,7 @@ const Navbar = () => {
   return (
     <nav className={`navbar ${scrolled ? 'navbar--scrolled' : ''}`}>
       <div className="navbar__container container">
-        {/* Logo */}
+        {/* Brand Logo */}
         <Link to="/" className="navbar__logo">
           <img src="/favicon.png" alt="Prema Design Studio" className="navbar__logo-img" />
           <span className="navbar__logo-text">
@@ -44,31 +46,32 @@ const Navbar = () => {
           </span>
         </Link>
 
-        {/* Desktop Navigation */}
+        {/* Clean Desktop Navigation with Generous Spacing */}
         <ul className="navbar__links">
-          {navLinks.map((link) => (
-            <li key={link.path}>
+          {navItems.map((item) => (
+            <li key={item.path} className="navbar__item">
               <NavLink
-                to={link.path}
+                to={item.path}
+                end={item.path === '/'}
                 className={({ isActive }) =>
                   `navbar__link ${isActive ? 'navbar__link--active' : ''}`
                 }
               >
-                {link.label}
+                {item.label}
               </NavLink>
             </li>
           ))}
         </ul>
 
-        {/* Desktop Right Actions */}
+        {/* Desktop Right Actions: Theme Toggle + "LET'S TALK" CTA */}
         <div className="navbar__actions">
           <ThemeToggle />
           <Link to="/contact" className="navbar__cta">
-            Let's Talk
+            Let&apos;s Talk
           </Link>
         </div>
 
-        {/* Mobile Toggle */}
+        {/* Mobile Toggle & Theme Button */}
         <div className="navbar__mobile-actions">
           <ThemeToggle />
           <button
@@ -81,7 +84,7 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu Drawer */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -89,29 +92,35 @@ const Navbar = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.25 }}
           >
             <ul className="navbar__mobile-links">
-              {navLinks.map((link, index) => (
+              {navItems.map((item, index) => (
                 <motion.li
-                  key={link.path}
-                  initial={{ opacity: 0, x: -20 }}
+                  key={item.path}
+                  initial={{ opacity: 0, x: -16 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.05 }}
+                  transition={{ delay: index * 0.04 }}
                 >
                   <NavLink
-                    to={link.path}
+                    to={item.path}
+                    end={item.path === '/'}
+                    onClick={() => setIsOpen(false)}
                     className={({ isActive }) =>
                       `navbar__mobile-link ${isActive ? 'navbar__mobile-link--active' : ''}`
                     }
                   >
-                    {link.label}
+                    {item.label}
                   </NavLink>
                 </motion.li>
               ))}
-              <li>
-                <Link to="/contact" className="navbar__mobile-cta">
-                  Let's Talk
+              <li style={{ marginTop: 'var(--space-2)' }}>
+                <Link
+                  to="/contact"
+                  onClick={() => setIsOpen(false)}
+                  className="navbar__mobile-cta"
+                >
+                  Let&apos;s Talk
                 </Link>
               </li>
             </ul>

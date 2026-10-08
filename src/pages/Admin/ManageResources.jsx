@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { FaPlus, FaEdit, FaTrash, FaCheck, FaTimes, FaUpload, FaFileAlt, FaEye } from 'react-icons/fa';
-import api from '../../shared/lib/api';
+import api, { SERVER_BASE_URL } from '../../shared/lib/api';
 import Button from '../../shared/components/Button/Button';
 import './ManageResources.css';
 
@@ -128,8 +128,7 @@ const ManageResources = () => {
 
   const handleView = (fileUrl) => {
     if (!fileUrl) return;
-    const serverBaseUrl = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
-    const fullUrl = fileUrl.startsWith('http') ? fileUrl : `${serverBaseUrl}${fileUrl}`;
+    const fullUrl = fileUrl.startsWith('http') ? fileUrl : `${SERVER_BASE_URL}${fileUrl}`;
     window.open(fullUrl, '_blank');
   };
 

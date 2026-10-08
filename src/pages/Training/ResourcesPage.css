@@ -1,0 +1,212 @@
+/* ========================================================
+   Resources Page Styles — Training Practice Library
+   ======================================================== */
+
+.resources-page {
+  position: relative;
+  min-height: 100vh;
+}
+
+.resources-library-header {
+  margin-bottom: var(--space-8);
+}
+
+.resources-library-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-8);
+  padding: var(--space-4) var(--space-6);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+}
+
+.resources-library-tabs {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.resources-tab-btn {
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.resources-tab-btn:hover {
+  color: var(--color-text-primary);
+  background: var(--glass-bg-subtle);
+}
+
+.resources-tab-btn--active {
+  color: var(--color-bg-primary);
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.resources-search-box {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  background: rgba(var(--color-bg-primary-rgb), 0.6);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  min-width: 260px;
+}
+
+.resources-search-box input {
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--color-text-primary);
+  font-size: var(--fs-sm);
+  width: 100%;
+}
+
+.resources-search-icon {
+  color: var(--color-text-muted);
+}
+
+.resources-catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--space-6);
+  margin-bottom: var(--space-16);
+}
+
+.resource-item-card {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  box-shadow: var(--glass-shadow);
+  transition: transform var(--transition-base), border-color var(--transition-base), box-shadow var(--transition-base);
+}
+
+.resource-item-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-accent);
+  box-shadow: var(--glass-shadow-hover);
+}
+
+.resource-item-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-4);
+}
+
+.resource-cat-badge {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
+  color: var(--color-accent);
+  background: rgba(200, 169, 110, 0.12);
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+}
+
+.resource-file-size {
+  font-size: var(--fs-xs);
+  color: var(--color-text-muted);
+}
+
+.resource-item-card__body {
+  flex: 1;
+  margin-bottom: var(--space-6);
+}
+
+.resource-item-card__title {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  margin-bottom: var(--space-2);
+}
+
+.resource-item-card__title h4 {
+  font-size: var(--fs-md);
+  color: var(--color-text-primary);
+  line-height: 1.3;
+}
+
+.resource-item-card__title svg {
+  color: var(--color-accent);
+  font-size: var(--fs-lg);
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.resource-item-card__body p {
+  font-size: var(--fs-sm);
+  color: var(--color-text-secondary);
+  line-height: var(--lh-base);
+}
+
+.resource-item-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--glass-border);
+}
+
+.resource-download-count {
+  font-size: var(--fs-xs);
+  color: var(--color-text-muted);
+}
+
+.resource-download-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
+  color: var(--color-bg-primary);
+  background: var(--color-accent);
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.resource-download-btn:hover {
+  background: var(--color-accent-hover);
+  transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+  .resources-library-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .resources-search-box {
+    width: 100%;
+  }
+
+  .resources-catalog-grid {
+    grid-template-columns: 1fr;
+  }
+}

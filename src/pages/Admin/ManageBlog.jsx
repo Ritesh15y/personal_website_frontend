@@ -1,8 +1,20 @@
 import { useState, useEffect } from 'react';
 import { FaPlus, FaEdit, FaTrash, FaCheck, FaTimes, FaUpload } from 'react-icons/fa';
-import api from '../../shared/lib/api';
+import api, { SERVER_BASE_URL } from '../../shared/lib/api';
 import Button from '../../shared/components/Button/Button';
 import './ManageBlog.css';
+
+const BLOG_CATEGORIES = [
+  'Architecture',
+  'BIM',
+  'Revit',
+  'AutoCAD',
+  'Structural BIM',
+  'MEP',
+  '3D Visualization',
+  'AEC Workflows',
+  'Training & Career',
+];
 
 const ManageBlog = () => {
   const [blogs, setBlogs] = useState([]);
@@ -15,10 +27,21 @@ const ManageBlog = () => {
   const [title, setTitle] = useState('');
   const [excerpt, setExcerpt] = useState('');
   const [content, setContent] = useState('');
+  const [category, setCategory] = useState('BIM');
   const [coverImage, setCoverImage] = useState('');
+  const [imageSource, setImageSource] = useState('');
+  const [imageCaption, setImageCaption] = useState('');
+  const [authorName, setAuthorName] = useState('');
+  const [authorRole, setAuthorRole] = useState('');
+  const [authorBio, setAuthorBio] = useState('');
   const [tags, setTags] = useState(''); // Comma separated
-  const [status, setStatus] = useState('published');
+  const [status, setStatus] = useState('draft');
   const [readTime, setReadTime] = useState('5 min read');
+  const [seoTitle, setSeoTitle] = useState('');
+  const [metaDescription, setMetaDescription] = useState('');
+  const [canonicalUrl, setCanonicalUrl] = useState('');
+  const [relatedServices, setRelatedServices] = useState('');
+  const [relatedProjects, setRelatedProjects] = useState('');
 
   const fetchBlogs = async () => {
     try {
@@ -39,13 +62,24 @@ const ManageBlog = () => {
 
   const handleEditClick = (post) => {
     setEditingBlog(post);
-    setTitle(post.title);
+    setTitle(post.title || '');
     setExcerpt(post.excerpt || '');
     setContent(post.content || '');
-    setCoverImage(post.coverImage || '');
+    setCategory(post.category || 'BIM');
+    setCoverImage(post.coverImage || post.featuredImage?.url || '');
+    setImageSource(post.featuredImage?.source || '');
+    setImageCaption(post.featuredImage?.caption || '');
+    setAuthorName(post.author?.name || '');
+    setAuthorRole(post.author?.role || '');
+    setAuthorBio(post.author?.bio || '');
     setTags(post.tags ? post.tags.join(', ') : '');
-    setStatus(post.status || 'published');
+    setStatus(post.status || 'draft');
     setReadTime(post.readTime || '5 min read');
+    setSeoTitle(post.seoTitle || '');
+    setMetaDescription(post.metaDescription || '');
+    setCanonicalUrl(post.canonicalUrl || '');
+    setRelatedServices(post.relatedServices ? post.relatedServices.join(', ') : '');
+    setRelatedProjects(post.relatedProjects ? post.relatedProjects.join(', ') : '');
   };
 
   const handleCreateClick = () => {
@@ -53,10 +87,21 @@ const ManageBlog = () => {
     setTitle('');
     setExcerpt('');
     setContent('');
+    setCategory('BIM');
     setCoverImage('');
+    setImageSource('');
+    setImageCaption('');
+    setAuthorName('');
+    setAuthorRole('');
+    setAuthorBio('');
     setTags('');
-    setStatus('published');
+    setStatus('draft');
     setReadTime('5 min read');
+    setSeoTitle('');
+    setMetaDescription('');
+    setCanonicalUrl('');
+    setRelatedServices('');
+    setRelatedProjects('');
   };
 
   const handleCancel = () => {
@@ -77,12 +122,10 @@ const ManageBlog = () => {
       });
       if (res.data.success) {
         const returnedUrl = res.data.data.url;
-        // If the URL is already absolute (Cloudinary/Supabase), use it directly
         if (returnedUrl.startsWith('http')) {
           setCoverImage(returnedUrl);
         } else {
-          const serverBaseUrl = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
-          setCoverImage(serverBaseUrl + returnedUrl);
+          setCoverImage(SERVER_BASE_URL + returnedUrl);
         }
       }
     } catch (error) {
@@ -114,14 +157,40 @@ const ManageBlog = () => {
       .map((t) => t.trim())
       .filter((t) => t.length > 0);
 
+    const servicesList = relatedServices
+      .split(',')
+      .map((s) => s.trim())
+      .filter((s) => s.length > 0);
+
+    const projectsList = relatedProjects
+      .split(',')
+      .map((p) => p.trim())
+      .filter((p) => p.length > 0);
+
     const payload = {
       title,
       excerpt,
       content,
+      category,
       coverImage,
+      featuredImage: {
+        url: coverImage,
+        source: imageSource,
+        caption: imageCaption,
+      },
+      author: {
+        name: authorName,
+        role: authorRole,
+        bio: authorBio,
+      },
       tags: tagsList,
       status,
       readTime,
+      seoTitle: seoTitle || title,
+      metaDescription: metaDescription || excerpt,
+      canonicalUrl,
+      relatedServices: servicesList,
+      relatedProjects: projectsList,
     };
 
     try {
@@ -158,12 +227,12 @@ const ManageBlog = () => {
     <div className="manage-blog">
       <div className="manage-blog__header flex-between">
         <div>
-          <h3>Manage Blog Insights</h3>
-          <p>Compose and update articles visible on the public news feed.</p>
+          <h3>Editorial Blog CMS</h3>
+          <p>Draft, review, and publish experience-based technical articles and BIM guides.</p>
         </div>
         {!editingBlog && (
           <Button variant="primary" onClick={handleCreateClick}>
-            <FaPlus /> Write New Post
+            <FaPlus /> Write New Article
           </Button>
         )}
       </div>
@@ -171,26 +240,52 @@ const ManageBlog = () => {
       {editingBlog ? (
         /* FORM VIEW */
         <form onSubmit={handleSubmit} className="blog-form glass-card animate-scale-in">
-          <h4>{editingBlog._id === 'new' ? 'Compose Blog Post' : 'Edit Blog Post'}</h4>
+          <h4>{editingBlog._id === 'new' ? 'Draft New Article' : 'Edit Article Content'}</h4>
 
+          {/* Core Information */}
           <div className="blog-form__row">
             <div className="blog-form__group">
-              <label htmlFor="title">Blog Post Title *</label>
+              <label htmlFor="title">Article Title *</label>
               <input
                 id="title"
                 type="text"
-                placeholder="e.g. Master Revit Families: A Complete Guide"
+                placeholder="e.g. How We Set Up Levels and Grids in a Revit Project"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 required
               />
             </div>
             <div className="blog-form__group">
+              <label htmlFor="category">Category *</label>
+              <select id="category" value={category} onChange={(e) => setCategory(e.target.value)}>
+                {BLOG_CATEGORIES.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div className="blog-form__row">
+            <div className="blog-form__group">
+              <label htmlFor="status">Editorial Status *</label>
+              <select id="status" value={status} onChange={(e) => setStatus(e.target.value)}>
+                <option value="draft">Draft (Work in Progress - Hidden)</option>
+                <option value="review">Review (Editorial Check - Hidden)</option>
+                <option value="approved">Approved (Verified - Publicly Visible)</option>
+                <option value="published">Published (Live - Publicly Visible)</option>
+              </select>
+              <small style={{ color: 'var(--color-text-muted)', fontSize: '0.75rem', marginTop: '4px', display: 'block' }}>
+                Only Approved or Published articles will appear on the public website.
+              </small>
+            </div>
+            <div className="blog-form__group">
               <label htmlFor="readTime">Estimated Read Time *</label>
               <input
                 id="readTime"
                 type="text"
-                placeholder="e.g. 5 min read"
+                placeholder="e.g. 6 min read"
                 value={readTime}
                 onChange={(e) => setReadTime(e.target.value)}
                 required
@@ -198,40 +293,59 @@ const ManageBlog = () => {
             </div>
           </div>
 
+          {/* Real Human Authorship */}
+          <h5 className="blog-form__section-title">Verified Author Information</h5>
           <div className="blog-form__row">
             <div className="blog-form__group">
-              <label htmlFor="status">Publish Status</label>
-              <select id="status" value={status} onChange={(e) => setStatus(e.target.value)}>
-                <option value="published">Active (Visible)</option>
-                <option value="draft">Draft (Hidden)</option>
-              </select>
+              <label htmlFor="authorName">Author Full Name *</label>
+              <input
+                id="authorName"
+                type="text"
+                placeholder="e.g. Ritesh Prema"
+                value={authorName}
+                onChange={(e) => setAuthorName(e.target.value)}
+                required
+              />
             </div>
             <div className="blog-form__group">
-              <label htmlFor="tags">Tags (Comma separated)</label>
+              <label htmlFor="authorRole">Author Role / Specialization *</label>
               <input
-                id="tags"
+                id="authorRole"
                 type="text"
-                placeholder="Revit, BIM, Training"
-                value={tags}
-                onChange={(e) => setTags(e.target.value)}
+                placeholder="e.g. Principal Architect & BIM Lead"
+                value={authorRole}
+                onChange={(e) => setAuthorRole(e.target.value)}
+                required
               />
             </div>
           </div>
-
           <div className="blog-form__group">
-            <label>Cover Image Header</label>
+            <label htmlFor="authorBio">Author Short Bio</label>
+            <input
+              id="authorBio"
+              type="text"
+              placeholder="e.g. Architect with hands-on practice in Revit structural coordination and architectural drafting."
+              value={authorBio}
+              onChange={(e) => setAuthorBio(e.target.value)}
+            />
+          </div>
+
+          {/* Media & Visual Attribution */}
+          <h5 className="blog-form__section-title">Visuals & Attribution</h5>
+          <div className="blog-form__group">
+            <label>Cover / Featured Image</label>
             <div className="upload-container">
               <input
                 id="cover-image"
                 type="text"
-                placeholder="Image file path or external url..."
+                placeholder="Direct image URL or upload genuine studio screenshot..."
                 value={coverImage}
                 onChange={(e) => setCoverImage(e.target.value)}
                 style={{ marginBottom: 'var(--space-2)' }}
               />
               <div className="upload-box flex-center">
                 <FaUpload className="text-accent" style={{ marginRight: 'var(--space-2)' }} />
-                <span>{uploading ? 'Uploading Header Image...' : 'Click to select cover file'}</span>
+                <span>{uploading ? 'Uploading Genuine Screenshot...' : 'Upload Screenshot / Diagram'}</span>
                 <input
                   type="file"
                   accept="image/*"
@@ -248,13 +362,38 @@ const ManageBlog = () => {
             )}
           </div>
 
+          <div className="blog-form__row">
+            <div className="blog-form__group">
+              <label htmlFor="imageSource">Image Source Attribution *</label>
+              <input
+                id="imageSource"
+                type="text"
+                placeholder="e.g. Prema Studio Revit 2024 Working Model, or Official Autodesk Docs"
+                value={imageSource}
+                onChange={(e) => setImageSource(e.target.value)}
+              />
+            </div>
+            <div className="blog-form__group">
+              <label htmlFor="imageCaption">Image Caption</label>
+              <input
+                id="imageCaption"
+                type="text"
+                placeholder="e.g. Grid alignment and elevation datum setup in Revit project"
+                value={imageCaption}
+                onChange={(e) => setImageCaption(e.target.value)}
+              />
+            </div>
+          </div>
+
+          {/* Excerpt and Content */}
+          <h5 className="blog-form__section-title">Article Content</h5>
           <div className="blog-form__group">
-            <label htmlFor="excerpt">Excerpt Summary * (Max 200 chars)</label>
+            <label htmlFor="excerpt">Executive Excerpt * (Max 220 chars)</label>
             <input
               id="excerpt"
               type="text"
-              placeholder="Short summary preview for feed catalog cards..."
-              maxLength={200}
+              placeholder="Concise summary for feed cards and search results..."
+              maxLength={220}
               value={excerpt}
               onChange={(e) => setExcerpt(e.target.value)}
               required
@@ -262,15 +401,86 @@ const ManageBlog = () => {
           </div>
 
           <div className="blog-form__group">
-            <label htmlFor="content">Post Content * (Supports rich headers and lists)</label>
+            <label htmlFor="content">Full Article Body * (Practical experience, code/standard citations, steps)</label>
             <textarea
               id="content"
-              rows={12}
-              placeholder="Write your article here. You can use markdown shortcuts:&#10;## Heading 2&#10;### Heading 3&#10;**bold text**&#10;- bullet items&#10;--- for dividing lines"
+              rows={14}
+              placeholder="Write the practical workflow here. Use markdown:&#10;## Step 1: Establish Project Base Point&#10;### Grid Setup Guidelines&#10;**Important note on shared coordinates**&#10;- Bullet step 1&#10;- Bullet step 2"
               value={content}
               onChange={(e) => setContent(e.target.value)}
               required
             />
+          </div>
+
+          {/* SEO & Relationships */}
+          <h5 className="blog-form__section-title">SEO & Related Information</h5>
+          <div className="blog-form__row">
+            <div className="blog-form__group">
+              <label htmlFor="tags">Tags (Comma-separated)</label>
+              <input
+                id="tags"
+                type="text"
+                placeholder="Revit, Grids, Levels, Coordination"
+                value={tags}
+                onChange={(e) => setTags(e.target.value)}
+              />
+            </div>
+            <div className="blog-form__group">
+              <label htmlFor="canonicalUrl">Canonical URL (Optional)</label>
+              <input
+                id="canonicalUrl"
+                type="text"
+                placeholder="https://premadesignstudio.com/blog/..."
+                value={canonicalUrl}
+                onChange={(e) => setCanonicalUrl(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className="blog-form__row">
+            <div className="blog-form__group">
+              <label htmlFor="seoTitle">SEO Title Tag</label>
+              <input
+                id="seoTitle"
+                type="text"
+                placeholder="Leave blank to use article title"
+                value={seoTitle}
+                onChange={(e) => setSeoTitle(e.target.value)}
+              />
+            </div>
+            <div className="blog-form__group">
+              <label htmlFor="metaDescription">Meta Description</label>
+              <input
+                id="metaDescription"
+                type="text"
+                placeholder="Leave blank to use excerpt"
+                value={metaDescription}
+                onChange={(e) => setMetaDescription(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className="blog-form__row">
+            <div className="blog-form__group">
+              <label htmlFor="relatedServices">Related Services (Comma-separated)</label>
+              <input
+                id="relatedServices"
+                type="text"
+                placeholder="BIM Modeling, Architectural Drafting"
+                value={relatedServices}
+                onChange={(e) => setRelatedServices(e.target.value)}
+              />
+            </div>
+            <div className="blog-form__group">
+              <label htmlFor="relatedProjects">Related Verified Projects (Comma-separated)</label>
+              <input
+                id="relatedProjects"
+                type="text"
+                placeholder="Residential BIM Coordination Exercise"
+                value={relatedProjects}
+                onChange={(e) => setRelatedProjects(e.target.value)}
+              />
+            </div>
           </div>
 
           <div className="blog-form__actions">
@@ -278,7 +488,7 @@ const ManageBlog = () => {
               <FaTimes /> Cancel
             </Button>
             <Button type="submit" variant="primary" disabled={submitting || uploading}>
-              <FaCheck /> {submitting ? 'Saving...' : 'Save & Publish'}
+              <FaCheck /> {submitting ? 'Saving...' : 'Save Article'}
             </Button>
           </div>
         </form>
@@ -287,8 +497,8 @@ const ManageBlog = () => {
         <div className="blog-admin-table glass-card">
           <div className="res-header-row">
             <span>Article Title</span>
-            <span>Tags</span>
-            <span>Date Published</span>
+            <span>Category</span>
+            <span>Author</span>
             <span>Status</span>
             <span>Actions</span>
           </div>
@@ -301,15 +511,20 @@ const ManageBlog = () => {
                     <span className="file-size">{post.readTime || '5 min read'}</span>
                   </div>
                 </div>
-                <div className="res-row__cat" style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
-                  {post.tags?.map((t, idx) => (
-                    <span key={idx} className="portfolio-card__tag" style={{ margin: 0 }}>{t}</span>
-                  ))}
+                <div className="res-row__cat">
+                  <span className="portfolio-card__tag" style={{ margin: 0 }}>
+                    {post.category || 'BIM'}
+                  </span>
                 </div>
-                <span className="file-size">{new Date(post.createdAt).toLocaleDateString()}</span>
-                <span className={`status-badge ${post.status === 'published' ? 'status-badge--active' : 'status-badge--inactive'}`}>
-                  {post.status}
-                </span>
+                <div className="file-size">
+                  {post.author?.name || 'Unassigned'}
+                  {post.author?.role && <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>{post.author.role}</div>}
+                </div>
+                <div>
+                  <span className={`status-badge status-badge--${post.status || 'draft'}`}>
+                    {(post.status || 'draft').toUpperCase()}
+                  </span>
+                </div>
                 <div className="action-buttons">
                   <button className="action-btn action-btn--edit" onClick={() => handleEditClick(post)}>
                     <FaEdit /> Edit
@@ -321,9 +536,14 @@ const ManageBlog = () => {
               </div>
             ))}
             {blogs.length === 0 && (
-              <p className="text-muted text-center" style={{ padding: 'var(--space-10)' }}>
-                No blog posts created yet. Click "Write New Post" to publish your first article.
-              </p>
+              <div className="text-center" style={{ padding: 'var(--space-12) var(--space-4)' }}>
+                <p className="text-muted" style={{ marginBottom: 'var(--space-4)' }}>
+                  No articles currently in the database. All generic AI articles have been purged.
+                </p>
+                <Button variant="outline" onClick={handleCreateClick}>
+                  <FaPlus /> Draft First Technical Article
+                </Button>
+              </div>
             )}
           </div>
         </div>
