@@ -27,7 +27,8 @@ const COURSES = [
 const StudentFeedbackPage = () => {
   useDocumentTitle(
     'Student Feedback | Prema Design Studio',
-    'Tell us about your software and BIM learning experience at Prema Design Studio Training Academy.'
+    'Tell us about your software and BIM learning experience at Prema Design Studio Training Academy.',
+    { noindex: true }
   );
 
   const [formData, setFormData] = useState({

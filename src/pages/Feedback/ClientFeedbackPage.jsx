@@ -28,7 +28,8 @@ const PROJECT_TYPES = [
 const ClientFeedbackPage = () => {
   useDocumentTitle(
     'Client Feedback | Prema Design Studio',
-    'Share your experience working with Prema Design Studio on Architecture, BIM, and 3D Visualization projects.'
+    'Share your experience working with Prema Design Studio on Architecture, BIM, and 3D Visualization projects.',
+    { noindex: true }
   );
 
   const [formData, setFormData] = useState({

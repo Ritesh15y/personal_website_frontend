@@ -1,7 +1,100 @@
 {
+  "cleanUrls": true,
+  "redirects": [
+    {
+      "source": "/resources",
+      "destination": "/training/resources",
+      "permanent": true
+    },
+    {
+      "source": "/testimonials",
+      "destination": "/reviews",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
-      "source": "/(.*)",
+      "source": "/blog/:slug+",
+      "destination": "/api/legacy-handler?type=blog&slug=:slug+"
+    },
+    {
+      "source": "/portfolio/corporate-office-tower",
+      "destination": "/api/legacy-handler?type=project&slug=corporate-office-tower"
+    },
+    {
+      "source": "/portfolio/international-school-campus",
+      "destination": "/api/legacy-handler?type=project&slug=international-school-campus"
+    },
+    {
+      "source": "/portfolio/multi-specialty-hospital",
+      "destination": "/api/legacy-handler?type=project&slug=multi-specialty-hospital"
+    },
+    {
+      "source": "/portfolio/luxury-apartment-interior",
+      "destination": "/api/legacy-handler?type=project&slug=luxury-apartment-interior"
+    },
+    {
+      "source": "/portfolio/modern-residential-villa",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/portfolio/student-villa-concept",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/portfolio/:slug+",
+      "destination": "/api/legacy-handler?type=project&slug=:slug+"
+    },
+    {
+      "source": "/services",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/services/:path*",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/portfolio",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/training",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/training/:path*",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/reviews",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/blog",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/about",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/contact",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/feedback",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/feedback/:path*",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/admin",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/admin/:path*",
       "destination": "/index.html"
     }
   ]

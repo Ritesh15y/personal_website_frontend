@@ -11,6 +11,7 @@ import {
   FaBookOpen,
   FaStar,
 } from 'react-icons/fa';
+import useDocumentTitle from '../hooks/useDocumentTitle';
 import './AdminLayout.css';
 
 const adminLinks = [
@@ -26,6 +27,10 @@ const adminLinks = [
 const AdminLayout = () => {
   const { logout, user } = useAuth();
   const navigate = useNavigate();
+
+  useDocumentTitle('Studio Admin | Prema Design Studio', 'Internal studio management portal.', {
+    noindex: true,
+  });
 
   const handleLogout = () => {
     logout();

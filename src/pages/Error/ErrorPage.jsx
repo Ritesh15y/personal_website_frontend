@@ -2,6 +2,7 @@ import { useRouteError, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FaHome, FaArrowLeft } from 'react-icons/fa';
 import Button from '../../shared/components/Button/Button';
+import useDocumentTitle from '../../shared/hooks/useDocumentTitle';
 import './ErrorPage.css';
 
 const ErrorPage = () => {
@@ -10,6 +11,12 @@ const ErrorPage = () => {
 
   const status = error?.status || (error ? 500 : 404);
   const is404 = status === 404;
+
+  useDocumentTitle(
+    is404 ? '404 Page Not Found' : '500 Server Error',
+    'The requested page could not be found.',
+    { noindex: true }
+  );
 
   return (
     <div className="error-page">

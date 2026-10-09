@@ -48,8 +48,9 @@ const ProjectDetailPage = () => {
   const [activeImage, setActiveImage] = useState(null);
 
   useDocumentTitle(
-    project ? `${project.title} | Prema Design Studio Portfolio` : 'Project Showcase | Prema Design Studio',
-    project?.description
+    project ? `${project.title} | Prema Design Studio Portfolio` : 'Project Not Found | Prema Design Studio',
+    project?.description || 'The requested portfolio project could not be found or has been unlisted.',
+    { noindex: !project }
   );
 
   useEffect(() => {

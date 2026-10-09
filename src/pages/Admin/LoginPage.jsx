@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../app/providers/AuthContext';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import Button from '../../shared/components/Button/Button';
+import useDocumentTitle from '../../shared/hooks/useDocumentTitle';
 import './LoginPage.css';
 
 const LoginPage = () => {
@@ -14,6 +15,10 @@ const LoginPage = () => {
   
   const { login, user, loading } = useAuth();
   const navigate = useNavigate();
+
+  useDocumentTitle('Admin Login | Prema Design Studio', 'Administrative login portal.', {
+    noindex: true,
+  });
 
   // If already logged in, go to admin dashboard
   useEffect(() => {

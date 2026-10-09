@@ -14,8 +14,9 @@ const BlogPostPage = () => {
   const [loading, setLoading] = useState(true);
 
   useDocumentTitle(
-    post ? `${post.title} | Prema Design Studio Blog` : 'Blog Article | Prema Design Studio',
-    post?.excerpt
+    post ? `${post.title} | Prema Design Studio Blog` : 'Article Permanently Removed | Prema Design Studio',
+    post?.excerpt || 'This article has been permanently removed as part of studio content authenticity cleanup.',
+    { noindex: !post }
   );
 
   useEffect(() => {
