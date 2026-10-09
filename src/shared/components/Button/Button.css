@@ -83,3 +83,16 @@
   border-color: var(--color-accent);
   color: var(--color-accent);
 }
+
+.btn:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Touch Accessibility — Ensure buttons have at least 44px height on mobile */
+@media (max-width: 768px) {
+  .btn--md,
+  .btn--lg {
+    min-height: 44px;
+  }
+}

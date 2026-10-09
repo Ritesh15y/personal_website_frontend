@@ -2,9 +2,15 @@
    Training Page Styles
    ============================ */
 
+.training-page {
+  position: relative;
+  overflow-x: hidden;
+}
+
 /* Why Train Section */
 .training-why {
   background: var(--color-bg-primary);
+  overflow: hidden;
 }
 
 .training-why__grid {
@@ -309,6 +315,49 @@
   }
 }
 
+@media (max-width: 540px) {
+  .course-card__actions {
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .course-card__actions a {
+    width: 100%;
+    display: block;
+  }
+
+  .course-card__actions .course-card__pay-btn,
+  .course-card__actions .course-card__btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .page-hero__actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .page-hero__actions a,
+  .page-hero__actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .course-card {
+    padding: var(--space-5);
+  }
+
+  .course-card__title {
+    font-size: var(--fs-md);
+  }
+
+  .price-current {
+    font-size: var(--fs-lg);
+  }
+}
+
 /* CTA */
 .training-cta {
   background: var(--color-bg-primary);
@@ -318,6 +367,7 @@
 .training-resources {
   background: var(--color-bg-primary);
   border-top: 1px solid var(--color-border);
+  overflow: hidden;
 }
 
 .resources-filter-bar {
@@ -379,12 +429,12 @@
 
 .resources-search input {
   width: 100%;
-  padding: var(--space-2) var(--space-4) var(--space-2) var(--space-9);
+  padding: 10px 16px 10px var(--space-9);
   background-color: var(--color-bg-secondary);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   color: var(--color-text-primary);
-  font-size: var(--fs-sm);
+  font-size: 1rem; /* Prevent iOS Safari auto-zoom */
   transition: border-color var(--transition-fast);
 }
 
@@ -397,6 +447,18 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: var(--space-6);
+}
+
+@media (max-width: 1024px) {
+  .resources-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .resources-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .res-card {
@@ -507,6 +569,10 @@
 /* ============================
    Training Counseling & Inquiry Form
    ============================ */
+#training-inquiry {
+  overflow: hidden;
+}
+
 .home-inquiry__grid {
   display: grid;
   grid-template-columns: 1fr 1.25fr;
@@ -626,6 +692,22 @@
 @media (max-width: 600px) {
   .home-inquiry__form-row {
     grid-template-columns: 1fr;
+  }
+
+  .home-inquiry__input,
+  .home-inquiry__select,
+  .home-inquiry__textarea {
+    font-size: 1rem; /* Prevent iOS Safari auto-zoom */
+  }
+
+  .home-inquiry__card {
+    padding: var(--space-6);
+  }
+}
+
+@media (max-width: 480px) {
+  .home-inquiry__card {
+    padding: var(--space-4);
   }
 }
 

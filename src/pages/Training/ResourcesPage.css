@@ -206,7 +206,27 @@
     width: 100%;
   }
 
+  .resources-search-box input {
+    font-size: 1rem; /* Prevent iOS Safari auto-zoom */
+  }
+
+  .resources-tab-btn {
+    min-height: 36px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .resource-download-btn {
+    min-height: 40px;
+  }
+
   .resources-catalog-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .resource-item-card {
+    padding: var(--space-4);
   }
 }

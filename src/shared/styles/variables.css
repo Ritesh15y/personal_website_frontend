@@ -225,3 +225,10 @@
 [data-theme="light"] .hero__scroll {
   color: #555555;
 }
+
+/* ---- Responsive Container Padding for Small Mobile Viewports ---- */
+@media (max-width: 480px) {
+  :root {
+    --container-padding: var(--space-4); /* 16px instead of 24px gives 16px extra breathing space on 360-430px */
+  }
+}

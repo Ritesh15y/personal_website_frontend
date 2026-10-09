@@ -371,5 +371,28 @@
 
   .course-modal {
     padding: var(--space-5);
+    max-height: calc(100dvh - 24px);
+  }
+
+  .course-modal__select,
+  .course-modal__input {
+    font-size: 1rem; /* Prevent iOS Safari auto-zoom */
+  }
+
+  .course-modal__close-btn {
+    width: 44px;
+    height: 44px;
+    top: var(--space-3);
+    right: var(--space-3);
+  }
+
+  .payment-option-btn {
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 400px) {
+  .course-modal {
+    padding: var(--space-4);
   }
 }

@@ -210,4 +210,19 @@
     grid-template-columns: 1fr;
     gap: 0;
   }
+
+  .contact-info__socials a {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+@media (max-width: 480px) {
+  .contact-form {
+    padding: var(--space-4);
+  }
+
+  .contact-info h3 {
+    font-size: var(--fs-xl);
+  }
 }

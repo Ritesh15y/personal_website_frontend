@@ -889,22 +889,131 @@
 }
 
 @media (max-width: 768px) {
+  .hero-gateway {
+    padding: calc(var(--space-10) + 40px) 0 var(--space-10);
+  }
+
+  .hero-gateway__title {
+    font-size: clamp(1.85rem, 6.5vw, 2.6rem);
+    line-height: 1.2;
+    word-break: break-word;
+  }
+
+  .hero-gateway__subtitle {
+    font-size: var(--fs-base);
+    line-height: 1.6;
+  }
+
+  .gateway-door-card {
+    min-height: auto;
+  }
+
+  .gateway-door-card__content {
+    padding: var(--space-6);
+  }
+
   .division-services__grid {
     grid-template-columns: 1fr;
   }
+
+  .division-service-item {
+    padding: var(--space-6);
+  }
+
   .division-training__features {
     grid-template-columns: 1fr;
   }
+
   .division-courses__grid {
     grid-template-columns: 1fr;
   }
+
+  .division-course-card {
+    padding: var(--space-6);
+  }
+
+  .testimonials-tabs {
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .testimonials-tab-btn {
+    padding: 10px 18px;
+    font-size: var(--fs-xs);
+    min-height: 44px;
+  }
+
   .testimonials-grid {
     grid-template-columns: 1fr;
   }
+
+  .testimonial-card {
+    padding: var(--space-6);
+  }
+
   .enquiry-form__row {
     grid-template-columns: 1fr;
   }
+
+  .enquiry-form__input,
+  .enquiry-form__select,
+  .enquiry-form__textarea {
+    font-size: 1rem; /* iOS Safari 16px prevention against viewport auto-zoom */
+  }
+
   .home-trust-stats__grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-3);
+  }
+
+  .trust-stat-box {
+    padding: var(--space-5) var(--space-3);
+  }
+
+  .trust-stat-box__number {
+    font-size: clamp(1.75rem, 5vw, 2.25rem);
+  }
+
+  .home-enquiry__form-card {
+    padding: var(--space-6);
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-gateway {
+    padding: calc(var(--space-8) + 40px) 0 var(--space-8);
+  }
+
+  .hero-gateway__header {
+    margin-bottom: var(--space-8);
+  }
+
+  .gateway-door-card__content {
+    padding: var(--space-5);
+  }
+
+  .selected-project-card__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-1);
+  }
+
+  .home-division-services,
+  .home-selected-projects,
+  .home-testimonials,
+  .home-enquiry-section {
+    padding: var(--space-14) 0;
+  }
+
+  .home-trust-stats {
+    padding: var(--space-10) 0;
+  }
+
+  .home-enquiry__form-card {
+    padding: var(--space-4);
+  }
+
+  .enquiry-form {
+    gap: var(--space-3);
   }
 }

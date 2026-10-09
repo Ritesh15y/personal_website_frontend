@@ -422,3 +422,22 @@
     grid-template-columns: 120px 1fr;
   }
 }
+
+@media (max-width: 480px) {
+  .post-title {
+    font-size: clamp(1.75rem, 6vw, 2.25rem);
+    line-height: 1.2;
+  }
+
+  .post-body {
+    padding: var(--space-4);
+  }
+
+  .related-card__link {
+    grid-template-columns: 1fr;
+  }
+
+  .related-card__image-wrap {
+    height: 160px;
+  }
+}

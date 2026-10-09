@@ -3,6 +3,12 @@
    Preserves 100% of the existing premium visual identity.
    ============================ */
 
+/* Main Page Wrapper */
+.services-page {
+  position: relative;
+  overflow-x: hidden;
+}
+
 /* Page Hero */
 .page-hero {
   position: relative;
@@ -331,6 +337,7 @@
    ============================ */
 .services-why {
   background: var(--color-bg-primary);
+  overflow: hidden;
 }
 
 .services-why__grid {
@@ -446,6 +453,7 @@
 .services-inquiry {
   background: var(--color-bg-secondary);
   border-top: 1px solid var(--glass-border);
+  overflow: hidden;
 }
 
 .services-inquiry__grid {
@@ -563,8 +571,41 @@
   }
 }
 
+@media (max-width: 768px) {
+  .services-inquiry__input,
+  .services-inquiry__select,
+  .services-inquiry__textarea {
+    font-size: 1rem; /* Prevent iOS Safari auto-zoom */
+  }
+
+  .page-hero__actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .page-hero__actions a,
+  .page-hero__actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
 @media (max-width: 480px) {
   .services-inquiry__form-row {
     grid-template-columns: 1fr;
+  }
+
+  .services-inquiry__form-card {
+    padding: var(--space-4);
+  }
+
+  .service-detail {
+    padding: var(--space-5);
+  }
+
+  .service-detail__icon {
+    width: 56px;
+    height: 56px;
+    font-size: var(--fs-xl);
   }
 }

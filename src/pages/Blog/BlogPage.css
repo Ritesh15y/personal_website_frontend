@@ -352,4 +352,16 @@
   .blog-search {
     max-width: 100%;
   }
+
+  .blog-search input {
+    font-size: 1rem; /* Prevent iOS Safari auto-zoom */
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .tag-pill {
+    min-height: 36px;
+    display: inline-flex;
+    align-items: center;
+  }
 }
