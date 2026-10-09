@@ -1,15 +1,14 @@
 {
-  "cleanUrls": true,
   "redirects": [
     {
       "source": "/resources",
       "destination": "/training/resources",
-      "permanent": true
+      "statusCode": 301
     },
     {
       "source": "/testimonials",
       "destination": "/reviews",
-      "permanent": true
+      "statusCode": 301
     }
   ],
   "rewrites": [
